@@ -13,6 +13,7 @@ numClust = 5;
 
 scores = [];
 pairPortion=[0,0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
+pairPortion = 1 - (pairPortion);
 for idata=1:length(dataname)  
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
     datafname=cell2mat(dataf(1));       
@@ -37,7 +38,7 @@ for idata=1:length(dataname)
                continue;
                end
                 
-               pscore = []
+               pscore = [];
                for pairedIdx=1:length(pairPortion)  %here it's 1 ;different percentage of paired instances
                    numpairedInst=floor(numInst*pairPortion(pairedIdx));  % number of paired instances that have complete views
                    paired=instanceIdx(1:numpairedInst);                     %The paired instances
@@ -60,12 +61,15 @@ for idata=1:length(dataname)
                   save([dir,'PVC',num2str(v1),num2str(v2),'paired_',num2str(pairPortion(pairedIdx)),'f_',num2str(f),'.mat'],'U1','U2','P2','P1','P3','objValue','F','P','R','nmi','avgent','AR','truthF');       
                   %save (filenameWithDirectory, variables)
                end
-               multiScore = [multiScore;pscore]
+               multiScore = [multiScore;pscore];
       end
     end
    end
-    scores = [scores;multiScore];
+   list = mean(multiScore, 2);
+   list'
+    scores = [scores;list'];
 end
+scores
 
        
          
