@@ -30,7 +30,7 @@ function [Ux Uy P2 P1 P3 objValue F P R nmi avgent AR] = PVCclust(X2,Y2,X1,Y3,nu
 
   [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,option);
  
-  %At this step we have our matrices, now perform stat collection
+  %At this step we have our 
   
   UPI=[P2;P1;P3]; 
   

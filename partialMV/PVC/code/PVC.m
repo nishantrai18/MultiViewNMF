@@ -36,29 +36,29 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,option)
 %  endwhile 
 %%  Reference:
 %    S.-Y. Li, Y. Jiang nd Z.-H. Zhou. Partial Multi-View Clustering. In: Proceedings of the 28th AAAI Conference on 
-%    Artificial Intelligence (AAAI'14),Qu¨¦bec, Canada ,2014.
+%    Artificial Intelligence (AAAI'14),Quï¿½ï¿½bec, Canada ,2014.
 %% End of Instruction
     rand('seed',1);
     
     lamda = option.lamda;  
-    k = option.latentdim; 
+    k = option.latentdim;                               %Get the parameters
     
     maxIterPVC=20;
     maxIterInit = 20; 
     maxIterNMF=500; 
     trace=1;  
-    [numInst1,Featx]=size(X1);
-    [numInst2,Featx]=size(X2);
-    [numInst3,Featy]=size(Y3);
+    [numInst1,Featx]=size(X1);                             %Number of instances, FeatX: Number of features in view 1
+    [numInst2,Featx]=size(X2);                             %Number of instances with complete views
+    [numInst3,Featy]=size(Y3);                             %Number of instances, FeatY: Number of features in view 2
     
-    % parameter normalization
+    % parameter normalization for the GCD
     lamdatmpP2=lamda*( (Featy+Featx)/k );
     lamdatmpP1=lamda*( Featx/k  );
     lamdatmpP3=lamda*( Featy/k  );
     
-    objValue=zeros(maxIterPVC,1);
+    objValue=zeros(maxIterPVC,1);                           %Objective Value after each iteration
  
-    P1init=rand(numInst1,k);
+    P1init=rand(numInst1,k);                                %Random initialization
     P2init=rand(numInst2,k);
     P3init=rand(numInst3,k);
     Uxinit=rand(k,Featx);
@@ -74,7 +74,7 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,option)
 %  initialize: 1.1  [Ux,Uy,P2]=argmin(P2>0,Ux>0,Uy>0)  | X2-P2*Ux|_F^2+ |Y2-P2*Uy|_F^2+lamd2*|P|_1   
      [Ux,Uy,P2,objValueInit]=PVCinit(X2,Y2,[lamdatmpP2,k,maxIterInit]);
      
-   if(numInst1 || numInst2) 
+   if(numInst1 || numInst2)                                 %At least some one with partial views
     for iter=1:maxIterPVC
         iter
 %   1. update P1,P3 given Ux,Uy,X1,Y3
@@ -96,6 +96,9 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,option)
 %   3. update P2 given (Ux,Uy,X2,Y2)
 %      [P2]=argmin(P2>0)  | X2-P2*Ux|_F^2+ |Y2-P2*Uy|_F^2+lamd2*|P2|_1    
          [P2,objP2]=argminF2P2Constrlasso(X2,Ux,Y2,Uy,P2,[1,lamdatmpP2,maxIterNMF,0,0]);
+         
+         %Actual use of lasso optimiser, see the variables involved and the
+         %associated cost function
        
         objValue(iter)=norm([X1;X2]-[P1;P2]*Ux,'fro')+ norm([Y2;Y3]-[P2;P3]*Uy,'fro')+ lamdatmpP1*sum(sum(P1)) + lamdatmpP2*sum(sum(P2))+ lamdatmpP3*sum(sum(P3));
         
@@ -109,6 +112,9 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,option)
         end
     end
    end
+   
+   %workspace;
+   
  end
 
   

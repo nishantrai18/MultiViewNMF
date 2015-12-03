@@ -69,7 +69,7 @@ function [Ux,Uy,P,objValue]=PVCinit(X,Y,option)
         fprintf('multi-viewLSA Iteration %d, objective value %g\n', iter, objValue(iter));
         end
  
-        if iter>1 && ((abs(objValue(iter)-objValue(iter-1))/objValue(iter) < 1e-6)|| objValue(iter)<=1e-6)      %Convergence conditions
+        if iter>1 && ((abs(objValue(iter)-objValue(iter-1))/objValue(iter) < 1e-6)|| objValue(iter)<=1e-6)      %CO
             fprintf('multi-viewLSA  Objective value converge to %g at iteration %d before the maxIteration reached \n',objValue(iter),iter);
             break;
         end

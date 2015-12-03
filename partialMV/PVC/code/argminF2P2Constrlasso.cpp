@@ -6,7 +6,8 @@
 //  min (W\in [0,1] or W>0)   F2P2_NMF_GCDM(V,H,V2,H2,lamda)=|V - W* H|_F^2 + lamda1* |V2-W*H2|_F^2  +lamda2*|W|_1  
 
 //   ATTN: This package is free for academic usage. You can run it at your own risk. For other purposes, please contact Prof. Zhi-Hua Zhou (zhouzh@nju.edu.cn)
-//   ATTN2: This package was developed by Ms. Shao-Yuan Li (lisy@lamda.nju.edu.cn). For any problem concerning the code, please feel free to contact Ms. Li.  Some varables used in the code
+//   ATTN2: This package was developed by Ms. Shao-Yuan Li (lisy@lamda.nju.edu.cn). For any problem concerning the code, please feel free to contact Ms. Li.
+//  Some varables used in the code
 //===============================================================================
 //input: 
 //		V, V2: the input n by t feature matrix  n*m  : 
@@ -46,7 +47,6 @@ long double *createLongDoubleMatrix(int row,int col){
         new_m[i] = 1e-8;
     return new_m;
 }
-
 long *createLongMatrix(int row,int col){
     long * new_m = (long *)malloc(sizeof(long)*row*col);
     for (long i=0;i<row*col;i++)
@@ -99,9 +99,8 @@ void destroyMatrix(long double *pMatrix){
 }
   
 
-//getVH(VH,V,H,n,k,m);  VH=V*H';  n*k = (n*m£© *( m*k)
+//getVH(VH,V,H,n,k,m);  VH=V*H';  n*k = (n*mï¿½ï¿½ *( m*k)
 
- 
   //  VHt=V*H'+c1*V2*H2';
   void  getVHt(double *VHt,double *V,double *H,double *V2,double *H2,double c1,int n,int k,int m,int m2){
     long i,j;
@@ -145,38 +144,29 @@ void destroyMatrix(long double *pMatrix){
         {
             for (j=0;j<m;j++)
             { 
-                  double tmp=0;//
-                 
+                  double tmp=0;                 
                   for (r=0;r<k;r++){
                       tmp += (W[r*n+i]*H[j*k+r]);
-                       
-                              }
-                  objOut=objOut+pow(V[j*n+i]-tmp,2);//  
+                  }
+                  objOut=objOut+pow(V[j*n+i]-tmp,2);        //Summation of the |V-WH| part  
             }
             for (j2=0;j2<m2;j2++)
-            { 
-                   
+            {                  
                   double tmp2=0;
-                  for (r=0;r<k;r++){
-               
+                  for (r=0;r<k;r++){  
                       tmp2 += (W[r*n+i]*H2[j2*k+r]);
-                              }
-                  objOut=objOut+c*pow(V2[j2*n+i]-tmp2,2);//  
-            }
-          
-            
+                  }
+                  objOut=objOut+c*pow(V2[j2*n+i]-tmp2,2);  
+            }            
         }
-         
           for (j3=0;j3<n*k;j3++)
           {  
-             objOut=objOut+c2*fabs(W[j3]);
+             objOut=objOut+c2*fabs(W[j3]);              //L1 Norm part
           }
-          
         return objOut;
   }
 
  
- // 
  //    W: n*k     V: n*m   H: k*m     V2: n*m2  H2: k*m2   Winit: n*k
 void initWs(double *HHt,double *VHt,double *GW,double *SW,double *DW,double *V,double *W,double *H,double *V2,double *H2,int n,int m, int k,double c1,double c2,double *GWW,int m2,int interval){
   //  GW=2*W*(H*H'+c1*H2*H2') -2*(V*H'+c1*V2*H2')+c2
@@ -476,7 +466,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     c2=Param[1]; //lamda2
     maxiter = (long)(Param[2]);
     trace = (int)(Param[3]);
-    interval=(int)(Param[4]);  // interval==1: W\in[0,1], interval!=1Ê±£¬W>0
+    interval=(int)(Param[4]);  // interval==1: W\in[0,1], interval!=1Ê±ï¿½ï¿½W>0
     
     
     W = createMatrix(n,k);
