@@ -7,9 +7,9 @@ addpath(genpath(('../code/')));
 
 resdir='data/result/';
 datasetdir='data/';
-dataname={'cornell','texas','washington','wisconsin'};
-num_views =2;
-numClust = 5;
+dataname={'mfeat'};
+num_views = 2;
+numClust = 10;
 
 scores = [];
 pairPortion=[0,0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
@@ -18,8 +18,8 @@ for idata=1:length(dataname)
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
     datafname=cell2mat(dataf(1));       
     load (datafname);                                           %Loading the datafile
-    Xf1=readsparse(X1);                                         %Loading a sparse matrix i.e. on the basis of edges                  
-    Xf2=readsparse(X2);
+    Xf1 = X1;                                                     %Directly loading the matrices
+    Xf2 = X2;
     X{1} =Xf1;                                                  %View 1
     X{2} =Xf2;                                                  %View 2
  
@@ -50,7 +50,7 @@ for idata=1:length(dataname)
                    xsingle=X{v1}(singleInstView1,:);                        %View 2 of paired
                    ysingle=X{v2}(singleInstView2,:);                        %View two of single
          
-                  option.lamda=1e-2;                                        %Sparsity parameter for Lasso norm
+                  option.lamda=0.01;                                        %Sparsity parameter for Lasso norm
                   option.latentdim=numClust;
       
                   [U1 U2 P2 P1 P3 objValue F P R nmi avgent AR] = PVCclust(xpaired,ypaired,xsingle,ysingle,numClust,truthF,option);
