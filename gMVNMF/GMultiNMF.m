@@ -9,14 +9,15 @@ function [finalU, finalV, finalcentroidV, log] = GMultiNMF(X, K, W, label,option
 % 	Modified by Zhenfan Wang (zfwang@mail.dlut.edu.cn)
 
 %	References:
-% 	J. Liu, C.Wang, J. Gao, and J. Han, ¡°Multi-view clustering via joint nonnegative matrix factorization,¡± in Proc. SDM, Austin, Texas, May 2013, vol. 13, pp. 252¨C260.
+% 	J. Liu, C.Wang, J. Gao, and J. Han, ï¿½ï¿½Multi-view clustering via joint nonnegative matrix factorization,ï¿½ï¿½ in Proc. SDM, Austin, Texas, May 2013, vol. 13, pp. 252ï¿½C260.
 % 	Zhenfan Wang, Xiangwei Kong, Haiyan Fu, Ming Li, Yujia Zhang, FEATURE EXTRACTION VIA MULTI-VIEW NON-NEGATIVE MATRIX FACTORIZATION WITH LOCAL GRAPH REGULARIZATION, ICIP 2015.
 
+%Note that columns are data vectors here
 
 tic;
 viewNum = length(X);
 Rounds = options.rounds;
-nSmp=size(X{1},2);
+nSmp=size(X{1},2);                          %Number of data points
 U_ = [];
 V_ = [];
 
@@ -88,7 +89,7 @@ while j < Rounds
         end
         tmp1 = (X{i} - U{i}*V{i}');
         tmp2 = (V{i} - centroidV);
-        logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+sum(sum((V{i}'*L).*V{i}'));  %ÐÞ¸Ä£¬¼ÓÈëSampleWºÍV'*L*V
+        logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+sum(sum((V{i}'*L).*V{i}'));  %ï¿½Þ¸Ä£ï¿½ï¿½ï¿½ï¿½ï¿½SampleWï¿½ï¿½V'*L*V
     end
     
     logL

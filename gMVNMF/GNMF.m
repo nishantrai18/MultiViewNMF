@@ -8,7 +8,7 @@ function [U_final, V_final, nIter_final, objhistory_final] = GNMF(X, k, W, optio
 % W ... weight matrix of the affinity graph 
 %
 % options ... Structure holding all settings
-%               options.alpha ... the regularization parameter. 
+%               options.alpha ... the graph regularization parameter. 
 %                                 [default: 100]
 %                                 alpha = 0, GNMF boils down to the ordinary NMF. 
 %                                 
@@ -30,14 +30,14 @@ function [U_final, V_final, nIter_final, objhistory_final] = GNMF(X, k, W, optio
 %   Written by Deng Cai (dengcai AT gmail.com)
 %	Modified by Zhenfan Wang (zfwang@mail.dlut.edu.cn)
 
-if min(min(X)) < 0
+if min(min(X)) < 0                                              %Sanity Checks
     error('Input should be nonnegative!');
 end
 
-if ~isfield(options,'error')
+if ~isfield(options,'error')                                    %Default values of the errors
     options.error = 1e-5;
 end
-if ~isfield(options, 'maxIter')
+if ~isfield(options, 'maxIter')                                 %Check again
     options.maxIter = [];
 end
 
@@ -57,29 +57,29 @@ if ~isfield(options,'alpha')
     options.alpha = 100;
 end
 
-nSmp = size(X,2);
+nSmp = size(X,2);                           %Number of data points
 
-if isfield(options,'alpha_nSmp') && options.alpha_nSmp
+if isfield(options,'alpha_nSmp') && options.alpha_nSmp              %Not relevant for now
     options.alpha = options.alpha*nSmp;    
 end
 
-if isfield(options,'weight') && strcmpi(options.weight,'NCW')
+if isfield(options,'weight') && strcmpi(options.weight,'NCW')       %Not relevant for now
     feaSum = full(sum(X,2));
     D_half = X'*feaSum;
     X = X*spdiags(D_half.^-.5,0,nSmp,nSmp);
 end
 
-if ~isfield(options,'Optimization')
+if ~isfield(options,'Optimization')                                 %Default value
     options.Optimization = 'Multiplicative';
 end
 
-if ~exist('U','var')
+if ~exist('U','var')                                            %Initialise empty U, V if no parameters given
     U = [];
     V = [];
 end
 
 switch lower(options.Optimization)
-    case {lower('Multiplicative')} 
+    case {lower('Multiplicative')}                                      %Only multiplicative updates
         [U_final, V_final, nIter_final, objhistory_final] = GNMF_Multi(X, k, W, options, U, V);
     otherwise
         error('optimization method does not exist!');

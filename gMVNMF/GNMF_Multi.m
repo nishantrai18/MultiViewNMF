@@ -20,22 +20,24 @@ differror = options.error;
 maxIter = options.maxIter;
 nRepeat = options.nRepeat;
 minIter = options.minIter - 1;
-if ~isempty(maxIter) && maxIter < minIter
+if ~isempty(maxIter) && maxIter < minIter                   %Sanity checks and default value initialization
     minIter = maxIter;
 end
 meanFitRatio = options.meanFitRatio;
 
-alpha = options.alpha;
+alpha = options.alpha;                                      %Graph Reg weight
 
 Norm = 2;
 NormV = 0;
 
-[mFea,nSmp]=size(X);
+[mFea,nSmp]=size(X);                                        %Dimensions
 
-if alpha > 0
+if alpha > 0                                                   %Graph regularisation matrix
     W = alpha*W;
     DCol = full(sum(W,2));
-    D = spdiags(DCol,0,nSmp,nSmp);
+    workspace
+    
+    D = spdiags(DCol,[0],nSmp,nSmp);
     L = D - W;
     if isfield(options,'NormW') && options.NormW
         D_mhalf = spdiags(DCol.^-.5,0,nSmp,nSmp) ;
@@ -46,32 +48,30 @@ else
 end
 
 selectInit = 1;
-if isempty(U)
+if isempty(U)                                           %If empty U i.e. need for random intializations
     U = abs(rand(mFea,k));
     V = abs(rand(nSmp,k));
 else
-    nRepeat = 1;
+    nRepeat = 1;                                        %If random initialization then do the following loop at least once
 end
 
-[U,V] = NormalizeUV(U, V, NormV, Norm);
+[U,V] = NormalizeUV(U, V, NormV, Norm);                 %Initial normalization
 if nRepeat == 1
     selectInit = 0;
     minIter = 0;
     if isempty(maxIter)
-        objhistory = CalculateObj(X, U, V, L);
-        meanFit = objhistory*10;
+        objhistory = CalculateObj(X, U, V, L);                  %Storing objective history
+        meanFit = objhistory*10;                                %Something
     else
         if isfield(options,'Converge') && options.Converge
             objhistory = CalculateObj(X, U, V, L);
         end
     end
 else
-    if isfield(options,'Converge') && options.Converge
+    if isfield(options,'Converge') && options.Converge              %Something
         error('Not implemented!');
     end
 end
-
-
 
 tryNo = 0;
 nIter = 0;
@@ -182,17 +182,17 @@ function [obj, dV] = CalculateObj(X, U, V, L, deltaVU, dVordU)
     mn = numel(X);
     nBlock = ceil(mn/MAXARRAY);
 
-    if mn < MAXARRAY
+    if mn < MAXARRAY                                    %If complete matrix can be computed in one go
         dX = U*V'-X;
-        obj_NMF = sum(sum(dX.^2));
-        if deltaVU
+        obj_NMF = sum(sum(dX.^2));                      %Frobenius norm
+        if deltaVU                                      %By default, we do not consider this    
             if dVordU
                 dV = dX'*U + L*V;
             else
                 dV = dX*V;
             end
         end
-    else
+    else                                                %Computing the matrix in parts
         obj_NMF = 0;
         if deltaVU
             if dVordU
@@ -229,7 +229,7 @@ function [obj, dV] = CalculateObj(X, U, V, L, deltaVU, dVordU)
     else
         obj_Lap = sum(sum((V'*L).*V'));
     end
-    obj = obj_NMF+obj_Lap;
+    obj = obj_NMF+obj_Lap;                              %Remember that L was already multipled with the paramter to Graph Reg
     
 
 
@@ -237,7 +237,7 @@ function [obj, dV] = CalculateObj(X, U, V, L, deltaVU, dVordU)
 
 function [U, V] = NormalizeUV(U, V, NormV, Norm)
     K = size(U,2);
-    if Norm == 2
+    if Norm == 2                                        %L2 normalization
         if NormV
             norms = max(1e-15,sqrt(sum(V.^2,1)))';
             V = V*spdiags(norms.^-1,0,K,K);
@@ -247,7 +247,7 @@ function [U, V] = NormalizeUV(U, V, NormV, Norm)
             U = U*spdiags(norms.^-1,0,K,K);
             V = V*spdiags(norms,0,K,K);
         end
-    else
+    else                                                %L1 Normalisation
         if NormV
             norms = max(1e-15,sum(abs(V),1))';
             V = V*spdiags(norms.^-1,0,K,K);
