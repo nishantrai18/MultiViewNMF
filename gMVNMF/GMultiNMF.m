@@ -92,7 +92,7 @@ while j < Rounds
         logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+sum(sum((V{i}'*L).*V{i}'));  %�޸ģ�����SampleW��V'*L*V
     end
     
-    logL
+    %logL
     log(end+1)=logL;
     rand('twister',5489);
     ac = printResult(centroidV, label, options.K, options.kmeans);

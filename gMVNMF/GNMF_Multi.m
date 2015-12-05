@@ -35,11 +35,9 @@ NormV = 0;
 if alpha > 0                                                   %Graph regularisation matrix
     W = alpha*W;
     DCol = full(sum(W,2));
-    workspace
-    
     D = spdiags(DCol,[0],nSmp,nSmp);
     L = D - W;
-    if isfield(options,'NormW') && options.NormW
+    if isfield(options,'NormW') && options.NormW                %Weighted GNMF, refer to Cai et al
         D_mhalf = spdiags(DCol.^-.5,0,nSmp,nSmp) ;
         L = D_mhalf*L*D_mhalf;
     end
@@ -164,12 +162,13 @@ while tryNo < nRepeat
     end
 end
 
-[U_final,V_final] = NormalizeUV(U_final, V_final, NormV, Norm);
+[U_final,V_final] = NormalizeUV(U_final, V_final, NormV, Norm);             %Final Normalisation, from Cai et al
 
 
 %==========================================================================
 
 function [obj, dV] = CalculateObj(X, U, V, L, deltaVU, dVordU)
+%Returns graph regularised loss with X = UV, L is the weight matrix (multiplied by its parameter)
     MAXARRAY = 500*1024*1024/8; % 500M. You can modify this number based on your machine's computational power.
     if ~exist('deltaVU','var')
         deltaVU = 0;
@@ -236,6 +235,7 @@ function [obj, dV] = CalculateObj(X, U, V, L, deltaVU, dVordU)
 
 
 function [U, V] = NormalizeUV(U, V, NormV, Norm)
+%Normalisation for U and V, both L1 and L2
     K = size(U,2);
     if Norm == 2                                        %L2 normalization
         if NormV

@@ -46,8 +46,8 @@ end
 U_final = cell(1,3);
 V_final = cell(1,3);
 V_centroid = cell(1,3);
-for i = 1:20
-   [U_final{i}, V_final{i}, V_centroid{i} log] = GMultiNMF(data, K, W,gnd, options);
+for i = 1:1
+   [U_final{i}, V_final{i}, V_centroid{i}, log] = GMultiNMF(data, K, W,gnd, options);
    printResult( V_centroid{i}, gnd, K, options.kmeans);
    fprintf('\n');
 end
