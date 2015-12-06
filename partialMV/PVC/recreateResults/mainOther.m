@@ -29,7 +29,7 @@ for idata=1:length(dataname)
    mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiScore = [];
-   for f=1:length(numFold)
+   for f=1:numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views
@@ -61,8 +61,12 @@ for idata=1:length(dataname)
                   save([dir,'PVC',num2str(v1),num2str(v2),'paired_',num2str(pairPortion(pairedIdx)),'f_',num2str(f),'.mat'],'U1','U2','P2','P1','P3','objValue','F','P','R','nmi','avgent','AR','truthF');       
                   %save (filenameWithDirectory, variables)
                end
-               multiScore = [multiScore;pscore];
-      end
+               if f==1
+                   multiScore = pscore;
+               else
+                   multiScore = horzcat(multiScore,pscore);
+               end
+           end
     end
    end
    list = mean(multiScore, 2);
