@@ -44,7 +44,6 @@ else
     L = [];
 end
 
-
 selectInit = 1;
 if isempty(U)
     U = abs(rand(mFea,k));
@@ -72,7 +71,7 @@ else
     end
 end
 
-
+%Modify all the update rules here
 
 tryNo = 0;
 while tryNo < nRepeat   
@@ -188,8 +187,6 @@ end
 
 nIter_final = nIter_final + minIterOrig;
 [U_final, V_final] = Normalize(U_final, V_final);
-
-
 
 %==========================================================================
 

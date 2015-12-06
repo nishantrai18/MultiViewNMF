@@ -10,7 +10,7 @@ options.minIter = 50;
 options.meanFitRatio = 0.1;
 options.rounds = 30;
 options.K=10;
-options.Gaplpha=100;                            %Graph regularisation parameter
+options.Gaplpha=10;                            %Graph regularisation parameter
 options.WeightMode='Binary';
 
 
@@ -31,12 +31,13 @@ K = 10;
 
 %% normalize data matrix
 
-for i = 1:length(data)
+for i = 1:length(data)  %Number of views
 %     dtemp=computeDistMat(data{i},2);
 %     W{i}=constructW(dtemp,20);
 %     data{i} = data{i} / sum(sum(data{i}));
     options.WeightMode='Binary';
     W{i}=constructW_cai(data{i}',options);                      %Incorrect call to construct weight matrix
+    %Weight matrix constructed for each view
     data{i} = data{i} / sum(sum(data{i}));
 end
 %save('handwrittenW','W');

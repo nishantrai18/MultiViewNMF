@@ -54,7 +54,7 @@ if ~isfield(options,'meanFitRatio')
 end
 
 if ~isfield(options,'alpha')
-    options.alpha = 100;
+    options.alpha = 10;
 end
 
 nSmp = size(X,2);                           %Number of data points

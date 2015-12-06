@@ -1,4 +1,5 @@
 function [U_final, V_final, nIter_final, objhistory_final] = GNMF_Multi(X, k, W, options, U, V)
+%U, V are probably initilizations, in case they are empty we do random init
 
 % Notation:
 % X ... (mFea x nSmp) data matrix 
@@ -16,6 +17,7 @@ function [U_final, V_final, nIter_final, objhistory_final] = GNMF_Multi(X, k, W,
 %   Written by Deng Cai (dengcai AT gmail.com)
 %	Modified by Zhenfan Wang (zfwang@mail.dlut.edu.cn)
 
+workspace
 differror = options.error;
 maxIter = options.maxIter;
 nRepeat = options.nRepeat;
