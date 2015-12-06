@@ -1,5 +1,5 @@
 clear all;                      %Remove all variables from the workspace
-clc;
+%clc;
  
 addpath(genpath('../../partialMV/PVC/recreateResults/measure/'));
 addpath(genpath('../../partialMV/PVC/recreateResults/misc/'));
@@ -19,6 +19,10 @@ options.K=10;
 options.Gaplpha=100;                            %Graph regularisation parameter
 options.alpha=100;
 options.WeightMode='Binary';
+
+options.alphas = [0.01 0.01];
+options.kmeans = 1;
+options.beta=10;
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';

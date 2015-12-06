@@ -22,14 +22,15 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
 
 % Steps involved in algorithm:
 % 		- Initialize U1, U2, P1, P2 with GNMF() declared in GNMF folder
-% 		- Initialize Pc with appropriate formula
+% 		- Initialize Pc with appropriate formula, update/initialize U's alongside too
 % 		- Repeat the following,
 % 			- Update U's, P1, P2 fixing Pc using the multiplicative updates (Or using PerViewNMF())
-% 			- Update Pc using the formula
+% 			- Update Pc and U's using the formula
 % 		- Normalise U's and V's at the end (Or during it (Depends))
 %% End of Instruction
     rand('seed',1);
     
+    error = option.error;
     lamda = option.lamda;  
     k = option.latentdim;                               %Get the parameters
     
@@ -70,12 +71,14 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
     D = spdiags(DCol,0,nSmp,nSmp);
     L2 = D - W2;
     
+    Goption.alpha=option.Gaplpha;
+    
 %% Initialize U1, U2, P1, P2 with GNMF() declared in GNMF folder   
     if (numInst1)    
-       [Ux, P1] = GNMF(X1, k, W1( 1:size(X1,2), 1:size(X1,2) ), option);
+       [Ux, P1] = GNMF(X1, k, W1( 1:size(X1,2), 1:size(X1,2) ), Goption);
     end
     if (numInst3)    
-       [Uy, P3] = GNMF(Y3, k, W2( (size(X2,2)+1):end, (size(X2,2)+1):end ), option);
+       [Uy, P3] = GNMF(Y3, k, W2( (size(X2,2)+1):end, (size(X2,2)+1):end ), Goption);
     end
 %% Initialize Pc/P3 with appropriate formula (To be decided)   
 
@@ -83,31 +86,31 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
     optionsPc.maxIter = option.maxIter;
     optionsPc.minIter = option.minIter;
     optionsPc.alpha = option.alpha;    
-    [P2] = UpdatePc(X2, Y2, Ux, Uy, k, W1( size(X1,2)+1:end, size(X1,2)+1:end ), W2( 1:size(X2,2), 1:size(X2,2)), optionsPc, []);
+    [P2] = UpdatePcU(X2, Y2, k, W1( size(X1,2)+1:end, size(X1,2)+1:end ), W2( 1:size(X2,2), 1:size(X2,2)), optionsPc, Ux, Uy, []);
 %%
 
 %% Repeated optimizations
    if(numInst1 || numInst2)                                 %At least some one with partial views
     for iter=1:maxIterGPVC
-        iter
+        %iter
         % Update U's, P1, P2 fixing Pc using the multiplicative updates (Or using PerViewNMF())
         % Call GNMF() with initial values
         if (numInst1)    
-           [Ux, P1] = GNMF(X1, k, W1( 1:size(X1,2), 1:size(X1,2) ), option, Ux, P1);
+           [Ux, P1] = GNMF(X1, k, W1( 1:size(X1,2), 1:size(X1,2) ), Goption, Ux, P1);
         end
         if (numInst3)    
-           [Uy, P3] = GNMF(Y3, k, W2( size(X2,2)+1:end, size(X2,2)+1:end ), option, Uy, P3);
+           [Uy, P3] = GNMF(Y3, k, W2( size(X2,2)+1:end, size(X2,2)+1:end ), Goption, Uy, P3);
         end
         % Update Pc using the formula (To be decided)
-        [P2] = UpdatePc(X2, Y2, Ux, Uy, k, W1( size(X1,2)+1:end, size(X1,2)+1:end ), W2( 1:size(X2,2), 1:size(X2,2)), optionsPc, P2);
+        [P2] = UpdatePcU(X2, Y2, k, W1( size(X1,2)+1:end, size(X1,2)+1:end ), W2( 1:size(X2,2), 1:size(X2,2)), optionsPc, Ux, Uy, P2);
         
         objValue(iter)=norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')+ sum(sum(([P1;P2]'*L1)*[P1;P2])) + sum(sum(([P2;P3]'*L2)*[P2;P3]));
         
-        if mod(iter,50)==0
+        if mod(iter,10)==0
         fprintf('Iteration %d, objective value %g\n', iter, objValue(iter));
         end
         
-        if iter>1 && ((abs(objValue(iter)-objValue(iter-1))/objValue(iter) < 1e-6)|| objValue(iter)<=1e-6)
+        if iter>1 && ((abs(objValue(iter)-objValue(iter-1))/objValue(iter) < error)|| objValue(iter)<=error)
             fprintf('Objective value converge to %g at iteration %d before the maxIteration reached \n',objValue(iter),iter);
             break;
         end

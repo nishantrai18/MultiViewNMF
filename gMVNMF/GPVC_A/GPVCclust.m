@@ -60,5 +60,8 @@ if (1)
     avgent = mean(avgenti);
     AR = mean(ARi);
     
-   fprintf('nmi: %f(%f)\n', nmi, std(nmii));
-    
+    fprintf('nmi: %f(%f)\n', nmi, std(nmii));
+    printResult(UPI, truth, option.K, option.kmeans);
+    fprintf('\n');
+
+   
