@@ -28,7 +28,6 @@ data{1} = fourier';
 data{2} = pixel';   
 K = 10;
 
-
 %% normalize data matrix
 
 for i = 1:length(data)  %Number of views

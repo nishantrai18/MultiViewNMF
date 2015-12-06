@@ -16,8 +16,8 @@ options.minIter = 50;
 options.meanFitRatio = 0.1;
 options.rounds = 30;
 options.K=10;
-options.Gaplpha=100;                            %Graph regularisation parameter
-options.alpha=100;
+options.Gaplpha=5;                            %Graph regularisation parameter
+options.alpha=5;
 options.WeightMode='Binary';
 
 options.alphas = [0.01 0.01];
@@ -54,7 +54,7 @@ for idata=1:length(dataname)
    mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiScore = [];
-   for f=1:length(numFold)
+   for f=1:numFold/6
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views
@@ -85,15 +85,20 @@ for idata=1:length(dataname)
                   [U1 U2 P2 P1 P3 objValue F P R nmi avgent AR] = GPVCclust(xpaired',ypaired',xsingle',ysingle',W1,W2,numClust,truthF,options);
                   %[5 unknowns objectiveValue 6 stats] = func([X12][2],X1,X2, numClust,trueClusts,Parameters); 
                   
-                  pscore = [pscore;nmi];
+                  pscore = [pscore nmi];
                   
                   save([dir,'PVC',num2str(v1),num2str(v2),'paired_',num2str(pairPortion(pairedIdx)),'f_',num2str(f),'.mat'],'U1','U2','P2','P1','P3','objValue','F','P','R','nmi','avgent','AR','truthF');       
                   %save (filenameWithDirectory, variables)
                end
-               multiScore = [multiScore;pscore];
+               if f==1
+                   multiScore = pscore;
+               else
+                   multiScore = horzcat(multiScore,pscore);
+               end
       end
     end
    end
+   multiscore
    list = mean(multiScore, 2);
    list'
     scores = [scores;list'];

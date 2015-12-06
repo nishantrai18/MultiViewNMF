@@ -57,8 +57,6 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
     Ux=Uxinit;
     Uy=Uyinit;
     
-    workspace
-    
     nSmp = size(W1,1);    
     W1 = lamda*W1;
     DCol = full(sum(W1,2));
@@ -85,7 +83,9 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
     optionsPc.error = option.error;
     optionsPc.maxIter = option.maxIter;
     optionsPc.minIter = option.minIter;
-    optionsPc.alpha = option.alpha;    
+    optionsPc.alpha = option.alpha;   
+    optionsPc.rounds = option.rounds;   
+    
     [P2] = UpdatePcU(X2, Y2, k, W1( size(X1,2)+1:end, size(X1,2)+1:end ), W2( 1:size(X2,2), 1:size(X2,2)), optionsPc, Ux, Uy, []);
 %%
 

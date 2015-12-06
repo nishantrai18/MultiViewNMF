@@ -17,7 +17,6 @@ function [U_final, V_final, nIter_final, objhistory_final] = GNMF_Multi(X, k, W,
 %   Written by Deng Cai (dengcai AT gmail.com)
 %	Modified by Zhenfan Wang (zfwang@mail.dlut.edu.cn)
 
-workspace
 differror = options.error;
 maxIter = options.maxIter;
 nRepeat = options.nRepeat;
@@ -52,7 +51,7 @@ if isempty(U)                                           %If empty U i.e. need fo
     U = abs(rand(mFea,k));
     V = abs(rand(nSmp,k));
 else
-    nRepeat = 1;                                        %If random initialization then do the following loop at least once
+    nRepeat = 1;                                        %If not random initialization then do the following loop at least once
 end
 
 [U,V] = NormalizeUV(U, V, NormV, Norm);                 %Initial normalization
