@@ -73,7 +73,7 @@ function [Pc_final, nIter_final, objValue] = UpdatePc(X1, X2, U1, U2, k, W1, W2,
 %==========================================================================
 function [obj] = ObjectivePc(Pc, X1, X2, U1, U2, L)
     val1 = CalculateObj(X1, U1, Pc, L);
-    val2 = CalculateObj(X1, U1, Pc, (L.*0));
+    val2 = CalculateObj(X2, U2, Pc, (L.*0));
     obj = val1 + val2;
     
 function [obj, dV] = CalculateObj(X, U, V, L, deltaVU, dVordU)
