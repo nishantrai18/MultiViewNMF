@@ -61,7 +61,7 @@ if nRepeat == 1
     minIter = 0;
     if isempty(maxIter)
         objhistory = CalculateObj(X, U, V, L);                  %Storing objective history
-        meanFit = objhistory*10;                                %Something
+        meanFit = objhistory*10;                                %Initialize meanFit
     else
         if isfield(options,'Converge') && options.Converge
             objhistory = CalculateObj(X, U, V, L);
@@ -232,10 +232,6 @@ function [obj, dV] = CalculateObj(X, U, V, L, deltaVU, dVordU)
     end
     obj = obj_NMF+obj_Lap;                              %Remember that L was already multipled with the paramter to Graph Reg
     
-
-
-
-
 function [U, V] = NormalizeUV(U, V, NormV, Norm)
 %Normalisation for U and V, both L1 and L2
     K = size(U,2);

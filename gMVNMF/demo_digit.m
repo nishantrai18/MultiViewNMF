@@ -3,16 +3,16 @@
 addpath('tools/');
 addpath('print/');
 options = [];
-options.maxIter = 200;
+options.maxIter = 100;
 options.error = 1e-6;
-options.nRepeat = 30;
-options.minIter = 50;
+options.nRepeat = 10;
+options.minIter = 30;
 options.meanFitRatio = 0.1;
 options.rounds = 30;
 options.K=10;
-options.Gaplpha=10;                            %Graph regularisation parameter
+options.Gaplpha=100;                            %Graph regularisation parameter
 options.WeightMode='Binary';
-
+options.alpha = 100;
 
 % options.kmeans means whether to run kmeans on v^* or not
 % options alpha is an array of weights for different views

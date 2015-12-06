@@ -71,7 +71,7 @@ else
     end
 end
 
-%Modify all the update rules here
+%%Modify all the update rules here
 
 tryNo = 0;
 while tryNo < nRepeat   
@@ -184,6 +184,7 @@ while tryNo < nRepeat
         end
     end
 end
+%%
 
 nIter_final = nIter_final + minIterOrig;
 [U_final, V_final] = Normalize(U_final, V_final);
