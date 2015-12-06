@@ -97,7 +97,6 @@ void destroyMatrix(long double *pMatrix){
        }
   //   destroyMatrix(sums_hhir);
 }
-  
 
 //getVH(VH,V,H,n,k,m);  VH=V*H';  n*k = (n*m�� *( m*k)
 
@@ -111,7 +110,6 @@ void destroyMatrix(long double *pMatrix){
           double sum2=0;
           for (long d=0;d < m; d++){
               sum += V[d*n+i]*H[d*k+j];
-               
           }
           for (long d=0;d < m2; d++){
               sum2 += V2[d*n+i]*H2[d*k+j];
@@ -122,7 +120,6 @@ void destroyMatrix(long double *pMatrix){
   //   destroyMatrix(sums_hhir);
 }
 
- 
  /*  SW= -GW./(GWW);  n*k
      *  GWW(i,r)= 2*( HHt(r,r))      
     */
@@ -166,12 +163,10 @@ void destroyMatrix(long double *pMatrix){
         return objOut;
   }
 
- 
  //    W: n*k     V: n*m   H: k*m     V2: n*m2  H2: k*m2   Winit: n*k
 void initWs(double *HHt,double *VHt,double *GW,double *SW,double *DW,double *V,double *W,double *H,double *V2,double *H2,int n,int m, int k,double c1,double c2,double *GWW,int m2,int interval){
   //  GW=2*W*(H*H'+c1*H2*H2') -2*(V*H'+c1*V2*H2')+c2
     // W(n*k)* H(k*m)-V(n*m)       W(n*k)* H2(k*m2)-V2(n*m2) 
-    
    // printf("Start initializing precomputations\n"); 
     
     long i,j,r;
@@ -180,15 +175,8 @@ void initWs(double *HHt,double *VHt,double *GW,double *SW,double *DW,double *V,d
     // HHt=H*H'+c1*H2*H2';  k*k
     getHHt(HHt,H,H2,c1,k,m,m2);
     
-    //printf("finish getHHt !\n"); 
-    
-  //  VHt=V*H'+c1*V2*H2';
     getVHt(VHt,V,H,V2,H2,c1,n,k,m,m2);
     
-    // printf("finish getVHt !\n"); 
-    
-  
-     // GW=2*W*HHt -2* VHt+c2;
     for (i=0;i<n;i++)
         for (j=0;j<k;j++){
             tmp = 0;  // W*HHt
@@ -222,23 +210,16 @@ void initWs(double *HHt,double *VHt,double *GW,double *SW,double *DW,double *V,d
     for (i=0;i<n;i++)
         for (j=0;j<k;j++)
         {
-             DW[j*n+i] = -GW[j*n+i]*SW[j*n+i] - 0.5*GWW[j*n+i]*SW[j*n+i]*SW[j*n+i];
-         
-        }
-             
-   
-    
+             DW[j*n+i] = -GW[j*n+i]*SW[j*n+i] - 0.5*GWW[j*n+i]*SW[j*n+i]*SW[j*n+i]; 
+        }    
     destroyMatrix(tm);
 }
-
-  
   
  // updateW(objGCD,W,V,H,V2,H2,n,m,k,c,tol,maxiter,trace,m2);
  //    W: n*k     V: n*m   H: k*m     V2: n*m2  H2: k*m2   Winit: n*k
 void updateW(double *objGCD,double *W,double *V,double *H,double *V2,double *H2,int n,int m,int k, double c,double c2,double tol,int maxiter,int trace,int m2,int interval){
     //W :n*k;H:k*m
-    
-    
+
     long i,j,a,b,r;;
     long maxinner = k*k;
     double *HHt = createMatrix(k,k); //change1 ---
@@ -247,13 +228,9 @@ void updateW(double *objGCD,double *W,double *V,double *H,double *V2,double *H2,
     double *SW = createMatrix(n,k);
     double *DW = createMatrix(n,k);
     double * GWW= createMatrix(n,k);
-     
- 
-   
     
    // void initWs(double *HHt,double *VHt,double *GW,double *SW,double *DW,double *V,double *W,double *H,double *V2,double *H2,int n,int m, int k,double c1,double *GWW){
     initWs(HHt,VHt,GW,SW,DW,V,W,H,V2,H2,n,m,k,c,c2,GWW,m2,interval);//----
-     
 
   //  [maxV,maxI]=max(DW,[],2);
   //  init=max(maxV);
@@ -277,47 +254,20 @@ void updateW(double *objGCD,double *W,double *V,double *H,double *V2,double *H2,
     }
 
    //printf("Finish maxdecrease each row precomputation!\n");  
-     
    for (int iter=0;iter<maxiter;iter++){ //-------------
-      
-       
-//       for (i=0;i<1;i++){
-//           for (long indx=0;indx<1;indx++){
-              for (i=0;i<n;i++){
+      for (i=0;i<n;i++){
           for (long indx=0;indx<maxinner;indx++){
-           //printf DW[][]  
-//              for (a=0;a<n;a++)
-//             {
-//                 for (b=0;b<k;b++)
-//                 {
-//                   printf("initial DW [%d][%d] :  %lf !\n", a, b, DW[b*n+a]);
-//                 }
-//                 printf("maxV and maxI (%lf,%d) for row %d !\n", maxV[a],VIndx[a],a);
-//             } 
-//               
             double qv = maxV[i];
             long   qi = VIndx[i];
             if (sqrt(qv)<=1e-6) break;
             //if (qv<init*tol) break;
             double s = SW[qi*n+i];   
              W[qi*n+i] = W[qi*n+i] + s;        // W[i][qi] <-  W[i][qi]+s;     
-           // printf("select one index colum %d for row i %d !\n",qi,i);   
-              
-//             double objIner = 0;
-//            
-//             objIner=getObj(V,W,H,V2,H2,n, m,k,c,m2);  
-//            printf("F2P2_NMF_GCDM inner iteration %d objective value %lf\n", indx, objIner);
-//             
              double mxv = -1e15;
              long mxi = 0;       
               for (j=0;j<k;j++){
-
                 double tmp = 0;
-                //GW(i,:)=GW(i,:)+2*s*HHt(r,:)+2*s*E(i,:)
-             
                  GW[j*n+i] = GW[j*n+i] + 2*s*HHt[j*k+qi];
-                  
-                 
                 SW[j*n+i] = -GW[j*n+i]/(GWW[j*n+i]==0?1e-10:GWW[j*n+i]);
                 if (SW[j*n+i]+W[j*n+i]<0)
                      SW[j*n+i]=-W[j*n+i];
@@ -330,17 +280,11 @@ void updateW(double *objGCD,double *W,double *V,double *H,double *V2,double *H2,
                        mxi=j;
                       }
         }
-             VIndx[i] = mxi;  //%%%%%%%%%%%%%
+             VIndx[i] = mxi; 
              maxV[i] = mxv;    
-             
     }
-          
-          
-     }
-          
-      
-      
-      // save the objective value in each iteration 	
+   }
+        // save the objective value in each iteration 	
        //obj=|V-WH|_F^2 + c*|V2-WH2|_F^2+c2*|W|1
        objGCD[iter]=getObj(V,W,H,V2,H2,n,m,k,c,c2,m2);  
        if (trace==1 && iter%20 ==0)// && iter%10 ==0
@@ -348,8 +292,6 @@ void updateW(double *objGCD,double *W,double *V,double *H,double *V2,double *H2,
         if  ( (iter>1 && (fabs(objGCD[iter]-objGCD[iter-1])/(objGCD[iter]+1e-6)) < (long double)1e-16) || objGCD[iter]<1e-6 )   // squre loss
             { printf("F2P2Constr Objective value converge to %lf at iteration %ld before the maxIteration reached \n",objGCD[iter],(long)(iter));
               objGCD[maxiter-1]=objGCD[iter];  break;} 
-               
-
    }
    
     destroyMatrix(HHt);
@@ -370,8 +312,6 @@ double doNMF(double *objGCD,double *W,double *V,double *H,double *V2,double *H2,
     double *SH = createMatrix(k,n);
     double *DW = createMatrix(n,k);
     double *DH = createMatrix(k,n);*/
-     
-    
     long i,j,r,iter;
     double tol = 1e-8;
     printf("Start running NMF_GCDM\n");
@@ -379,23 +319,11 @@ double doNMF(double *objGCD,double *W,double *V,double *H,double *V2,double *H2,
     for (i=0;i<n*k;i++){
         W[i] = Winit[i];
     }
-    
    // printf("Winit finishied \n");
    // for (iter=0;iter<maxiter;iter++){
      updateW(objGCD,W,V,H,V2,H2,n,m,k,c,c2,tol,maxiter,trace,m2,interval);//------------  
-
     return 0;
 }
-
-
-
-
-
-
-
-
- 
-
 
 // mex function =============================
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
@@ -431,13 +359,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	long H2m = mxGetN(prhs[3]);
 	if (H2m!=V2m) {flag = false;printf("Error Size of H!\n");}
     
-    
-    
     Winit = mxGetPr(prhs[4]);
 	long Winitn = mxGetM(prhs[4]);
 	long Winitk = mxGetN(prhs[4]);
 	if (Winitn!=Vn || Winitk!=Hk) {flag = false;printf("Error Size of Winit!\n  Winit [%d %d]   Vn %d  Hk %d",Winitn,Winitk,Vn,Hk);}
-
 
 	Param = mxGetPr(prhs[5]);
 	long Pn = mxGetM(prhs[5]);
@@ -454,7 +379,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		Wout[0] = -1;
 		return;
 	}
- 
     
 //    W: n*k     V: n*m   H: k*m     V2: n*m2  H2: k*m2   Winit: n*k
     n = Vn;
@@ -467,13 +391,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     maxiter = (long)(Param[2]);
     trace = (int)(Param[3]);
     interval=(int)(Param[4]);  // interval==1: W\in[0,1], interval!=1ʱ��W>0
-    
-    
+
     W = createMatrix(n,k);
     objGCD = createMatrix(maxiter,1);
-    
-    
-    
+
     //    W: n*k     V: n*m   H: k*m     V2: n*m2  H2: k*m2   Winit: n*k
    obj=doNMF(objGCD,W,V,H,V2,H2,Winit,n,m,k,c,c2,maxiter, trace,m2,interval);       
         
@@ -487,7 +408,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	Wout = mxGetPr(plhs[1]);
 	 for (i=0;i<maxiter;i++)
 		Wout[i] = objGCD[i]; 
-    
 
     destroyMatrix(W);
     destroyMatrix(objGCD);
