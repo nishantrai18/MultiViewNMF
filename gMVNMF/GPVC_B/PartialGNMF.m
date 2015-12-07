@@ -29,7 +29,6 @@ meanFitRatio = options.meanFitRatio;
 tots = size(X,2);
 begins = options.begins;
 ends = options.ends;
-
 alpha = options.alpha;
 beta=alpha*options.beta;
 
@@ -48,18 +47,10 @@ NormV = 0;
 
 bSuccess.bSuccess = 1;
 
-if alpha > 0
-    W = beta*W;
-    DCol = full(sum(W,2));
-    D = spdiags(DCol,0,nSmp,nSmp);
-    L = D - W;
-    if isfield(options,'NormW') && options.NormW
-        D_mhalf = spdiags(DCol.^-.5,0,nSmp,nSmp) ;
-        L = D_mhalf*L*D_mhalf;
-    end
-else
-    L = [];
-end
+W = beta*W;
+DCol = full(sum(W,2));
+D = spdiags(DCol,0,nSmp,nSmp);
+L = D - W;
 
 selectInit = 1;
 if isempty(U)
@@ -210,7 +201,10 @@ end
 objhistory_final;
 
 nIter_final = nIter_final + minIterOrig;
+
+CalculateObj(X, U_final, V_final, Vo , L, alpha, options);
 [U_final, V_final] = Normalize(U_final, V_final);
+CalculateObj(X, U_final, V_final, Vo , L, alpha, options);
 
 %==========================================================================
 

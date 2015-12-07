@@ -36,7 +36,7 @@ D = spdiags(DCol,0,nSmp,nSmp);
 L1 = D - Wtemp;                              %Get matrix L
 
 nSmp = size(W2,1);
-Wtemp = W1;            %Modify the weight matrix with the involved parameters
+Wtemp = W2;            %Modify the weight matrix with the involved parameters
 DCol = full(sum(Wtemp,2));
 D = spdiags(DCol,0,nSmp,nSmp);
 L2 = D - Wtemp;                              %Get matrix L
@@ -65,9 +65,10 @@ while j < Rounds                            %Number of rounds of AO
     sumRound=sumRound+1;
     j = j + 1;
     if j==1
-        centroidPc = P1(singX+1:end,:);                       %Basic initialization for consensus matrix
+        centroidPc = P2(1:numCom,:);                       %Basic initialization for consensus matrix
     else
-        centroidPc = (alpha*P1(singX+1:end,:)) + (alpha*P2(1:numCom,:));           %From the paper, we have a definite solution for V*
+        centroidPc = (options.alphas(1)*P1(singX+1:end,:)) + (options.alphas(2)*P2(1:numCom,:));          
+        %From the paper, we have a definite solution for Pc*
         centroidPc = centroidPc / sum(options.alphas);
     end
     logL = 0;                                   %Loss for the round
@@ -75,10 +76,10 @@ while j < Rounds                            %Number of rounds of AO
     %Compute the losses
     tmp1 = (A1 - Ux*P1');
     tmp2 = (P1(singX+1:end,:) - centroidPc);
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+sum(sum((P1'*L1).*P1'));
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'));
     tmp1 = (A2 - Uy*P2');
     tmp2 = (P2(1:numCom,:) - centroidPc);
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+sum(sum((P2'*L2).*P2'));
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'));
     
     fprintf('%.9f\n',logL);
     objValue = [objValue logL];                %End indicates last index of array, so basically push operation
@@ -96,19 +97,41 @@ while j < Rounds                            %Number of rounds of AO
         break;
     end
     
-    optionsPGNMF.alpha = alpha;
     optionsPGNMF.begins = singX + 1;
     optionsPGNMF.ends = size(P1,1);
     Ptmp = [P1(1:singX,:);centroidPc];
     [Ux, P1] = PartialGNMF(A1, K, Ptmp, W1, optionsPGNMF, Ux, P1);
     %W has not been multiplied by the weight
     
+    logL = 0;                                   %Loss for the round
+    
+    %Compute the losses
+    tmp1 = (A1 - Ux*P1');
+    tmp2 = (P1(singX+1:end,:) - centroidPc);
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'));
+    tmp1 = (A2 - Uy*P2');
+    tmp2 = (P2(1:numCom,:) - centroidPc);
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'));
+    
+    fprintf('%.9f\n',logL);    
+
     optionsPGNMF.begins = 1;
     optionsPGNMF.ends = numCom;
     Ptmp = [centroidPc;P2(numCom+1:end,:)];
     [Uy, P2] = PartialGNMF(A2, K, Ptmp, W2, optionsPGNMF, Uy, P2);
     %Peform optimization with Pc* (centroidPc) fixed and inits finalU, finalV
 
+    logL = 0;                                   %Loss for the round
+    
+    %Compute the losses
+    tmp1 = (A1 - Ux*P1');
+    tmp2 = (P1(singX+1:end,:) - centroidPc);
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'));
+    tmp1 = (A2 - Uy*P2');
+    tmp2 = (P2(1:numCom,:) - centroidPc);
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'));
+    
+    fprintf('%.9f\n',logL);    
 end
 
 P1 = P1(1:singX,:);
