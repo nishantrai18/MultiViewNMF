@@ -1,4 +1,5 @@
-function [U_final, V_final, nIter_final, elapse_final, bSuccess, objhistory_final] = PartialGNMF(X, k, Vo,W, options, U, V)
+function [U_final, V_final, nIter_final, elapse_final, bSuccess, objhistory_final] = PartialGNMF(X, k, Vo, W, options, U, V)
+%                                                                                   (A1, K, centroidPc, W1, optionsPGNMF, Ux, P1)
 
 %
 % 	Notation:
@@ -14,6 +15,7 @@ function [U_final, V_final, nIter_final, elapse_final, bSuccess, objhistory_fina
 %
 %	Writen by Deng Cai (dengcai AT gmail.com) Jialu Liu (jliu64@illinois.edu) 
 % 	Modified by Zhenfan Wang (zfwang@mail.dlut.edu.cn)
+%   Further modified by Nishant Rai (nishantr AT iitk.ac.in)
 
 differror = options.error;
 maxIter = options.maxIter;
@@ -22,8 +24,19 @@ minIterOrig = options.minIter;
 minIter = minIterOrig-1;
 meanFitRatio = options.meanFitRatio;
 
+tots = size(X,2);
+begins = optionsPGNMF.begins;
+ends = optionsPGNMF.ends;
+
 alpha = options.alpha;
 beta=alpha*options.beta;
+
+v(1:begins-1) = 0;
+v(begins:ends) = alpha;
+v(ends+1:tots) = 0;
+
+diagLamda = diag(v);
+
 Norm = 1;
 NormV = 0;
 
@@ -93,18 +106,19 @@ while tryNo < nRepeat
             XU = XU + WV;
             VUU = VUU + DV;
         end
-        XU = XU + alpha * Vo;
-        VUU = VUU + alpha * V;
+        XU = XU + diagLamda*Vo;
+        VUU = VUU + diagLamda*V;
         
         V = V.*(XU./max(VUU,0));
     
         % ===================== update U ========================
         XV = X*V; 
-        VV = V'*V;
+        Vc = V(begins:ends,:);
+        VV = Vc'*Vc;
         UVV = U*VV;
         
         VV_ = repmat(diag(VV)' .* sum(U, 1), mFea, 1);
-        tmp = sum(V.*Vo);
+        tmp = sum(Vc.*Vo);
         VVo = repmat(tmp, mFea, 1);
         
         XV = XV + alpha * VVo;
