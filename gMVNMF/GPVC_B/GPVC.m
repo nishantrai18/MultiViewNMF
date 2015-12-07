@@ -69,9 +69,9 @@ while j < Rounds                            %Number of rounds of AO
     sumRound=sumRound+1;
     j = j + 1;
     if j==1
-        centroidPc = P1(1:numCom,:);                       %Basic initialization for consensus matrix
+        centroidPc = P1(numCom+1:end,:);                       %Basic initialization for consensus matrix
     else
-        centroidPc = (alpha*P1(1:numCom,:)) + (alpha*P2((numCom+1):end,:));           %From the paper, we have a definite solution for V*
+        centroidPc = (alpha*P1(numCom+1:end,:)) + (alpha*P2(1:numCom,:));           %From the paper, we have a definite solution for V*
         centroidPc = centroidPc / sum(options.alphas);
     end
     logL = 0;                                   %Loss for the round
@@ -101,8 +101,12 @@ while j < Rounds                            %Number of rounds of AO
     end
     
     optionsPGNMF.alpha = alpha;
-    rand('twister',5489);
+    optionsPGNMF.begins = numCom + 1;
+    optionsPGNMF.ends = size(P1,1);
     [Ux, P1] = PartialGNMF(A1, K, centroidPc, W1, optionsPGNMF, Ux, P1);
+
+    optionsPGNMF.begins = 1;
+    optionsPGNMF.ends = numCom;
     [Uy, P2] = PartialGNMF(A2, K, centroidPc, W2, optionsPGNMF, Uy, P2);
     %Peform optimization with Pc* (centroidPc) fixed and inits finalU, finalV
 
