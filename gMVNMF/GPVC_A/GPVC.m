@@ -73,10 +73,10 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
     
 %% Initialize U1, U2, P1, P2 with GNMF() declared in GNMF folder   
     if (numInst1)    
-       [Ux, P1] = GNMF(X1, k, W1( 1:size(X1,2), 1:size(X1,2) ), Goption);
+       [Ux, P1] = GNMF(X1, k, W1( 1:size(X1,2), 1:size(X1,2) ), option);
     end
     if (numInst3)    
-       [Uy, P3] = GNMF(Y3, k, W2( (size(X2,2)+1):end, (size(X2,2)+1):end ), Goption);
+       [Uy, P3] = GNMF(Y3, k, W2( (size(X2,2)+1):end, (size(X2,2)+1):end ), option);
     end
 %% Initialize Pc/P3 with appropriate formula (To be decided)   
 
@@ -96,10 +96,10 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
         % Update U's, P1, P2 fixing Pc using the multiplicative updates (Or using PerViewNMF())
         % Call GNMF() with initial values
         if (numInst1)    
-           [Ux, P1] = GNMF(X1, k, W1( 1:size(X1,2), 1:size(X1,2) ), Goption, Ux, P1);
+           [Ux, P1] = GNMF(X1, k, W1( 1:size(X1,2), 1:size(X1,2) ), option, Ux, P1);
         end
         if (numInst3)    
-           [Uy, P3] = GNMF(Y3, k, W2( size(X2,2)+1:end, size(X2,2)+1:end ), Goption, Uy, P3);
+           [Uy, P3] = GNMF(Y3, k, W2( size(X2,2)+1:end, size(X2,2)+1:end ), option, Uy, P3);
         end
         % Update Pc using the formula (To be decided)
         [P2] = UpdatePcU(X2, Y2, k, W1( size(X1,2)+1:end, size(X1,2)+1:end ), W2( 1:size(X2,2), 1:size(X2,2)), optionsPc, Ux, Uy, P2);

@@ -124,7 +124,6 @@ while tryNo < nRepeat
         U = U.*(XV./max(UVV,0)); 
         
         [U,V] = Normalize(U, V);
-        CalculateObj(X, U, V, Vo , L, alpha, options);
         nIter = nIter + 1;
         if nIter > minIter
             if selectInit
@@ -202,9 +201,7 @@ objhistory_final;
 
 nIter_final = nIter_final + minIterOrig;
 
-CalculateObj(X, U_final, V_final, Vo , L, alpha, options);
 [U_final, V_final] = Normalize(U_final, V_final);
-CalculateObj(X, U_final, V_final, Vo , L, alpha, options);
 
 %==========================================================================
 

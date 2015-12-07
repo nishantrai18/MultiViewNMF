@@ -75,6 +75,7 @@ while j < Rounds                            %Number of rounds of AO
     else
         centroidV = options.alphas(1) * V{1};           %From the paper, we have a definite solution for V*
         for i = 2:viewNum                               %CHECK why have we not considered Q in the normalization
+                                                        %Already normalized during the optimizations
             centroidV = centroidV + options.alphas(i) * V{i};
         end
         centroidV = centroidV / sum(options.alphas);
