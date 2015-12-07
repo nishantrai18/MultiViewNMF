@@ -106,7 +106,7 @@ while tryNo < nRepeat
         check = diagLamda*bigV;
         VUU = VUU + diagLamda*V;
         
-        V = V.*(XU./max(VUU,0));
+        V = V.*(XU./max(VUU,1.0e-15));
     
         % ===================== update U ========================
         XV = X*V; 

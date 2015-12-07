@@ -76,9 +76,15 @@ while j < Rounds                            %Number of rounds of AO
     %Compute the losses
     tmp1 = (A1 - Ux*P1');
     tmp2 = (P1(singX+1:end,:) - centroidPc);
+    sum(sum(tmp1.^2))
+    alpha* (sum(sum(tmp2.^2)))
+    (beta*alpha)*sum(sum((P1'*L1).*P1'))
     logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'));
     tmp1 = (A2 - Uy*P2');
     tmp2 = (P2(1:numCom,:) - centroidPc);
+    sum(sum(tmp1.^2))
+    alpha* (sum(sum(tmp2.^2)))
+    (beta*alpha)*sum(sum((P2'*L2).*P2'))
     logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'));
     
     fprintf('%.9f\n',logL);
@@ -103,11 +109,47 @@ while j < Rounds                            %Number of rounds of AO
     [Ux, P1] = PartialGNMF(A1, K, Ptmp, W1, optionsPGNMF, Ux, P1);
     %W has not been multiplied by the weight
     
+    logL = 0;                                   %Loss for the round
+    
+    %Compute the losses
+    tmp1 = (A1 - Ux*P1');
+    tmp2 = (P1(singX+1:end,:) - centroidPc);
+    sum(sum(tmp1.^2))
+    alpha* (sum(sum(tmp2.^2)))
+    (beta*alpha)*sum(sum((P1'*L1).*P1'))
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'));
+    tmp1 = (A2 - Uy*P2');
+    tmp2 = (P2(1:numCom,:) - centroidPc);
+    sum(sum(tmp1.^2))
+    alpha* (sum(sum(tmp2.^2)))
+    (beta*alpha)*sum(sum((P2'*L2).*P2'))
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'));
+    
+    fprintf('%.9f\n',logL);    
+
     optionsPGNMF.begins = 1;
     optionsPGNMF.ends = numCom;
     Ptmp = [centroidPc;P2(numCom+1:end,:)];
     [Uy, P2] = PartialGNMF(A2, K, Ptmp, W2, optionsPGNMF, Uy, P2);
     %Peform optimization with Pc* (centroidPc) fixed and inits finalU, finalV
+
+    logL = 0;                                   %Loss for the round
+    
+    %Compute the losses
+    tmp1 = (A1 - Ux*P1');
+    tmp2 = (P1(singX+1:end,:) - centroidPc);
+    sum(sum(tmp1.^2))
+    alpha* (sum(sum(tmp2.^2)))
+    (beta*alpha)*sum(sum((P1'*L1).*P1'))
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'));
+    tmp1 = (A2 - Uy*P2');
+    tmp2 = (P2(1:numCom,:) - centroidPc);
+    sum(sum(tmp1.^2))
+    alpha* (sum(sum(tmp2.^2)))
+    (beta*alpha)*sum(sum((P2'*L2).*P2'))
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'));
+    
+    fprintf('%.9f\n',logL);    
 end
 
 P1 = P1(1:singX,:);
