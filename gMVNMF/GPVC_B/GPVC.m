@@ -30,33 +30,29 @@ A1 = horzcat(X1,X2);
 A2 = horzcat(Y2,Y3);
 
 nSmp = size(W1,1);
-Wtemp = beta*alpha*W1;            %Modify the weight matrix with the involved parameters
+Wtemp = W1;            %Modify the weight matrix with the involved parameters
 DCol = full(sum(Wtemp,2));
 D = spdiags(DCol,0,nSmp,nSmp);
 L1 = D - Wtemp;                              %Get matrix L
 
 nSmp = size(W2,1);
-Wtemp = beta*alpha*W1;            %Modify the weight matrix with the involved parameters
+Wtemp = W1;            %Modify the weight matrix with the involved parameters
 DCol = full(sum(Wtemp,2));
 D = spdiags(DCol,0,nSmp,nSmp);
 L2 = D - Wtemp;                              %Get matrix L
-    
-[numCom,~]=size(X2');
+
+singX=size(X1',1);
+numCom=size(X2',1);
 
 objValue = [];
 
 %% initialize basis and coefficient matrices, initialize on the basis of standard GNMF algorithm
 tic;
-j = j + 1;
 Goptions.alpha=options.Gaplpha;
 rand('twister',5489);
 [Ux, P1] = GNMF(A1, K, W1, options);        %In this case, random inits take place
 rand('twister',5489);
-printResult(P1, label, options.K, options.kmeans);        
-rand('twister',5489);
 [Uy, P2] = GNMF(A2, K, W2, Goptions);
-rand('twister',5489);
-printResult(P2, label, options.K, options.kmeans);
 
 toc;
 %%
@@ -69,22 +65,22 @@ while j < Rounds                            %Number of rounds of AO
     sumRound=sumRound+1;
     j = j + 1;
     if j==1
-        centroidPc = P1(numCom+1:end,:);                       %Basic initialization for consensus matrix
+        centroidPc = P1(singX+1:end,:);                       %Basic initialization for consensus matrix
     else
-        centroidPc = (alpha*P1(numCom+1:end,:)) + (alpha*P2(1:numCom,:));           %From the paper, we have a definite solution for V*
+        centroidPc = (alpha*P1(singX+1:end,:)) + (alpha*P2(1:numCom,:));           %From the paper, we have a definite solution for V*
         centroidPc = centroidPc / sum(options.alphas);
     end
     logL = 0;                                   %Loss for the round
     
     %Compute the losses
     tmp1 = (A1 - Ux*P1');
-    tmp2 = (P1 - centroidPc);
+    tmp2 = (P1(singX+1:end,:) - centroidPc);
     logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+sum(sum((P1'*L1).*P1'));
     tmp1 = (A2 - Uy*P2');
-    tmp2 = (P2 - centroidPc);
+    tmp2 = (P2(1:numCom,:) - centroidPc);
     logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+sum(sum((P2'*L2).*P2'));
     
-    %logL
+    fprintf('%.9f\n',logL);
     objValue = [objValue logL];                %End indicates last index of array, so basically push operation
     
     if mod(j,10)==0
@@ -101,14 +97,22 @@ while j < Rounds                            %Number of rounds of AO
     end
     
     optionsPGNMF.alpha = alpha;
-    optionsPGNMF.begins = numCom + 1;
+    optionsPGNMF.begins = singX + 1;
     optionsPGNMF.ends = size(P1,1);
-    [Ux, P1] = PartialGNMF(A1, K, centroidPc, W1, optionsPGNMF, Ux, P1);
-
+    Ptmp = [P1(1:singX,:);centroidPc];
+    [Ux, P1] = PartialGNMF(A1, K, Ptmp, W1, optionsPGNMF, Ux, P1);
+    %W has not been multiplied by the weight
+    
     optionsPGNMF.begins = 1;
     optionsPGNMF.ends = numCom;
-    [Uy, P2] = PartialGNMF(A2, K, centroidPc, W2, optionsPGNMF, Uy, P2);
+    Ptmp = [centroidPc;P2(numCom+1:end,:)];
+    [Uy, P2] = PartialGNMF(A2, K, Ptmp, W2, optionsPGNMF, Uy, P2);
     %Peform optimization with Pc* (centroidPc) fixed and inits finalU, finalV
 
 end
+
+P1 = P1(1:singX,:);
+P2 = P2(numCom+1:end,:);
+
+workspace
 toc

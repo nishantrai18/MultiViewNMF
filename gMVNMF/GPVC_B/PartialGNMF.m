@@ -1,4 +1,6 @@
-function [U_final, V_final, nIter_final, elapse_final, bSuccess, objhistory_final] = PartialGNMF(X, k, Vo, W, options, U, V)
+function [U_final, V_final, nIter_final, elapse_final, bSuccess, objhistory_final] = PartialGNMF(X, k, bigV, W, options, U, V)
+%  Vo is actually the whole matrix of dimensions nMspxk, the begins, ends
+%  signify the part which denotes Pc
 %                                                                                   (A1, K, centroidPc, W1, optionsPGNMF, Ux, P1)
 
 %
@@ -25,8 +27,8 @@ minIter = minIterOrig-1;
 meanFitRatio = options.meanFitRatio;
 
 tots = size(X,2);
-begins = optionsPGNMF.begins;
-ends = optionsPGNMF.ends;
+begins = options.begins;
+ends = options.ends;
 
 alpha = options.alpha;
 beta=alpha*options.beta;
@@ -34,6 +36,8 @@ beta=alpha*options.beta;
 v(1:begins-1) = 0;
 v(begins:ends) = alpha;
 v(ends+1:tots) = 0;
+
+Vo = bigV(begins:ends,:);
 
 diagLamda = diag(v);
 
@@ -71,11 +75,11 @@ if nRepeat == 1
     minIterOrig = 0;
     minIter = 0;
     if isempty(maxIter)
-        objhistory = CalculateObj(X, U, V, Vo,L,alpha);  
+        objhistory = CalculateObj(X, U, V, bigV,L,alpha);  
         meanFit = objhistory*10;
     else
         if isfield(options,'Converge') && options.Converge
-            objhistory = CalculateObj(X, U, V, Vo,L, alpha);
+            objhistory = CalculateObj(X, U, V, bigV,L, alpha);
         end
     end
 else
@@ -85,6 +89,7 @@ else
 end
 
 %%Modify all the update rules here
+%workspace
 
 tryNo = 0;
 while tryNo < nRepeat   
@@ -106,7 +111,8 @@ while tryNo < nRepeat
             XU = XU + WV;
             VUU = VUU + DV;
         end
-        XU = XU + diagLamda*Vo;
+        XU = XU + diagLamda*bigV;
+        check = diagLamda*bigV;
         VUU = VUU + diagLamda*V;
         
         V = V.*(XU./max(VUU,0));
@@ -127,20 +133,21 @@ while tryNo < nRepeat
         U = U.*(XV./max(UVV,0)); 
         
         [U,V] = Normalize(U, V);
+        CalculateObj(X, U, V, Vo , L, alpha, options);
         nIter = nIter + 1;
         if nIter > minIter
             if selectInit
-                objhistory = CalculateObj(X, U, V, Vo,L,alpha);
+                objhistory = CalculateObj(X, U, V, Vo , L, alpha, options);
                 maxErr = 0;
             else
                 if isempty(maxIter)
-                    newobj = CalculateObj(X, U, V, Vo, L,alpha);
+                    newobj = CalculateObj(X, U, V, Vo , L, alpha, options);
                     objhistory = [objhistory newobj]; 
                     meanFit = meanFitRatio*meanFit + (1-meanFitRatio)*newobj;
                     maxErr = (meanFit-newobj)/meanFit;
                 else
                     if isfield(options,'Converge') && options.Converge
-                        newobj = CalculateObj(X, U, V, Vo,L, alpha);
+                        newobj = CalculateObj(X, U, V, Vo , L, alpha, options);
                         objhistory = [objhistory newobj]; 
                     end
                     maxErr = 1;
@@ -200,19 +207,17 @@ while tryNo < nRepeat
 end
 %%
 
+objhistory_final;
+
 nIter_final = nIter_final + minIterOrig;
 [U_final, V_final] = Normalize(U_final, V_final);
 
 %==========================================================================
 
-function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
-    if ~exist('deltaVU','var')
-        deltaVU = 0;
-    end
-    if ~exist('dVordU','var')
-        dVordU = 1;
-    end
+function [obj, dV] = CalculateObj(X, U, V, Vo, L,alpha, options)
     dV = [];
+    begins = options.begins;
+    ends = options.ends;
     maxM = 62500000;
     [mFea, nSmp] = size(X);
     mn = numel(X);
@@ -221,22 +226,8 @@ function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
     if mn < maxM
         dX = (U*V'-X);
         obj_NMF = sum(sum(dX.^2));
-        if deltaVU
-            if dVordU
-                dV = dX'*U + L*V;
-            else
-                dV = dX*V;
-            end
-        end
     else
         obj_NMF = 0;
-        if deltaVU
-            if dVordU
-                dV = zeros(size(V));
-            else
-                dV = zeros(size(U));
-            end
-        end
         for i = 1:ceil(nSmp/nBlock)
             if i == ceil(nSmp/nBlock)
                 smpIdx = (i-1)*nBlock+1:nSmp;
@@ -245,21 +236,9 @@ function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
             end
             dX = U*V(smpIdx,:)'-X(:,smpIdx);
             obj_NMF = obj_NMF + sum(sum(dX.^2));
-            if deltaVU
-                if dVordU
-                    dV(smpIdx,:) = dX'*U;
-                else
-                    dV = dU+dX*V(smpIdx,:);
-                end
-            end
-        end
-        if deltaVU
-            if dVordU
-                dV = dV + L*V;
-            end
         end
     end
-    tmp = (V-Vo);
+    tmp = (V(begins:ends,:)-Vo);
     obj_Vo = sum(sum(tmp.^2));
     obj_Lap=sum(sum((V'*L).*V'));
     dX = (U*V'-X);

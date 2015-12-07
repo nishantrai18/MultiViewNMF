@@ -14,10 +14,10 @@ options.error = 1e-6;
 options.nRepeat = 30;
 options.minIter = 50;
 options.meanFitRatio = 0.1;
-options.rounds = 30;
+options.rounds = 3;
 options.K=10;
-options.Gaplpha=0;                            %Graph regularisation parameter
-options.alpha=0;
+options.Gaplpha=10;                            %Graph regularisation parameter
+options.alpha=0.01;
 options.WeightMode='Binary';
 
 options.alphas = [0.01 0.01];
@@ -31,7 +31,7 @@ num_views = 2;
 numClust = 10;
 
 scores = [];
-pairPortion=[0,0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
+pairPortion=[0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
 pairPortion = 1 - (pairPortion);
 for idata=1:length(dataname)  
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
@@ -54,7 +54,7 @@ for idata=1:length(dataname)
    mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiScore = [];
-   for f=1:numFold/6
+   for f=1:1%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views
