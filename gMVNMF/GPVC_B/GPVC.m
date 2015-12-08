@@ -76,18 +76,20 @@ while j < Rounds                            %Number of rounds of AO
     %Compute the losses
     tmp1 = (A1 - Ux*P1');
     tmp2 = (P1(singX+1:end,:) - centroidPc);
-    sum(sum(tmp1.^2))
-    alpha* (sum(sum(tmp2.^2)))
-    (beta*alpha)*sum(sum((P1'*L1).*P1'))
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'));
+    %fprintf('%.12f\n',sum(sum(tmp1.^2)));
+    %fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
+    %fprintf('%.12f\n',(beta*alpha)*sum(sum((P1'*L1).*P1')));
+    %(beta*alpha)*sum(sum((P1'*L1).*P1'))
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'))
     tmp1 = (A2 - Uy*P2');
     tmp2 = (P2(1:numCom,:) - centroidPc);
-    sum(sum(tmp1.^2))
-    alpha* (sum(sum(tmp2.^2)))
-    (beta*alpha)*sum(sum((P2'*L2).*P2'))
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'));
+%     fprintf('%.12f\n',sum(sum(tmp1.^2)));
+%     fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
+%     fprintf('%.12f\n',(beta*alpha)*sum(sum((P2'*L2).*P2')));
+
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'))
     
-    fprintf('%.9f\n',logL);
+    fprintf('LOG %.9f\n',logL);
     objValue = [objValue logL];                %End indicates last index of array, so basically push operation
     
     if mod(j,10)==0
@@ -114,18 +116,18 @@ while j < Rounds                            %Number of rounds of AO
     %Compute the losses
     tmp1 = (A1 - Ux*P1');
     tmp2 = (P1(singX+1:end,:) - centroidPc);
-    sum(sum(tmp1.^2))
-    alpha* (sum(sum(tmp2.^2)))
-    (beta*alpha)*sum(sum((P1'*L1).*P1'))
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'));
+%     fprintf('%.12f\n',sum(sum(tmp1.^2)));
+%     fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
+%    fprintf('%.12f\n',(beta*alpha)*sum(sum((P1'*L1).*P1')));
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'))
     tmp1 = (A2 - Uy*P2');
     tmp2 = (P2(1:numCom,:) - centroidPc);
-    sum(sum(tmp1.^2))
-    alpha* (sum(sum(tmp2.^2)))
-    (beta*alpha)*sum(sum((P2'*L2).*P2'))
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'));
+%     fprintf('%.12f\n',sum(sum(tmp1.^2)));
+%     fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
+%    fprintf('%.12f\n',(beta*alpha)*sum(sum((P2'*L2).*P2')));
+    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'))
     
-    fprintf('%.9f\n',logL);    
+    fprintf('LOG %.9f\n',logL);    
 
     optionsPGNMF.begins = 1;
     optionsPGNMF.ends = numCom;
@@ -138,18 +140,18 @@ while j < Rounds                            %Number of rounds of AO
     %Compute the losses
     tmp1 = (A1 - Ux*P1');
     tmp2 = (P1(singX+1:end,:) - centroidPc);
-    sum(sum(tmp1.^2))
-    alpha* (sum(sum(tmp2.^2)))
-    (beta*alpha)*sum(sum((P1'*L1).*P1'))
+%     fprintf('%.12f\n',sum(sum(tmp1.^2)));
+%     fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
+%     fprintf('%.12f\n',(beta*alpha)*sum(sum((P1'*L1).*P1')));
     logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'));
     tmp1 = (A2 - Uy*P2');
     tmp2 = (P2(1:numCom,:) - centroidPc);
-    sum(sum(tmp1.^2))
-    alpha* (sum(sum(tmp2.^2)))
-    (beta*alpha)*sum(sum((P2'*L2).*P2'))
+%     fprintf('%.12f\n',sum(sum(tmp1.^2)));
+%     fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
+%     fprintf('%.12f\n',(beta*alpha)*sum(sum((P2'*L2).*P2')));
     logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'));
     
-    fprintf('%.9f\n',logL);    
+    fprintf('LOG %.9f\n',logL);    
 end
 
 P1 = P1(1:singX,:);

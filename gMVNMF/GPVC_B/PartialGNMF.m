@@ -66,11 +66,11 @@ if nRepeat == 1
     minIterOrig = 0;
     minIter = 0;
     if isempty(maxIter)
-        objhistory = CalculateObj(X, U, V, bigV,L,alpha);  
+        objhistory = CalculateObj(X, U, V, Vo ,L,alpha);  
         meanFit = objhistory*10;
     else
         if isfield(options,'Converge') && options.Converge
-            objhistory = CalculateObj(X, U, V, bigV,L, alpha);
+            objhistory = CalculateObj(X, U, V, Vo ,L, alpha);
         end
     end
 else
@@ -81,6 +81,8 @@ end
 
 %%Modify all the update rules here
 %workspace
+
+%CalculateObj(X, U, V, Vo , L, alpha, options)
 
 tryNo = 0;
 while tryNo < nRepeat   
@@ -111,10 +113,10 @@ while tryNo < nRepeat
         % ===================== update U ========================
         XV = X*V; 
         Vc = V(begins:ends,:);
-        VV = Vc'*Vc;
+        VV = V'*V;
         UVV = U*VV;
         
-        VV_ = repmat(diag(VV)' .* sum(U, 1), mFea, 1);
+        VV_ = repmat(diag(Vc'*Vc)' .* sum(U, 1), mFea, 1);
         tmp = sum(Vc.*Vo);
         VVo = repmat(tmp, mFea, 1);
         
@@ -125,6 +127,7 @@ while tryNo < nRepeat
         
         [U,V] = Normalize(U, V);
         nIter = nIter + 1;
+        %CalculateObj(X, U, V, Vo , L, alpha, options)
         if nIter > minIter
             if selectInit
                 objhistory = CalculateObj(X, U, V, Vo , L, alpha, options);
@@ -201,7 +204,9 @@ objhistory_final;
 
 nIter_final = nIter_final + minIterOrig;
 
+%CalculateObj(X, U, V, Vo , L, alpha, options)
 [U_final, V_final] = Normalize(U_final, V_final);
+%CalculateObj(X, U, V, Vo , L, alpha, options)
 
 %==========================================================================
 

@@ -14,7 +14,7 @@ options.error = 1e-6;
 options.nRepeat = 30;
 options.minIter = 50;
 options.meanFitRatio = 0.1;
-options.rounds = 10;
+options.rounds = 3;
 options.K=10;
 options.Gaplpha=10;                            %Graph regularisation parameter
 options.alpha=0.01;
@@ -31,7 +31,7 @@ num_views = 2;
 numClust = 10;
 
 scores = [];
-pairPortion=[0,0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
+pairPortion=[0.5, 0.7];                  %The array which contains the PER
 pairPortion = 1 - (pairPortion);
 for idata=1:length(dataname)  
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
@@ -43,8 +43,8 @@ for idata=1:length(dataname)
         X2 = X2 / sum(sum(X2));
     %%
     
-    Xf1 = X2;                                                     %Directly loading the matrices
-    Xf2 = X1;
+    Xf1 = X1;                                                     %Directly loading the matrices
+    Xf2 = X2;
     X{1} =Xf1;                                                  %View 1
     X{2} =Xf2;                                                  %View 2    
     
