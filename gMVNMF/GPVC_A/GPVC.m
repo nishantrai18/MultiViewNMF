@@ -70,7 +70,7 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
     L2 = D - W2;
     
     Goption.alpha=option.Gaplpha;
-    
+
 %% Initialize U1, U2, P1, P2 with GNMF() declared in GNMF folder   
     if (numInst1)    
        [Ux, P1] = GNMF(X1, k, W1( 1:size(X1,2), 1:size(X1,2) ), option);
@@ -78,19 +78,27 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
     if (numInst3)    
        [Uy, P3] = GNMF(Y3, k, W2( (size(X2,2)+1):end, (size(X2,2)+1):end ), option);
     end
-%% Initialize Pc/P3 with appropriate formula (To be decided)   
+
+%% Initialize Pc/P3 with appropriate formula (To be decided)
+
+%norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')+ sum(sum(([P1;P2]'*L1)*[P1;P2])) + sum(sum(([P2;P3]'*L2)*[P2;P3]))
 
     optionsPc.error = option.error;
     optionsPc.maxIter = option.maxIter;
     optionsPc.minIter = option.minIter;
     optionsPc.alpha = option.alpha;   
     optionsPc.rounds = option.rounds;   
+    optionsPc.numCom = size(X2,2);
+
+    %workspace
     
-    [P2] = UpdatePcU(X2, Y2, k, W1( size(X1,2)+1:end, size(X1,2)+1:end ), W2( 1:size(X2,2), 1:size(X2,2)), optionsPc, Ux, Uy, []);
+    [P2, Ux, Uy] = UpdatePcU(horzcat(X1,X2), horzcat(Y2,Y3), [P1;P2], P2, [P2;P3], k, W1, W2, optionsPc, Ux, Uy);
 %%
+%norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')+ sum(sum(([P1;P2]'*L1)*[P1;P2])) + sum(sum(([P2;P3]'*L2)*[P2;P3]))
+%norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')
 
 %% Repeated optimizations
-   if(numInst1 || numInst2)                                 %At least some one with partial views
+   if( (numInst1>0) || (numInst3>0))                                 %At least some one with partial views
     for iter=1:maxIterGPVC
         %iter
         % Update U's, P1, P2 fixing Pc using the multiplicative updates (Or using PerViewNMF())
@@ -102,9 +110,11 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
            [Uy, P3] = GNMF(Y3, k, W2( size(X2,2)+1:end, size(X2,2)+1:end ), option, Uy, P3);
         end
         % Update Pc using the formula (To be decided)
-        [P2] = UpdatePcU(X2, Y2, k, W1( size(X1,2)+1:end, size(X1,2)+1:end ), W2( 1:size(X2,2), 1:size(X2,2)), optionsPc, Ux, Uy, P2);
+        [P2, Ux, Uy] = UpdatePcU(horzcat(X1,X2), horzcat(Y2,Y3), [P1;P2], P2, [P2;P3], k, W1, W2, optionsPc, Ux, Uy);
         
         objValue(iter)=norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')+ sum(sum(([P1;P2]'*L1)*[P1;P2])) + sum(sum(([P2;P3]'*L2)*[P2;P3]));
+
+        %fprintf('%.10f SCORE 1\n',norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')+ sum(sum(([P1;P2]'*L1)*[P1;P2])) + sum(sum(([P2;P3]'*L2)*[P2;P3])));
         
         if mod(iter,10)==0
         fprintf('Iteration %d, objective value %g\n', iter, objValue(iter));
@@ -119,7 +129,8 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
 
    % Normalise U's and V's at the end (Or during it (Depends))
    %workspace;
-   
+   fprintf('%.10f SCORE 1\n',norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')+ sum(sum(([P1;P2]'*L1)*[P1;P2])) + sum(sum(([P2;P3]'*L2)*[P2;P3])));
+        
  end
 
   

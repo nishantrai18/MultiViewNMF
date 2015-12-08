@@ -32,7 +32,6 @@ if (min(truth)==0)
   
   UPI=[P2;P1;P3]; 
   
-if (1)
     norm_mat = repmat(sqrt(sum(UPI.*UPI,2)),1,size(UPI,2));
     %%avoid divide by zero
     for i=1:size(norm_mat,1)
@@ -41,7 +40,6 @@ if (1)
         end
     end
     PIn = UPI./norm_mat;
-    end
   
     kmeans_avg_iter = 20;
     

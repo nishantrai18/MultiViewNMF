@@ -9,19 +9,19 @@ addpath('../print/');
 addpath('../');
 
 options = [];
-options.maxIter = 100;
+options.maxIter = 200;
 options.error = 1e-6;
 options.nRepeat = 30;
 options.minIter = 50;
 options.meanFitRatio = 0.1;
-options.rounds = 15;
+options.rounds = 30;
 options.Gaplpha=0.1;                            %Graph regularisation parameter
-options.alpha=0.01;
+options.alpha=0;
 options.WeightMode='Binary';
 
 options.alphas = [options.alpha, options.alpha];
 options.kmeans = 1;
-options.beta=0.1;
+options.beta=0;
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';
@@ -38,7 +38,7 @@ scores = [];
 pairPortion=[0,0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
 %pairPortion=[0.3,0.5];                  %The array which contains the PER
 pairPortion = 1 - (pairPortion);
-for idata=1:length(dataname)  
+for idata=1:1%length(dataname)  
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
     datafname=cell2mat(dataf(1));       
     load (datafname);                                           %Loading the datafile
@@ -60,7 +60,7 @@ for idata=1:length(dataname)
    mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiScore = [];
-   for f=1:6%length(numFold)
+   for f=1:1%length(numFold)
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views
@@ -71,7 +71,7 @@ for idata=1:length(dataname)
                 
                pscore = [];
                for pairedIdx=1:length(pairPortion)  %here it's 1 ;different percentage of paired instances
-                   numpairedInst=floor(numInst*pairPortion(pairedIdx));  % number of paired instances that have complete views
+                   numpairedInst=floor(numInst*pairPortion(pairedIdx)+0.01);  % number of paired instances that have complete views
                    paired=instanceIdx(1:numpairedInst);                     %The paired instances
                    singledNumView1=ceil(0.5*(length(instanceIdx)-numpairedInst));
                    singleInstView1=instanceIdx(numpairedInst+1:numpairedInst+singledNumView1);   %the first view and second view miss half to half (Since they are mutually exclusive)
@@ -81,7 +81,7 @@ for idata=1:length(dataname)
                    xsingle=X{v1}(singleInstView1,:);                        %View 2 of paired
                    ysingle=X{v2}(singleInstView2,:);                        %View two of single
          
-                  options.lamda=0.01;                                        %Sparsity parameter for Lasso norm
+                  options.lamda=0;                                        %Sparsity parameter for Lasso norm
                   options.latentdim=numClust;
                   
                     W1 = constructW_cai([xsingle;xpaired],options);
