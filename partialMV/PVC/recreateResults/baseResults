@@ -49,3 +49,20 @@ Digit dataset (Lambda (L1 norm) = -0.01):
 
 	scores =
 	    0.6456    0.5783    0.5065    0.4315    0.3825    0.4591
+	    
+Digit Dataset (Per = [0,0.1,0.3,0.5,0.7,0.9])	(Averaged over 6 folds) (Lambda (L1 norm) = 0.01):
+	    
+	    0.6274    0.5960    0.5457    0.4981    0.4646    0.4590
+
+WebKB dataset (Lambda (L1 norm) = 0.01) (Averaged over 6 folds):
+
+	Each row represents one dataset (In the order, 'cornell','texas','washington','wisconsin')
+	Each column represents the nmi score for different valuees of PER (In the order 0, 0.1, 0.3, 0.5, 0.7, 0.9)
+	    
+	scores =
+
+    0.3619    0.3262    0.2675    0.2387    0.1815    0.1516
+    0.3078    0.3143    0.2652    0.2533    0.2367    0.1999
+    0.3836    0.3973    0.3475    0.3011    0.2901    0.2552
+    0.4880    0.4529    0.3854    0.3504    0.2964    0.2137
+    

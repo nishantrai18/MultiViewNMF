@@ -48,12 +48,11 @@ objValue = [];
 
 %% initialize basis and coefficient matrices, initialize on the basis of standard GNMF algorithm
 tic;
-Goptions.alpha=options.Gaplpha;
+Goptions.alpha = options.alpha*options.beta;
 rand('twister',5489);
-[Ux, P1] = GNMF(A1, K, W1, options);        %In this case, random inits take place
+[Ux, P1] = GNMF(A1, K, W1, Goptions);        %In this case, random inits take place
 rand('twister',5489);
 [Uy, P2] = GNMF(A2, K, W2, Goptions);
-
 toc;
 %%
 
@@ -64,32 +63,22 @@ sumRound=0;
 while j < Rounds                            %Number of rounds of AO
     sumRound=sumRound+1;
     j = j + 1;
-    if j==1
-        centroidPc = P2(1:numCom,:);                       %Basic initialization for consensus matrix
-    else
-        centroidPc = (options.alphas(1)*P1(singX+1:end,:)) + (options.alphas(2)*P2(1:numCom,:));          
-        %From the paper, we have a definite solution for Pc*
-        centroidPc = centroidPc / sum(options.alphas);
-    end
+    
+    centroidPc = (options.alphas(1)*P1(singX+1:end,:)) + (options.alphas(2)*P2(1:numCom,:));          
+    %From the paper, we have a definite solution for Pc*
+    centroidPc = centroidPc / sum(options.alphas);
+    
     logL = 0;                                   %Loss for the round
     
     %Compute the losses
     tmp1 = (A1 - Ux*P1');
     tmp2 = (P1(singX+1:end,:) - centroidPc);
-    %fprintf('%.12f\n',sum(sum(tmp1.^2)));
-    %fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
-    %fprintf('%.12f\n',(beta*alpha)*sum(sum((P1'*L1).*P1')));
-    %(beta*alpha)*sum(sum((P1'*L1).*P1'))
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'))
+    logL = logL + sum(sum(tmp1.^2)) + options.alphas(1)*(sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'));
     tmp1 = (A2 - Uy*P2');
     tmp2 = (P2(1:numCom,:) - centroidPc);
-%     fprintf('%.12f\n',sum(sum(tmp1.^2)));
-%     fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
-%     fprintf('%.12f\n',(beta*alpha)*sum(sum((P2'*L2).*P2')));
-
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'))
+    logL = logL + sum(sum(tmp1.^2)) + options.alphas(2)*(sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'));
     
-    fprintf('LOG %.9f\n',logL);
+    fprintf('LOG %.9f, ',logL);
     objValue = [objValue logL];                %End indicates last index of array, so basically push operation
     
     if mod(j,10)==0
@@ -101,7 +90,7 @@ while j < Rounds                            %Number of rounds of AO
         break;
     end
 
-    if sumRound==30
+    if sumRound==Rounds
         break;
     end
     
@@ -110,52 +99,17 @@ while j < Rounds                            %Number of rounds of AO
     Ptmp = [P1(1:singX,:);centroidPc];
     [Ux, P1] = PartialGNMF(A1, K, Ptmp, W1, optionsPGNMF, Ux, P1);
     %W has not been multiplied by the weight
-    
-    logL = 0;                                   %Loss for the round
-    
-    %Compute the losses
-    tmp1 = (A1 - Ux*P1');
-    tmp2 = (P1(singX+1:end,:) - centroidPc);
-%     fprintf('%.12f\n',sum(sum(tmp1.^2)));
-%     fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
-%    fprintf('%.12f\n',(beta*alpha)*sum(sum((P1'*L1).*P1')));
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'))
-    tmp1 = (A2 - Uy*P2');
-    tmp2 = (P2(1:numCom,:) - centroidPc);
-%     fprintf('%.12f\n',sum(sum(tmp1.^2)));
-%     fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
-%    fprintf('%.12f\n',(beta*alpha)*sum(sum((P2'*L2).*P2')));
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'))
-    
-    fprintf('LOG %.9f\n',logL);    
-
+      
     optionsPGNMF.begins = 1;
     optionsPGNMF.ends = numCom;
     Ptmp = [centroidPc;P2(numCom+1:end,:)];
     [Uy, P2] = PartialGNMF(A2, K, Ptmp, W2, optionsPGNMF, Uy, P2);
     %Peform optimization with Pc* (centroidPc) fixed and inits finalU, finalV
-
-    logL = 0;                                   %Loss for the round
-    
-    %Compute the losses
-    tmp1 = (A1 - Ux*P1');
-    tmp2 = (P1(singX+1:end,:) - centroidPc);
-%     fprintf('%.12f\n',sum(sum(tmp1.^2)));
-%     fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
-%     fprintf('%.12f\n',(beta*alpha)*sum(sum((P1'*L1).*P1')));
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1'));
-    tmp1 = (A2 - Uy*P2');
-    tmp2 = (P2(1:numCom,:) - centroidPc);
-%     fprintf('%.12f\n',sum(sum(tmp1.^2)));
-%     fprintf('%.12f\n',alpha* (sum(sum(tmp2.^2))));
-%     fprintf('%.12f\n',(beta*alpha)*sum(sum((P2'*L2).*P2')));
-    logL = logL + sum(sum(tmp1.^2)) + alpha* (sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2'));
-    
-    fprintf('LOG %.9f\n',logL);    
 end
 
 P1 = P1(1:singX,:);
 P2 = P2(numCom+1:end,:);
+fprintf('\n');
 
-workspace
+%workspace
 toc

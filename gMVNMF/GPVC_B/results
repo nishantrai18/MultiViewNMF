@@ -1,0 +1,25 @@
+GPVC_B:
+
+Digit Dataset (Per = [0,0.1,0.3,0.5,0.7,0.9])	(Averaged over 1 test case)	(Gpalpha=1, alpha=0.1)
+
+    0.8309    0.7194    0.6981    0.6020    0.5918    0.5180
+    
+Digit Dataset (Per = [0,0.1,0.3,0.5,0.7,0.9])	(Averaged over 1 test case)	(Gpalpha=1, alpha=0.1, beta=10)	(Changed initialization)
+
+    0.8738    0.8274    0.7683    0.6917    0.6147    0.5878
+    
+Digit Dataset (Per = [0,0.1,0.3,0.5,0.7,0.9])	(Averaged over 6 folds)	(Gpalpha=1, alpha=0.1, beta=10)	(Changed initialization)	(NMI code from PVC paper) 
+    
+    0.8748    0.8501    0.7889    0.7043    0.6324    0.5652
+    
+WebKB dataset (Gpalpha=0.1, alpha=0.01, beta=0.1) (Changed initialization)	(NMI code from PVC paper) (Averaged over 6 folds):
+
+	Each row represents one dataset (In the order, 'cornell','texas','washington','wisconsin')
+	Each column represents the nmi score for different valuees of PER (In the order 0, 0.1, 0.3, 0.5, 0.7, 0.9)
+    
+    scores =
+
+    0.1271    0.1079    0.1105    0.0928    0.0836    0.1045
+    0.1583    0.1626    0.1199    0.1144    0.1580    0.1262
+    0.1903    0.1851    0.1515    0.1770    0.1418    0.1389
+    0.0819    0.0897    0.0884    0.0834    0.1062    0.1172

@@ -13,6 +13,7 @@ numClust = 10;
 
 scores = [];
 pairPortion=[0,0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
+%pairPortion=[0.9];                  %The array which contains the PER
 pairPortion = 1 - (pairPortion);
 for idata=1:length(dataname)  
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
@@ -29,7 +30,7 @@ for idata=1:length(dataname)
    mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiScore = [];
-   for f=1:numFold
+   for f=1:6%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views
@@ -40,7 +41,7 @@ for idata=1:length(dataname)
                 
                pscore = [];
                for pairedIdx=1:length(pairPortion)  %here it's 1 ;different percentage of paired instances
-                   numpairedInst=floor(numInst*pairPortion(pairedIdx));  % number of paired instances that have complete views
+                   numpairedInst=floor(numInst*pairPortion(pairedIdx) +0.01);  % number of paired instances that have complete views
                    paired=instanceIdx(1:numpairedInst);                     %The paired instances
                    singledNumView1=ceil(0.5*(length(instanceIdx)-numpairedInst));
                    singleInstView1=instanceIdx(numpairedInst+1:numpairedInst+singledNumView1);   %the first view and second view miss half to half (Since they are mutually exclusive)
@@ -69,6 +70,7 @@ for idata=1:length(dataname)
            end
     end
    end
+   multiScore
    list = mean(multiScore, 2);
    list'
     scores = [scores;list'];

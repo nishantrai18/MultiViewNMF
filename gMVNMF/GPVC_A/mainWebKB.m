@@ -1,25 +1,56 @@
 clear all;                      %Remove all variables from the workspace
-clc;
- 
-addpath(genpath('measure/'));
-addpath(genpath('misc/'));
+%clc;
+
+addpath(genpath('../../partialMV/PVC/recreateResults/measure/'));
+addpath(genpath('../../partialMV/PVC/recreateResults/misc/'));
 addpath(genpath(('../code/')));
+addpath('../tools/');
+addpath('../print/');
+addpath('../');
+
+options = [];
+options.maxIter = 100;
+options.error = 1e-6;
+options.nRepeat = 30;
+options.minIter = 50;
+options.meanFitRatio = 0.1;
+options.rounds = 15;
+options.Gaplpha=0.1;                            %Graph regularisation parameter
+options.alpha=0.01;
+options.WeightMode='Binary';
+
+options.alphas = [options.alpha, options.alpha];
+options.kmeans = 1;
+options.beta=0.1;
 
 resdir='data/result/';
-datasetdir='data/';
-dataname={'cornell','texas','washington','wisconsin'};
-num_views =2;
+datasetdir='../../partialMV/PVC/recreateResults/data/';
+dataname={'mfeat'};
+num_views = 2;
+options.K = 5;
 numClust = 5;
+
+resdir='data/result/';
+datasetdir='../../partialMV/PVC/recreateResults/data/';
+dataname={'cornell','texas','washington','wisconsin'};
 
 scores = [];
 pairPortion=[0,0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
+%pairPortion=[0.3,0.5];                  %The array which contains the PER
 pairPortion = 1 - (pairPortion);
 for idata=1:length(dataname)  
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
     datafname=cell2mat(dataf(1));       
     load (datafname);                                           %Loading the datafile
+
     Xf1=readsparse(X1);                                         %Loading a sparse matrix i.e. on the basis of edges                  
     Xf2=readsparse(X2);
+    
+    %% normalize data matrix
+        Xf1 = Xf1 / sum(sum(Xf1));
+        Xf2 = Xf2 / sum(sum(Xf2));
+    %%
+    
     X{1} =Xf1;                                                  %View 1
     X{2} =Xf2;                                                  %View 2
  
@@ -50,15 +81,19 @@ for idata=1:length(dataname)
                    xsingle=X{v1}(singleInstView1,:);                        %View 2 of paired
                    ysingle=X{v2}(singleInstView2,:);                        %View two of single
          
-                  option.lamda=0.01;                                        %Sparsity parameter for Lasso norm
-                  option.latentdim=numClust;
+                  options.lamda=0.01;                                        %Sparsity parameter for Lasso norm
+                  options.latentdim=numClust;
+                  
+                    W1 = constructW_cai([xsingle;xpaired],options);
+                    W2 = constructW_cai([ypaired;ysingle],options);
+                    %Weight matrix constructed for each view
       
-                  [U1 U2 P2 P1 P3 objValue F P R nmi avgent AR] = PVCclust(xpaired,ypaired,xsingle,ysingle,numClust,truthF,option);
+                  [U1 U2 P2 P1 P3 objValue F P R nmi avgent AR] = GPVCclust(xpaired',ypaired',xsingle',ysingle',W1,W2,numClust,truthF,options);
                   %[5 unknowns objectiveValue 6 stats] = func([X12][2],X1,X2, numClust,trueClusts,Parameters); 
                   
                   pscore = [pscore;nmi];
                   
-                  save([dir,'PVC',num2str(v1),num2str(v2),'paired_',num2str(pairPortion(pairedIdx)),'f_',num2str(f),'.mat'],'U1','U2','P2','P1','P3','objValue','F','P','R','nmi','avgent','AR','truthF');       
+                  %save([dir,'PVC',num2str(v1),num2str(v2),'paired_',num2str(pairPortion(pairedIdx)),'f_',num2str(f),'.mat'],'U1','U2','P2','P1','P3','objValue','F','P','R','nmi','avgent','AR','truthF');       
                   %save (filenameWithDirectory, variables)
                end
                if f==1
