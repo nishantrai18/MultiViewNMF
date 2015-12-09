@@ -109,7 +109,7 @@ while tryNo < nRepeat
         XU = XU + diagLamda*bigV;
         VUU = VUU + diagLamda*V;
         
-        V = V.*(XU./max(VUU,1.0e-15));
+        V = V.*(XU./max(VUU,1e-10));
     
         % ===================== update U ========================
         XV = X*V; 
@@ -124,7 +124,7 @@ while tryNo < nRepeat
         XV = XV + alpha * VVo;
         UVV = UVV + alpha * VV_;
 
-        U = U.*(XV./max(UVV,0)); 
+        U = U.*(XV./max(UVV,1e-10)); 
         
         [U,V] = Normalize(U, V);
         nIter = nIter + 1;

@@ -33,7 +33,7 @@ NormV = 0;
 
 [mFea,nSmp]=size(X);                                        %Dimensions
 
-if alpha > 0                                                   %Graph regularisation matrix
+if alpha >= 0                                                   %Graph regularisation matrix
     W = alpha*W;
     DCol = full(sum(W,2));
     D = spdiags(DCol,[0],nSmp,nSmp);

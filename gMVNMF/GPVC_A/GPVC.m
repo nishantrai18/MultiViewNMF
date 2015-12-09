@@ -98,8 +98,7 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
 %norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')
 
 %% Repeated optimizations
-   if( (numInst1>0) || (numInst3>0))                                 %At least some one with partial views
-    for iter=1:maxIterGPVC
+   for iter=1:maxIterGPVC
         %iter
         % Update U's, P1, P2 fixing Pc using the multiplicative updates (Or using PerViewNMF())
         % Call GNMF() with initial values
@@ -124,7 +123,6 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
             fprintf('Objective value converge to %g at iteration %d before the maxIteration reached \n',objValue(iter),iter);
             break;
         end
-    end
    end
 
    % Normalise U's and V's at the end (Or during it (Depends))

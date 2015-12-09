@@ -29,6 +29,14 @@ K = options.K;
 A1 = horzcat(X1,X2);
 A2 = horzcat(Y2,Y3);
 
+[numInst1,Featx]=size(A1');                             %Number of instances, FeatX: Number of features in view 1
+[numInst2,Featy]=size(A2');                             %Number of instances with view 2
+
+P1=rand(numInst1,K);                                %Random initialization
+P2=rand(numInst2,K);
+Ux=rand(Featx,K);
+Uy=rand(Featy,K);
+
 nSmp = size(W1,1);
 Wtemp = W1;            %Modify the weight matrix with the involved parameters
 DCol = full(sum(Wtemp,2));
@@ -50,11 +58,21 @@ objValue = [];
 tic;
 Goptions.alpha = options.alpha*options.beta;
 rand('twister',5489);
-[Ux, P1] = GNMF(A1, K, W1, options);        %In this case, random inits take place
+[Ux, P1] = GNMF(A1, K, W1, Goptions);        %In this case, random inits take place
 rand('twister',5489);
 [Uy, P2] = GNMF(A2, K, W2, Goptions);
 toc;
 %%
+
+%{
+[Ux, P1] = nnmf(A1, K);
+[Uy, P2] = nnmf(A2, K);
+P1=P1';
+P2=P2';
+%}
+
+%workspace
+
 [Ux, P1] = Normalize(Ux, P1);
 [Uy, P2] = Normalize(Uy, P2);
 

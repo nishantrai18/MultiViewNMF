@@ -50,7 +50,7 @@ for idata=1:length(dataname)
                    xsingle=X{v1}(singleInstView1,:);                        %View 2 of paired
                    ysingle=X{v2}(singleInstView2,:);                        %View two of single
          
-                  option.lamda=0.01;                                        %Sparsity parameter for Lasso norm
+                  option.lamda=0;                                        %Sparsity parameter for Lasso norm
                   option.latentdim=numClust;
       
                   [U1 U2 P2 P1 P3 objValue F P R nmi avgent AR] = PVCclust(xpaired,ypaired,xsingle,ysingle,numClust,truthF,option);

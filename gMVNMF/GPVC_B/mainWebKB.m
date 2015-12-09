@@ -38,7 +38,7 @@ scores = [];
 pairPortion=[0,0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
 %pairPortion=[0.3,0.5];                  %The array which contains the PER
 pairPortion = 1 - (pairPortion);
-for idata=1:length(dataname)  
+for idata=1:1%length(dataname)  
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
     datafname=cell2mat(dataf(1));       
     load (datafname);                                           %Loading the datafile
@@ -60,7 +60,7 @@ for idata=1:length(dataname)
    mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiScore = [];
-   for f=1:6%length(numFold)
+   for f=1:1%length(numFold)
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views
