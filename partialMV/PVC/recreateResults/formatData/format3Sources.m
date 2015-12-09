@@ -49,14 +49,13 @@ for v1=1:length(dataname)
         for i=1:size(revMap,2)
             if( ~isempty(revMap{v1,i}) && ~isempty(revMap{v2,i}) )
                 %fprintf('%d %d\n',revMap{v1,i},revMap{v2,i});
-                X1=horzcat(X1,views{v1}(:,revMap{v1,i}));
-                X2=horzcat(X2,views{v2}(:,revMap{v2,i}));
+                X1=horzcat(X1,views{1,v1}(:,revMap{v1,i}));
+                X2=horzcat(X2,views{1,v2}(:,revMap{v2,i}));
                 truth=[truth;truths(i)];
             end
         end
-        dataf=strcat(datasetdir,sufName,'bg','RnSp.mat');        %Just the datafile name
-        save(dataf, 'X1','X2', 'truth');
-
+        truth=cell2mat(truth);
+        
         folds = [];
         numInst = size(truth);
         numInst = numInst(1);
@@ -68,5 +67,7 @@ for v1=1:length(dataname)
         finName = cellstr(finName);
         dataf=strcat(datasetdir,sufName,finName{1},'Folds.mat');        %Just the datafile name
         save(dataf, 'folds');
+        dataf=strcat(datasetdir,sufName,finName{1},'RnSp.mat');        %Just the datafile name
+        save(dataf, 'X1','X2', 'truth');
     end
 end
