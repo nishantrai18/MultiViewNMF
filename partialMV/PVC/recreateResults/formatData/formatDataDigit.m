@@ -1,5 +1,5 @@
 clear all;
-clc;
+%clc;
 addpath(genpath(('../../../../datasets/mfeat')));
 loaddata='../../../../datasets/mfeat/';
 datasetdir='../data/';
