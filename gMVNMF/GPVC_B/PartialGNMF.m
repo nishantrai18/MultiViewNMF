@@ -31,6 +31,7 @@ begins = options.begins;
 ends = options.ends;
 alpha = options.alpha;
 beta=alpha*options.beta;
+alphaPriv = options.alphaPriv;
 
 v(1:begins-1) = 0;
 v(begins:ends) = alpha;
@@ -60,17 +61,19 @@ else
     nRepeat = 1;
 end
 
-[U,V] = Normalize(U, V);
+%fprintf('%.10f\n',CalculateObj(X, U, V, Vo , L, alphaPriv, options));
+
+%[U,V] = Normalize(U, V);
 if nRepeat == 1
     selectInit = 0;
     minIterOrig = 0;
     minIter = 0;
     if isempty(maxIter)
-        objhistory = CalculateObj(X, U, V, Vo ,L,alpha);  
+        objhistory = CalculateObj(X, U, V, Vo , L, alphaPriv, options);  
         meanFit = objhistory*10;
     else
         if isfield(options,'Converge') && options.Converge
-            objhistory = CalculateObj(X, U, V, Vo ,L, alpha);
+            objhistory = CalculateObj(X, U, V, Vo , L, alphaPriv, options);
         end
     end
 else
@@ -82,7 +85,7 @@ end
 %%Modify all the update rules here
 %workspace
 
-%CalculateObj(X, U, V, Vo , L, alpha, options)
+%fprintf('%.10f\n',CalculateObj(X, U, V, Vo , L, alphaPriv, options));
 
 tryNo = 0;
 while tryNo < nRepeat   
@@ -99,13 +102,11 @@ while tryNo < nRepeat
         VUU =V*UU; % nk^2
         if alpha > 0
             WV = W*V;
-            DV = D*V;
-            
+            DV = D*V;            
             XU = XU + WV;
             VUU = VUU + DV;
         end
         XU = XU + diagLamda*bigV;
-        check = diagLamda*bigV;
         VUU = VUU + diagLamda*V;
         
         V = V.*(XU./max(VUU,1.0e-15));
@@ -127,14 +128,14 @@ while tryNo < nRepeat
         
         [U,V] = Normalize(U, V);
         nIter = nIter + 1;
-        %CalculateObj(X, U, V, Vo , L, alpha, options)
+        %fprintf('%.10f\n',CalculateObj(X, U, V, Vo , L, alphaPriv, options));
         if nIter > minIter
             if selectInit
-                objhistory = CalculateObj(X, U, V, Vo , L, alpha, options);
+                objhistory = CalculateObj(X, U, V, Vo , L, alphaPriv, options);
                 maxErr = 0;
             else
                 if isempty(maxIter)
-                    newobj = CalculateObj(X, U, V, Vo , L, alpha, options);
+                    newobj = CalculateObj(X, U, V, Vo , L, alphaPriv, options);
                     objhistory = [objhistory newobj]; 
                     meanFit = meanFitRatio*meanFit + (1-meanFitRatio)*newobj;
                     maxErr = (meanFit-newobj)/meanFit;
@@ -204,13 +205,13 @@ objhistory_final;
 
 nIter_final = nIter_final + minIterOrig;
 
-%CalculateObj(X, U, V, Vo , L, alpha, options)
+%fprintf('%.10f\n',CalculateObj(X, U, V, Vo , L, alphaPriv, options));
 [U_final, V_final] = Normalize(U_final, V_final);
-%CalculateObj(X, U, V, Vo , L, alpha, options)
+%fprintf('%.10f\n',CalculateObj(X, U, V, Vo , L, alphaPriv, options));
 
 %==========================================================================
 
-function [obj, dV] = CalculateObj(X, U, V, Vo, L,alpha, options)
+function [obj, dV] = CalculateObj(X, U, V, Vo, L, alphaPriv, options)
     dV = [];
     begins = options.begins;
     ends = options.ends;
@@ -239,8 +240,7 @@ function [obj, dV] = CalculateObj(X, U, V, Vo, L,alpha, options)
     obj_Lap=sum(sum((V'*L).*V'));
     dX = (U*V'-X);
     obj_NMF = sum(sum(dX.^2));
-    obj = obj_NMF+ alpha * obj_Vo+obj_Lap;
-
+    obj = obj_NMF+ (alphaPriv)*obj_Vo+obj_Lap;
 
 function [U, V] = Normalize(U, V)
     [U,V] = NormalizeUV(U, V, 0, 1);

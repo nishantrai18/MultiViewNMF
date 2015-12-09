@@ -14,7 +14,7 @@ options.error = 1e-6;
 options.nRepeat = 30;
 options.minIter = 50;
 options.meanFitRatio = 0.1;
-options.rounds = 15;
+options.rounds = 30;
 options.K=10;
 options.Gaplpha=1;                            %Graph regularisation parameter
 options.alpha=0.1;
@@ -87,7 +87,7 @@ for idata=1:length(dataname)
                   
                   pscore = [pscore;nmi];
                   
-                  save([dir,'PVC',num2str(v1),num2str(v2),'paired_',num2str(pairPortion(pairedIdx)),'f_',num2str(f),'.mat'],'U1','U2','P2','P1','P3','objValue','F','P','R','nmi','avgent','AR','truthF');       
+                  %save([dir,'PVC',num2str(v1),num2str(v2),'paired_',num2str(pairPortion(pairedIdx)),'f_',num2str(f),'.mat'],'U1','U2','P2','P1','P3','objValue','F','P','R','nmi','avgent','AR','truthF');       
                   %save (filenameWithDirectory, variables)
                end
                if f==1

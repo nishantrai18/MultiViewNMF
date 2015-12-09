@@ -21,7 +21,7 @@ options.WeightMode='Binary';
 
 options.alphas = [options.alpha, options.alpha];
 options.kmeans = 1;
-options.beta=0;
+options.beta=0.1;
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';

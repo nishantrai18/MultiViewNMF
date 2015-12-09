@@ -50,11 +50,13 @@ objValue = [];
 tic;
 Goptions.alpha = options.alpha*options.beta;
 rand('twister',5489);
-[Ux, P1] = GNMF(A1, K, W1, Goptions);        %In this case, random inits take place
+[Ux, P1] = GNMF(A1, K, W1, options);        %In this case, random inits take place
 rand('twister',5489);
 [Uy, P2] = GNMF(A2, K, W2, Goptions);
 toc;
 %%
+[Ux, P1] = Normalize(Ux, P1);
+[Uy, P2] = Normalize(Uy, P2);
 
 %% Alternate Optimisations for consensus matrix and individual view matrices
 optionsPGNMF = options;
@@ -96,15 +98,18 @@ while j < Rounds                            %Number of rounds of AO
     
     optionsPGNMF.begins = singX + 1;
     optionsPGNMF.ends = size(P1,1);
+    optionsPGNMF.alphaPriv = options.alphas(1);
     Ptmp = [P1(1:singX,:);centroidPc];
     [Ux, P1] = PartialGNMF(A1, K, Ptmp, W1, optionsPGNMF, Ux, P1);
     %W has not been multiplied by the weight
-      
+
     optionsPGNMF.begins = 1;
     optionsPGNMF.ends = numCom;
+    optionsPGNMF.alphaPriv = options.alphas(2);
     Ptmp = [centroidPc;P2(numCom+1:end,:)];
     [Uy, P2] = PartialGNMF(A2, K, Ptmp, W2, optionsPGNMF, Uy, P2);
     %Peform optimization with Pc* (centroidPc) fixed and inits finalU, finalV
+
 end
 
 P1 = P1(1:singX,:);
@@ -113,3 +118,36 @@ fprintf('\n');
 
 %workspace
 toc
+
+
+function [U, V] = Normalize(U, V)
+    [U,V] = NormalizeUV(U, V, 0, 1);
+
+function [U, V] = NormalizeUV(U, V, NormV, Norm)
+    nSmp = size(V,1);
+    mFea = size(U,1);
+    if Norm == 2
+        if NormV
+            norms = sqrt(sum(V.^2,1));
+            norms = max(norms,1e-10);
+            V = V./repmat(norms,nSmp,1);
+            U = U.*repmat(norms,mFea,1);
+        else
+            norms = sqrt(sum(U.^2,1));
+            norms = max(norms,1e-10);
+            U = U./repmat(norms,mFea,1);
+            V = V.*repmat(norms,nSmp,1);
+        end
+    else
+        if NormV
+            norms = sum(abs(V),1);
+            norms = max(norms,1e-10);
+            V = V./repmat(norms,nSmp,1);
+            U = U.*repmat(norms,mFea,1);
+        else
+            norms = sum(abs(U),1);
+            norms = max(norms,1e-10);
+            U = U./repmat(norms,mFea,1);
+            V = bsxfun(@times, V, norms);
+        end
+    end
