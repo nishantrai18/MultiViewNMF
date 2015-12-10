@@ -17,11 +17,10 @@ options.meanFitRatio = 0.1;
 options.rounds = 30;
 options.Gaplpha=1;                            %Graph regularisation parameter
 options.alpha=0.01;
-options.WeightMode='Binary';
 
 options.alphas = [options.alpha, options.alpha];
 options.kmeans = 1;
-options.beta=0.01;
+options.beta=0.1;
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';
@@ -56,7 +55,7 @@ for idata=1:length(dataname)
    %mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiScore = [];
-   for f=1:3%numFold
+   for f=1:1%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views
@@ -80,10 +79,23 @@ for idata=1:length(dataname)
                   options.lamda=0.01;                                        %Sparsity parameter for Lasso norm
                   options.latentdim=numClust;
                   
+%{                  
+                    options.WeightMode='HeatKernel';
+                    sz = size([xsingle;xpaired],2);
+                    M = EuDist2([xsingle;xpaired],[],0);
+                    options.t = sqrt(sum(sum(M.^2))/(sz*sz));
                     W1 = constructW_cai([xsingle;xpaired],options);
+                    sz = size([ypaired;ysingle],2);
+                    M = EuDist2([ypaired;ysingle],[],0);
+                    options.t = sqrt(sum(sum(M.^2))/(sz*sz));
                     W2 = constructW_cai([ypaired;ysingle],options);
                     %Weight matrix constructed for each view
-      
+%}
+                    options.WeightMode='Binary';
+                    W1 = constructW_cai([xsingle;xpaired],options);
+                    W2 = constructW_cai([ypaired;ysingle],options);
+                    
+                  
                   [U1 U2 P2 P1 P3 objValue F P R nmi avgent AR] = GPVCclust(xpaired',ypaired',xsingle',ysingle',W1,W2,numClust,truthF,options);
                   %[5 unknowns objectiveValue 6 stats] = func([X12][2],X1,X2, numClust,trueClusts,Parameters); 
                   

@@ -14,7 +14,7 @@ options.error = 1e-6;
 options.nRepeat = 30;
 options.minIter = 50;
 options.meanFitRatio = 0.1;
-options.rounds = 20;
+options.rounds = 30;
 options.K=6;
 options.Gaplpha=1;                            %Graph regularisation parameter
 options.alpha=0.01;
@@ -31,10 +31,10 @@ num_views = 2;
 numClust = 6;
 
 scores = [];
-pairPortion=[0,0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
+pairPortion=[0,0.1,0.3];%,0.5,0.7,0.9];                  %The array which contains the PER
 %pairPortion=[0];                  %The array which contains the PER
 pairPortion = 1 - (pairPortion);
-for idata=1:length(dataname)  
+for idata=1:1%length(dataname)  
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
     datafname=cell2mat(dataf(1));       
     load (datafname);                                           %Loading the datafile
@@ -55,7 +55,7 @@ for idata=1:length(dataname)
    %mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiScore = [];
-   for f=1:3%numFold
+   for f=1:6%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views
