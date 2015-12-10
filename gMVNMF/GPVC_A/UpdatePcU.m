@@ -265,29 +265,3 @@ function [obj, dV] = CalculateObj(X, U, V, L, deltaVU, dVordU)
         obj_Lap = sum(sum((V'*L).*V'));
     end
     obj = obj_NMF+obj_Lap;                              %Remember that L was already multipled with the paramter to Graph Reg
-    
-function [U, V] = NormalizeUV(U, V, NormV, Norm)
-%Normalisation for U and V, both L1 and L2
-    K = size(U,2);
-    if Norm == 2                                        %L2 normalization
-        if NormV
-            norms = max(1e-15,sqrt(sum(V.^2,1)))';
-            V = V*spdiags(norms.^-1,0,K,K);
-            U = U*spdiags(norms,0,K,K);
-        else
-            norms = max(1e-15,sqrt(sum(U.^2,1)))';
-            U = U*spdiags(norms.^-1,0,K,K);
-            V = V*spdiags(norms,0,K,K);
-        end
-    else                                                %L1 Normalisation
-        if NormV
-            norms = max(1e-15,sum(abs(V),1))';
-            V = V*spdiags(norms.^-1,0,K,K);
-            U = U*spdiags(norms,0,K,K);
-        else
-            norms = max(1e-15,sum(abs(U),1))';
-            U = U*spdiags(norms.^-1,0,K,K);
-            V = V*spdiags(norms,0,K,K);
-        end
-    end
-        

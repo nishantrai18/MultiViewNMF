@@ -1,4 +1,4 @@
-function [Ux Uy P2 P1 P3 objValue F P R nmi avgent AR] = PVCclust(X2,Y2,X1,Y3,numClust,truth,option)
+function [Ux Uy P2 P1 P3 objValue stats] = PVCclust(X2,Y2,X1,Y3,numClust,truth,option)
 %%  This function calls PVC method and then conduct k-means to get the clustering result  
 %%  ATTN
 %   ATTN: This package is free for academic usage. You can run it at your
@@ -24,6 +24,11 @@ function [Ux Uy P2 P1 P3 objValue F P R nmi avgent AR] = PVCclust(X2,Y2,X1,Y3,nu
 %    S.-Y. Li, Y. Jiang nd Z.-H. Zhou. Partial Multi-View Clustering. In: Proceedings of the 28th AAAI Conference on 
 %    Artificial Intelligence (AAAI'14),Qu��bec, Canada ,2014.
 %% End of Instruction
+
+    addpath(genpath(('../../../gMVNMF/')));
+    addpath('../../../gMVNMF/tools/');
+    addpath('../../../gMVNMF/print/');
+
   if (min(truth)==0)
         truth = truth + 1;                  %Keep the minimum id of clusters 1? (probably)
   end
@@ -54,13 +59,18 @@ if (1)
         [A nmii(i) avgenti(i)] = compute_nmi(truth,C);
         [Fi(i),Pi(i),Ri(i)] = compute_f(truth,C);
         [ARi(i),RIi(i),MIi(i),HIi(i)]=RandIndex(truth,C);
+        [Pri(i)]=purity(truth,C);
     end
-    F = mean(Fi);
-    P = mean(Pi);
-    R = mean(Ri);
+    
     nmi = mean(nmii);
-    avgent = mean(avgenti);
-    AR = mean(ARi);
-    
-   fprintf('nmi: %f(%f)\n', nmi, std(nmii));
-    
+    stats = [];
+    stats = [stats;Fi];
+    stats = [stats;Pi];
+    stats = [stats;Ri];
+    stats = [stats;nmii];
+    stats = [stats;avgenti];
+    stats = [stats;ARi];
+    stats = [stats;Pri];
+    fprintf('nmi: %f(%f)\n', nmi, std(nmii));
+    printResult(UPI, truth, option.latentdim, 1);
+    fprintf('\n');

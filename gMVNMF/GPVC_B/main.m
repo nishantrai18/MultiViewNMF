@@ -17,12 +17,12 @@ options.meanFitRatio = 0.1;
 options.rounds = 30;
 options.K=10;
 options.Gaplpha=1;                            %Graph regularisation parameter
-options.alpha=1;
+options.alpha=0.1;
 options.WeightMode='Binary';
 
 options.alphas = [options.alpha, options.alpha];
 options.kmeans = 1;
-options.beta=1;
+options.beta=10;
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';
@@ -51,7 +51,6 @@ for idata=1:length(dataname)
     X{2} =Xf2;                                                  %View 2    
     
    load(cell2mat(strcat(datasetdir,dataname(idata),'Folds.mat'))); %Loading the variable folds
-   folds = folds(:,1:100);
    [numFold,numInst]=size(folds);                                   %numInst : numInstances
    dir=strcat(resdir,cell2mat(dataname(idata)),'/'); %    train_target(idnon)=-1;   ranksvm treat weak label {-1: -1; 1:+1; 0:-1}
    %mkdir(dir);                              %Creates new folder for storing the workspace variables 
@@ -106,11 +105,11 @@ for idata=1:length(dataname)
                   %[5 unknowns objectiveValue 6 stats] = func([X12][2],X1,X2, numClust,trueClusts,Parameters); 
                   
                   for s=1:size(stats,1)
-                      meanStats(s) = mean(stats(s));
-                      stdStats(s) = std(stats(s));
+                      meanStats(s) = mean(stats(s,:));
+                      stdStats(s) = std(stats(s,:));
                   end
-                  multiMean{pairedIdx} = [multiMean;meanStats];
-                  multiStd{pairedIdx} = [multiStd;stdStats];
+                  multiMean{pairedIdx} = [multiMean{pairedIdx};meanStats];
+                  multiStd{pairedIdx} = [multiStd{pairedIdx};stdStats];
                   %save([dir,'PVC',num2str(v1),num2str(v2),'paired_',num2str(pairPortion(pairedIdx)),'f_',num2str(f),'.mat'],'U1','U2','P2','P1','P3','objValue','F','P','R','nmi','avgent','AR','truthF');       
                   %save (filenameWithDirectory, variables)
                end
@@ -118,15 +117,14 @@ for idata=1:length(dataname)
     end
    end
    for t=1:length(multiMean)
-       list = mean(multiMean,1);
+       list = mean(multiMean{t},1);
        ovMean{idata} = [ovMean{idata}; list];
-       list = mean(multiStd,1);
+       list = mean(multiStd{t},1);
        ovAvgStd{idata} = [ovAvgStd{idata}; list];
-       list = sqrt(mean(multiStd,1));
+       list = sqrt(mean(multiStd{t},1));
        ovStd{idata} = [ovStd{idata}; list];
    end
        ovMean{idata}
        ovAvgStd{idata}
-       ovStd{idata}
 end
 

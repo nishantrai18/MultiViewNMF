@@ -92,7 +92,10 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
 
     %workspace
     
+    %[P2, P1, P3] = NormalizeP(P2, P1, P3);
+    
     [P2, Ux, Uy] = UpdatePcU(horzcat(X1,X2), horzcat(Y2,Y3), [P1;P2], P2, [P2;P3], k, W1, W2, optionsPc, Ux, Uy);
+    
 %%
 %norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')+ sum(sum(([P1;P2]'*L1)*[P1;P2])) + sum(sum(([P2;P3]'*L2)*[P2;P3]))
 %norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')
@@ -102,6 +105,9 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
         %iter
         % Update U's, P1, P2 fixing Pc using the multiplicative updates (Or using PerViewNMF())
         % Call GNMF() with initial values
+        
+        %[P2, P1, P3] = NormalizeP(P2, P1, P3);
+        
         if (numInst1)    
            [Ux, P1] = GNMF(X1, k, W1( 1:size(X1,2), 1:size(X1,2) ), option, Ux, P1);
         end
@@ -111,6 +117,8 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
         % Update Pc using the formula (To be decided)
         [P2, Ux, Uy] = UpdatePcU(horzcat(X1,X2), horzcat(Y2,Y3), [P1;P2], P2, [P2;P3], k, W1, W2, optionsPc, Ux, Uy);
         
+        %[P2, P1, P3] = NormalizeP(P2, P1, P3);
+    
         objValue(iter)=norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')+ sum(sum(([P1;P2]'*L1)*[P1;P2])) + sum(sum(([P2;P3]'*L2)*[P2;P3]));
 
         %fprintf('%.10f SCORE 1\n',norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')+ sum(sum(([P1;P2]'*L1)*[P1;P2])) + sum(sum(([P2;P3]'*L2)*[P2;P3])));
@@ -129,6 +137,24 @@ function [Ux,Uy,P2,P1,P3,objValue]=PVC(X2,Y2,X1,Y3,W1,W2,option)
    %workspace;
    fprintf('%.10f SCORE 1\n',norm(horzcat(X1,X2)-Ux*[P1;P2]','fro')+ norm(horzcat(Y2,Y3)-Uy*[P2;P3]','fro')+ sum(sum(([P1;P2]'*L1)*[P1;P2])) + sum(sum(([P2;P3]'*L2)*[P2;P3])));
         
- end
-
+end
+ 
+function [P2f, P1f, P3f] = NormalizeP(P2, P1, P3)
+    s1 = size(P1);
+    s2 = size(P2);
+    s3 = size(P3);
+    UPI=[P2;P1;P3]; 
   
+    norm_mat = repmat(sqrt(sum(UPI.*UPI,2)),1,size(UPI,2));
+    %%avoid divide by zero
+    for i=1:size(norm_mat,1)
+        if (norm_mat(i,1)==0)
+            norm_mat(i,:) = 1;
+        end
+    end
+    PIn = UPI./norm_mat;
+    
+    P2f = PIn(1:s2,:);
+    P1f = PIn(s2+1:s2+s1,:);
+    P3f = PIn(s2+s1+1:end,:);
+end

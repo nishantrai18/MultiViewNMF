@@ -1,4 +1,4 @@
-function [Ux Uy P2 P1 P3 objValue F P R nmi avgent AR] = PVCclust(X2, Y2, X1, Y3, W1, W2, numClust, truth, option)
+function [Ux Uy P2 P1 P3 objValue stats] = PVCclust(X2, Y2, X1, Y3, W1, W2, numClust, truth, option)
 %%  This function calls GPVC method and then conduct k-means to get the clustering result  
 %%  This package was developed by Ms. Shao-Yuan Li (lisy@lamda.nju.edu.cn).
 %   It has been further modified by Nishant Rai (nishantr@iitk.ac.in)
@@ -50,16 +50,18 @@ if (min(truth)==0)
         [A nmii(i) avgenti(i)] = compute_nmi(truth,C);
         [Fi(i),Pi(i),Ri(i)] = compute_f(truth,C);
         [ARi(i),RIi(i),MIi(i),HIi(i)]=RandIndex(truth,C);
+        [Pri(i)]=purity(truth,C);
     end
-    F = mean(Fi);
-    P = mean(Pi);
-    R = mean(Ri);
-    nmi = mean(nmii);
-    avgent = mean(avgenti);
-    AR = mean(ARi);
     
+    nmi = mean(nmii);
+    stats = [];
+    stats = [stats;Fi];
+    stats = [stats;Pi];
+    stats = [stats;Ri];
+    stats = [stats;nmii];
+    stats = [stats;avgenti];
+    stats = [stats;ARi];
+    stats = [stats;Pri];
     fprintf('nmi: %f(%f)\n', nmi, std(nmii));
     printResult(UPI, truth, option.K, option.kmeans);
     fprintf('\n');
-
-   

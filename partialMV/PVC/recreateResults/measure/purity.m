@@ -2,9 +2,7 @@ function [pure] = purity(T,H)
       if length(T) ~= length(H)
         size(T)
         size(H)
-      end
-      workspace
-    
+      end    
       num = length(T);
       N = max(unique(T))+2;
       clustMat = cell(N);

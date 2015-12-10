@@ -30,11 +30,13 @@ dataname={'3sourcesbg','3sourcesbr','3sourcesgr'};
 num_views = 2;
 numClust = 6;
 
-scores = [];
-pairPortion=[0,0.1,0.3];%,0.5,0.7,0.9];                  %The array which contains the PER
+ovMean = cell(1,length(dataname));
+ovStd = cell(1,length(dataname));
+ovAvgStd = cell(1,length(dataname));
+pairPortion=[0,0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
 %pairPortion=[0];                  %The array which contains the PER
 pairPortion = 1 - (pairPortion);
-for idata=1:1%length(dataname)  
+for idata=1:length(dataname)  
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
     datafname=cell2mat(dataf(1));       
     load (datafname);                                           %Loading the datafile
@@ -54,7 +56,8 @@ for idata=1:1%length(dataname)
    dir=strcat(resdir,cell2mat(dataname(idata)),'/'); %    train_target(idnon)=-1;   ranksvm treat weak label {-1: -1; 1:+1; 0:-1}
    %mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
-   multiScore = [];
+   multiMean = cell(1,length(pairPortion));
+   multiStd = cell(1,length(pairPortion));
    for f=1:6%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
@@ -83,25 +86,39 @@ for idata=1:1%length(dataname)
                     W2 = constructW_cai([ypaired;ysingle],options);
                     %Weight matrix constructed for each view
       
-                  [U1 U2 P2 P1 P3 objValue F P R nmi avgent AR] = GPVCclust(xpaired',ypaired',xsingle',ysingle',W1,W2,numClust,truthF,options);
+            
+                  [U1 U2 P2 P1 P3 objValue stats] = GPVCclust(xpaired',ypaired',xsingle',ysingle',W1,W2,numClust,truthF,options);
+                  
+                  %[U1 U2 P2 P1 P3 objValue F P R nmi avgent AR] = GPVCclust(xpaired',ypaired',xsingle',ysingle',W1,W2,numClust,truthF,options);
                   %[5 unknowns objectiveValue 6 stats] = func([X12][2],X1,X2, numClust,trueClusts,Parameters); 
                   
-                  pscore = [pscore;nmi];
-                  
+                  for s=1:size(stats,1)
+                      meanStats(s) = mean(stats(s,:));
+                      stdStats(s) = std(stats(s,:));
+                  end
+                  multiMean{pairedIdx} = [multiMean{pairedIdx};meanStats];
+                  multiStd{pairedIdx} = [multiStd{pairedIdx};stdStats];
                   %save([dir,'PVC',num2str(v1),num2str(v2),'paired_',num2str(pairPortion(pairedIdx)),'f_',num2str(f),'.mat'],'U1','U2','P2','P1','P3','objValue','F','P','R','nmi','avgent','AR','truthF');       
                   %save (filenameWithDirectory, variables)
                end
-               if f==1
-                   multiScore = pscore;
-               else
-                   multiScore = horzcat(multiScore,pscore);
-               end
-           end
+      end
     end
    end
-   multiScore
-   list = mean(multiScore, 2);
-   list'
-    scores = [scores;list'];
+   for t=1:length(multiMean)
+       list = mean(multiMean{t},1);
+       ovMean{idata} = [ovMean{idata}; list];
+       list = mean(multiStd{t},1);
+       ovAvgStd{idata} = [ovAvgStd{idata}; list];
+       list = sqrt(mean(multiStd{t},1));
+       ovStd{idata} = [ovStd{idata}; list];
+   end
+       ovMean{idata}
+       ovAvgStd{idata}
 end
-scores
+
+ovMean{1}
+ovAvgStd{1}
+ovMean{2}
+ovAvgStd{2}
+ovMean{3}
+ovAvgStd{3}
