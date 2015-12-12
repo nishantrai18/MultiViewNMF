@@ -30,9 +30,9 @@ function [U_final, V_final, nIter_final, objhistory_final] = GNMF(X, k, W, optio
 %   Written by Deng Cai (dengcai AT gmail.com)
 %	Modified by Zhenfan Wang (zfwang@mail.dlut.edu.cn)
 
-if min(min(X)) < 0                                              %Sanity Checks
-    error('Input should be nonnegative!');
-end
+%if min(min(X)) < 0                                              %Sanity Checks
+%    error('Input should be nonnegative!');
+%end
 
 if ~isfield(options,'error')                                    %Default values of the errors
     options.error = 1e-5;

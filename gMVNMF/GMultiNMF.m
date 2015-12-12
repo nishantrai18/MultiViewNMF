@@ -18,8 +18,6 @@ tic;
 viewNum = length(X);
 Rounds = options.rounds;
 nSmp=size(X{1},2);                          %Number of data points
-U_ = [];
-V_ = [];
 
 U = cell(1, viewNum);
 V = cell(1, viewNum);
