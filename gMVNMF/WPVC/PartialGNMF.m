@@ -7,7 +7,7 @@ function [finalU, finalV, finalcentroidV, weights, log] = PartialGNMF(X, K, W, m
 %   map ... Contain the mapping for each view to the corresponding data
 %           point (An id between (1, totalDataPoints)). map{i} is the
 %           mapping for the ith view
-%   invMap ... The inverse mapping, invMap(j) represents the views which 
+%   invMap ... The inverse mapping, invMap{j} represents the views which 
 %           have the data point j.
 %	Writen by Jialu Liu (jliu64@illinois.edu)
 % 	Modified by Zhenfan Wang (zfwang@mail.dlut.edu.cn)
@@ -28,7 +28,7 @@ viewNum = length(X);
 Rounds = options.rounds;
 gamma = options.gamma;
 beta = options.beta;
-numData = size(invMap, 1);
+numData = size(invMap, 2);
 
 U = cell(1, viewNum);
 V = cell(1, viewNum);
@@ -71,6 +71,8 @@ end
 toc;
 %%
 
+%workspace
+
 optionsForPerViewNMF = options;
 oldac=0;
 maxac=0;
@@ -82,15 +84,16 @@ while j < Rounds
 
     %Update consensus matrix
     centroidV = zeros(numData, K);
-    for i=1:size(invMap,1)
+    for i=1:numData
         sumID = 0;
-        for j=1:length(invMap(i))
-            id = invMap(i,j,1);
-            row = invMap(i,j,2);
-            centroidV(i) = centroidV + (weights(id)^gamma)*V{id}(row);
+        for j=1:size(invMap{i},1)
+            id = invMap{i}(j,1);
+            row = invMap{i}(j,2);
+            check = V{id}(row,:);
+            centroidV(i,:) = centroidV(i,:) + (weights(id)^gamma)*V{id}(row,:);
             sumID = sumID + (weights(id)^gamma);
         end
-        centroidV(i) = centroidV(i)/sumID;
+        centroidV(i,:) = centroidV(i,:)/sumID;
     end
     
     %Update the weights if the corresponding option is set
@@ -155,9 +158,9 @@ while j < Rounds
     
     %Update the individual view, the weights do not have any role here
     for i = 1:viewNum
-        optionsForPerViewNMF.alpha = options.Gaplpha;
+        optionsForPerViewNMF.alpha = 1;
         rand('twister',5489);
-        [U{i}, V{i}] = PartialViewNMF(X{i}, K, centroidV, W{i}, optionsForPerViewNMF, finalU{i}, finalV{i}); 
+        [U{i}, V{i}] = PartialViewNMF(X{i}, K, centroidV, W{i}, map{i}, optionsForPerViewNMF, finalU{i}, finalV{i}); 
     end
     
 end
