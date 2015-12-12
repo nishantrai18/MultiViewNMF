@@ -5,7 +5,8 @@ function [finalU, finalV, finalcentroidV, weights, log] = PartialGNMF(X, K, W, m
 % 	W ... weight matrix of the affinity graph 
 % 	label ... ground truth labels
 %   map ... Contain the mapping for each view to the corresponding data
-%           point (An id between (1, totalDataPoints))
+%           point (An id between (1, totalDataPoints)). map{i} is the
+%           mapping for the ith view
 %   invMap ... The inverse mapping, invMap(j) represents the views which 
 %           have the data point j.
 %	Writen by Jialu Liu (jliu64@illinois.edu)
@@ -79,7 +80,7 @@ while j < Rounds
     sumRound=sumRound+1;
     j = j + 1;
 
-    %% Update consensus matrix
+    %Update consensus matrix
     centroidV = zeros(numData, K);
     for i=1:size(invMap,1)
         sumID = 0;
@@ -91,14 +92,13 @@ while j < Rounds
         end
         centroidV(i) = centroidV(i)/sumID;
     end
-    %%
     
     %Update the weights if the corresponding option is set
     if (options.varWeight > 0)
         H = [];
         for i = 1:viewNum
             tmp1 = (X{i} - U{i}*V{i}');
-            tmp2 = (V{i} - centroidV);
+            tmp2 = (V{i} - centroidV(map{i},:));
             val = gamma*(sum(sum(tmp1.^2))+(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));  
             val = val^(1.0/(1-gamma));
             H(end+1) = val;
@@ -112,13 +112,13 @@ while j < Rounds
     end
     fprintf(' comp %d\n',j);
 
-    %Compute loss
+    %Compute the loss for the current values
     logL = 0;
     for i = 1:viewNum
         alpha = weights(i)^gamma;
         tmp1 = (X{i} - U{i}*V{i}');
-        tmp2 = (V{i} - centroidV);
-        logL = logL + alpha*(sum(sum(tmp1.^2)) + (sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));  %�޸ģ�����SampleW��V'*L*V
+        tmp2 = (V{i} - centroidV(map{i},:));
+        logL = logL + alpha*(sum(sum(tmp1.^2)) + (sum(sum(tmp2.^2))) + sum(sum((V{i}'*L{i}).*V{i}')));
     end
     
     %logL
@@ -157,7 +157,7 @@ while j < Rounds
     for i = 1:viewNum
         optionsForPerViewNMF.alpha = options.Gaplpha;
         rand('twister',5489);
-        [U{i}, V{i}] = PerViewNMF(X{i}, K, centroidV, W{i}, optionsForPerViewNMF, finalU{i}, finalV{i}); 
+        [U{i}, V{i}] = PartialViewNMF(X{i}, K, centroidV, W{i}, optionsForPerViewNMF, finalU{i}, finalV{i}); 
     end
     
 end

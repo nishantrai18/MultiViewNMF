@@ -1,4 +1,5 @@
-function [U_final, V_final, nIter_final, elapse_final, bSuccess, objhistory_final] = PartialViewNMF(X, k, Vo, W, options, U, V)
+function [U_final, V_final, nIter_final, elapse_final, bSuccess, objhistory_final] = ...
+                                        PartialViewNMF(X, k, Vc, W, map, options, U, V)
 
 %
 % 	Notation:
@@ -7,13 +8,15 @@ function [U_final, V_final, nIter_final, elapse_final, bSuccess, objhistory_fina
 %       nSmp  ... number of samples
 % 	k ... number of hidden factors
 % 	W ... weight matrix of the affinity graph 
-% 	Vo... consunsus
+% 	Vc ... consensus matrix
 % 	options ... Structure holding all settings
 % 	U ... initialization for basis matrix 
 % 	V ... initialization for coefficient matrix 
+%   map ... Mapping for the view to the consensus matrix
 %
 %	Writen by Deng Cai (dengcai AT gmail.com) Jialu Liu (jliu64@illinois.edu) 
 % 	Modified by Zhenfan Wang (zfwang@mail.dlut.edu.cn)
+% 	Further modified by Nishant Rai (nishantr AT iitk d0t ac.in
 
 differror = options.error;
 maxIter = options.maxIter;
@@ -31,6 +34,8 @@ NormV = 0;
 
 bSuccess.bSuccess = 1;
 
+Vo = Vc(map,:); %Consensus matrix with the relevant rows of X
+
 if alpha > 0
     W = beta*W;
     DCol = full(sum(W,2));
@@ -39,7 +44,6 @@ if alpha > 0
 else
     L = [];
 end
-
 
 selectInit = 1;
 if isempty(U)
@@ -57,18 +61,8 @@ if nRepeat == 1
     if isempty(maxIter)
         objhistory = CalculateObj(X, U, V, Vo,L,alpha);  
         meanFit = objhistory*10;
-    else
-        if isfield(options,'Converge') && options.Converge
-            objhistory = CalculateObj(X, U, V, Vo,L, alpha);
-        end
-    end
-else
-    if isfield(options,'Converge') && options.Converge
-        error('Not implemented!');
     end
 end
-
-
 
 tryNo = 0;
 while tryNo < nRepeat   
@@ -82,11 +76,10 @@ while tryNo < nRepeat
         % ===================== update V ========================
         XU = X'*U;  % mnk or pk (p<<mn)
         UU = U'*U;  % mk^2
-        VUU =V*UU; % nk^2
-        if alpha > 0
+        VUU = V*UU; % nk^2
+        if beta > 0
             WV = W*V;
-            DV = D*V;
-            
+            DV = D*V;            
             XU = XU + WV;
             VUU = VUU + DV;
         end
@@ -185,8 +178,6 @@ end
 nIter_final = nIter_final + minIterOrig;
 [U_final, V_final] = Normalize(U_final, V_final);
 
-
-
 %==========================================================================
 
 function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
@@ -249,7 +240,6 @@ function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
     dX = (U*V'-X);
     obj_NMF = sum(sum(dX.^2));
     obj = obj_NMF+ alpha * obj_Vo+obj_Lap;
-
 
 function [U, V] = Normalize(U, V)
     [U,V] = NormalizeUV(U, V, 0, 1);
