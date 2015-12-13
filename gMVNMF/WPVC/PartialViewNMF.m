@@ -25,8 +25,9 @@ minIterOrig = options.minIter;
 minIter = minIterOrig-1;
 meanFitRatio = options.meanFitRatio;
 
-alpha = options.alpha;
-beta= alpha*options.beta;
+alpha = options.alpha;                      %Partial coefficient for graph reg
+beta= alpha*options.beta;                   %Complete coefficent i.e. alpha*beta for graph reg
+delta = options.delta;                      %Complete coefficient for centroid
 Norm = 1;
 NormV = 0;
 
@@ -36,7 +37,7 @@ bSuccess.bSuccess = 1;
 
 Vo = Vc(map,:); %Consensus matrix with the relevant rows of X
 
-if alpha > 0
+if beta > 0
     W = beta*W;
     DCol = full(sum(W,2));
     D = spdiags(DCol,0,nSmp,nSmp);
@@ -83,8 +84,8 @@ while tryNo < nRepeat
             XU = XU + WV;
             VUU = VUU + DV;
         end
-        XU = XU + alpha * Vo;
-        VUU = VUU + alpha * V;
+        XU = XU + delta*Vo;
+        VUU = VUU + delta*V;
         
         V = V.*(XU./max(VUU,0));
     
@@ -97,8 +98,8 @@ while tryNo < nRepeat
         tmp = sum(V.*Vo);
         VVo = repmat(tmp, mFea, 1);
         
-        XV = XV + alpha * VVo;
-        UVV = UVV + alpha * VV_;
+        XV = XV + delta*VVo;
+        UVV = UVV + delta*VV_;
 
         U = U.*(XV./max(UVV,0)); 
         

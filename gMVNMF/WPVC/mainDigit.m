@@ -20,6 +20,7 @@ options.alpha=0.1;
 options.WeightMode='Binary';
 options.gamma = 2;
 options.varWeight = 0;
+options.delta = 0.1;
 
 options.kmeans = 1;
 options.beta=10;
@@ -58,8 +59,6 @@ for idata=1:length(dataname)
    folds = folds(:,:);
    
    [numFold,numInst]=size(folds);                                   %numInst : numInstances
-   dir=strcat(resdir,cell2mat(dataname(idata)),'/'); %    train_target(idnon)=-1;   ranksvm treat weak label {-1: -1; 1:+1; 0:-1}
-   %mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiMean = cell(1,length(pairPortion));
    multiStd = cell(1,length(pairPortion));
@@ -83,8 +82,9 @@ for idata=1:length(dataname)
                    
                    data = cell(1,num_views);
                    map = cell(1,num_views);
+                   %Construct Map
                    map{1} = [singleInstView1 paired];
-                   map{2} = [paired singleInstView2];
+                   map{2} = [paired singleInstView2];                   
                    data{1}=X{v1}(map{1},:);                                 %View 1 of paired
                    data{2}=X{v2}(map{2},:);                                 %View 1 of paired
                    
@@ -117,8 +117,6 @@ for idata=1:length(dataname)
                   end
                   multiMean{pairedIdx} = [multiMean{pairedIdx};meanStats];
                   multiStd{pairedIdx} = [multiStd{pairedIdx};stdStats];
-                  %save([dir,'PVC',num2str(v1),num2str(v2),'paired_',num2str(pairPortion(pairedIdx)),'f_',num2str(f),'.mat'],'U1','U2','P2','P1','P3','objValue','F','P','R','nmi','avgent','AR','truthF');       
-                  %save (filenameWithDirectory, variables)
                end
       end
     end
