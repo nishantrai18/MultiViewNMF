@@ -64,15 +64,6 @@ rand('twister',5489);
 toc;
 %%
 
-%{
-[Ux, P1] = nnmf(A1, K);
-[Uy, P2] = nnmf(A2, K);
-P1=P1';
-P2=P2';
-%}
-
-%workspace
-
 [Ux, P1] = Normalize(Ux, P1);
 [Uy, P2] = Normalize(Uy, P2);
 

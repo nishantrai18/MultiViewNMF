@@ -24,6 +24,8 @@ meanFitRatio = options.meanFitRatio;
 
 alpha = options.alpha;
 beta= alpha*options.beta;
+alpha = options.delta;
+
 Norm = 1;
 NormV = 0;
 
@@ -31,7 +33,7 @@ NormV = 0;
 
 bSuccess.bSuccess = 1;
 
-if alpha > 0
+if beta > 0
     W = beta*W;
     DCol = full(sum(W,2));
     D = spdiags(DCol,0,nSmp,nSmp);
@@ -68,8 +70,6 @@ else
     end
 end
 
-
-
 tryNo = 0;
 while tryNo < nRepeat   
     tmp_T = cputime;
@@ -83,17 +83,16 @@ while tryNo < nRepeat
         XU = X'*U;  % mnk or pk (p<<mn)
         UU = U'*U;  % mk^2
         VUU =V*UU; % nk^2
-        if alpha > 0
+        if beta > 0
             WV = W*V;
-            DV = D*V;
-            
+            DV = D*V;            
             XU = XU + WV;
             VUU = VUU + DV;
         end
         XU = XU + alpha * Vo;
         VUU = VUU + alpha * V;
         
-        V = V.*(XU./max(VUU,0));
+        V = V.*(XU./max(VUU,1e-10));
     
         % ===================== update U ========================
         XV = X*V; 
@@ -107,7 +106,7 @@ while tryNo < nRepeat
         XV = XV + alpha * VVo;
         UVV = UVV + alpha * VV_;
 
-        U = U.*(XV./max(UVV,0)); 
+        U = U.*(XV./max(UVV,1e-10)); 
         
         [U,V] = Normalize(U, V);
         nIter = nIter + 1;
@@ -185,17 +184,9 @@ end
 nIter_final = nIter_final + minIterOrig;
 [U_final, V_final] = Normalize(U_final, V_final);
 
-
-
 %==========================================================================
 
-function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
-    if ~exist('deltaVU','var')
-        deltaVU = 0;
-    end
-    if ~exist('dVordU','var')
-        dVordU = 1;
-    end
+function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha)
     dV = [];
     maxM = 62500000;
     [mFea, nSmp] = size(X);
@@ -205,22 +196,8 @@ function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
     if mn < maxM
         dX = (U*V'-X);
         obj_NMF = sum(sum(dX.^2));
-        if deltaVU
-            if dVordU
-                dV = dX'*U + L*V;
-            else
-                dV = dX*V;
-            end
-        end
     else
         obj_NMF = 0;
-        if deltaVU
-            if dVordU
-                dV = zeros(size(V));
-            else
-                dV = zeros(size(U));
-            end
-        end
         for i = 1:ceil(nSmp/nBlock)
             if i == ceil(nSmp/nBlock)
                 smpIdx = (i-1)*nBlock+1:nSmp;
@@ -229,18 +206,6 @@ function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
             end
             dX = U*V(smpIdx,:)'-X(:,smpIdx);
             obj_NMF = obj_NMF + sum(sum(dX.^2));
-            if deltaVU
-                if dVordU
-                    dV(smpIdx,:) = dX'*U;
-                else
-                    dV = dU+dX*V(smpIdx,:);
-                end
-            end
-        end
-        if deltaVU
-            if dVordU
-                dV = dV + L*V;
-            end
         end
     end
     tmp = (V-Vo);
@@ -249,7 +214,6 @@ function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
     dX = (U*V'-X);
     obj_NMF = sum(sum(dX.^2));
     obj = obj_NMF+ alpha * obj_Vo+obj_Lap;
-
 
 function [U, V] = Normalize(U, V)
     [U,V] = NormalizeUV(U, V, 0, 1);

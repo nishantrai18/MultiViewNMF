@@ -2,6 +2,12 @@ function [pure] = purity(T,H)
       if length(T) ~= length(H)
         size(T)
         size(H)
+      end
+      if (min(T)==0)
+      	T = T+1;
+      end    
+      if (min(H)==0)
+      	H = H+1;
       end    
       num = length(T);
       N = max(unique(T))+2;

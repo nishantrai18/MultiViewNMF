@@ -1,4 +1,4 @@
-function [finalU, finalV, finalcentroidV, weights, log] = PartialGNMF(X, K, W, map, invMap, label, options)
+function [finalU, finalV, finalcentroidV, finalweights, log] = PartialGNMF(X, K, W, map, invMap, label, options)
 %	Notation:
 % 	X ... a cell containing all views for the data
 % 	K ... number of hidden factors
@@ -43,7 +43,7 @@ ac=0;
 for i = 1:viewNum
     nSmp=size(X{i},2);
     if beta > 0
-        Wtemp = beta*W{i};
+        Wtemp = options.alpha*beta*W{i};
         DCol = full(sum(Wtemp,2));
         D = spdiags(DCol,0,nSmp,nSmp);
         L{i} = D - Wtemp;
@@ -59,7 +59,7 @@ weights(1:viewNum) = (1/viewNum);
 
 %% initialize basis and coefficient matrices, initialize on the basis of standard GNMF algorithm
 tic;
-Goptions.alpha = options.alpha*beta;
+Goptions.alpha = options.Gaplpha*beta;
 rand('twister',5489);
 [U{1}, V{1}] = GNMF(X{1}, K, W{1}, Goptions);        %In this case, random inits take place
 rand('twister',5489);
@@ -89,9 +89,9 @@ while j < Rounds
     centroidV = zeros(numData, K);
     for i=1:numData
         sumID = 0;
-        for j=1:size(invMap{i},1)
-            id = invMap{i}(j,1);
-            row = invMap{i}(j,2);
+        for tj=1:size(invMap{i},1)
+            id = invMap{i}(tj,1);
+            row = invMap{i}(tj,2);
             centroidV(i,:) = centroidV(i,:) + ((weights(id)^gamma)*delta)*V{id}(row,:);
             sumID = sumID + (weights(id)^gamma)*delta;
         end
@@ -112,10 +112,10 @@ while j < Rounds
         weights = (H./tmpSum);    
     end
     
-    %for i=1:viewNum
-    %    fprintf('%.3f ',weights(i));
-    %end
-    %fprintf(' weights: %d | ',j);
+    for i=1:viewNum
+        fprintf('%.3f ',weights(i));
+    end
+    fprintf(' weights: %d\n',j);
     
     %Compute the loss for the current values
     logL = 0;
@@ -125,57 +125,39 @@ while j < Rounds
         tmp2 = (V{i} - centroidV(map{i},:));
         logL = logL + alpha*(sum(sum(tmp1.^2)) + delta*(sum(sum(tmp2.^2))) + sum(sum((V{i}'*L{i}).*V{i}')));
     end
-    fprintf('LOG %.9f, ',logL);
+    %fprintf('LOG1 %.9f, ',logL);
+    %if mod(j,5) == 0
+    %    fprintf('\n');
+    %end
     
     %logL
     log(end+1)=logL;
     rand('twister',5489);
-    ac = ComputeStats(centroidV, label, options.K, 5, 2);
-    if ac>oldac
-        tempac=ac;
-        tempU=U;
-        tempV=V;
-        tempcentroidV=centroidV;
-
-    elseif oldac>maxac
-        maxac=oldac;
-        maxU=tempU;
-        maxV=tempV;
-        maxcentroidV=tempcentroidV;
-    end
-    oldac=ac;
-    if(tempac>maxac)
-        finalU=tempU;
-        finalV=tempV;
-        finalcentroidV=tempcentroidV;
-
-    else
-        finalU=maxU;
-        finalV=maxV;
-        finalcentroidV=maxcentroidV;
+    ac = ComputeStats(centroidV, label, options.K, 2, 1);
+    
+    if ac > maxac
+        maxac = ac;
+        finalU=U;
+        finalV=V;
+        finalcentroidV=centroidV;
+        finalweights = weights;
     end
     
     if sumRound==Rounds
         break;
     end
     
+    %weights = finalweights;
+    
     %Update the individual view, the weights do not have any role here
     for i = 1:viewNum
         rand('twister',5489);
         [U{i}, V{i}] = PartialViewNMF(X{i}, K, centroidV, W{i}, map{i}, optionsForPerViewNMF, finalU{i}, finalV{i}); 
     end
-    
+        
 end
 toc
 
-norm_mat = repmat(sqrt(sum(centroidV.*centroidV,2)),1,size(centroidV,2));
-%%avoid divide by zero
-for i=1:size(norm_mat,1)
-    if (norm_mat(i,1)==0)
-        norm_mat(i,:) = 1;
-    end
-end
-centroidV = centroidV./norm_mat;
 
 function [U, V] = Normalize(U, V)
     [U,V] = NormalizeUV(U, V, 0, 1);

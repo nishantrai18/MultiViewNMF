@@ -1,4 +1,4 @@
-clear all;                      %Remove all variables from the workspace
+clear;                      %Remove all variables from the workspace
 %clc;
  
 addpath(genpath('../../partialMV/PVC/recreateResults/measure/'));
@@ -15,14 +15,14 @@ options.nRepeat = 30;
 options.minIter = 50;
 options.meanFitRatio = 0.1;
 options.rounds = 20;
+options.WeightMode='Binary';
+options.kmeans = 1;
+options.varWeight = 1;
+
+options.delta = 0.1;
 options.Gaplpha=1;                            %Graph regularisation parameter
 options.alpha=0.1;
-options.WeightMode='Binary';
 options.gamma = 2;
-options.varWeight = 0;
-options.delta = 0.1;
-
-options.kmeans = 1;
 options.beta=10;
 
 resdir='data/result/';
@@ -56,13 +56,12 @@ for idata=1:length(dataname)
     %X should be row major i.e. rows are the data points
     
    load(cell2mat(strcat(datasetdir,dataname(idata),'Folds.mat'))); %Loading the variable folds
-   folds = folds(:,:);
    
    [numFold,numInst]=size(folds);                                   %numInst : numInstances
     
    multiMean = cell(1,length(pairPortion));
    multiStd = cell(1,length(pairPortion));
-   for f=1:1%numFold
+   for f=1:3%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views

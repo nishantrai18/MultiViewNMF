@@ -1,5 +1,5 @@
-%clear all;                      %Remove all variables from the workspace
-clc;
+clear;                      %Remove all variables from the workspace
+%clc;
  
 addpath(genpath('measure/'));
 addpath(genpath('misc/'));
@@ -33,7 +33,7 @@ for idata=1:length(dataname)
     
    multiMean = cell(1,length(pairPortion));
    multiStd = cell(1,length(pairPortion));
-   for f=1:3%numFold
+   for f=1:6%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views

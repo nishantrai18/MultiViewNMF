@@ -10,9 +10,9 @@ options.minIter = 30;
 options.meanFitRatio = 0.1;
 options.rounds = 30;
 options.K=10;
-options.Gaplpha=100;                            %Graph regularisation parameter
+options.Gaplpha=1;                            %Graph regularisation parameter
 options.WeightMode='Binary';
-options.alpha = 100;
+options.alpha = 0.1;
 
 % options.kmeans means whether to run kmeans on v^* or not
 % options alpha is an array of weights for different views

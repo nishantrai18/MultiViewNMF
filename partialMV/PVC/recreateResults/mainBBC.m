@@ -1,4 +1,4 @@
-clear all;                      %Remove all variables from the workspace
+clear;                      %Remove all variables from the workspace
 %clc;
  
 addpath(genpath('measure/'));

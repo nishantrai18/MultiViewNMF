@@ -1,4 +1,4 @@
-function [finalU, finalV, finalcentroidV, weights, log] = GMultiNMF(X, K, W, label,options)
+function [finalU, finalV, finalcentroidV, finalweights, log] = GMultiNMF(X, K, W, label,options)
 %	Notation:
 % 	X ... a cell containing all views for the data
 % 	K ... number of hidden factors
@@ -24,6 +24,7 @@ viewNum = length(X);
 Rounds = options.rounds;
 gamma = options.gamma;
 beta = options.beta;
+delta = options.delta;
 nSmp=size(X{1},2);
 
 U = cell(1, viewNum);
@@ -35,14 +36,10 @@ ac=0;
 
 %% Compute the graph laplacians
 for i = 1:viewNum
-    if beta > 0
-        Wtemp = beta*W{i};
+        Wtemp = options.alpha*beta*W{i};
         DCol = full(sum(Wtemp,2));
         D = spdiags(DCol,0,nSmp,nSmp);
         L{i} = D - Wtemp;
-    else
-        L{i} = [];
-    end
 end
 %%
 
@@ -52,9 +49,9 @@ weights(1:viewNum) = (1/viewNum);
 
 %% initialize basis and coefficient matrices, initialize on the basis of standard GNMF algorithm
 tic;
-Goptions.alpha=options.Gaplpha;
+Goptions.alpha=options.Gaplpha*beta;
 rand('twister',5489);
-[U{1}, V{1}] = GNMF(X{1}, K, W{1}, options);        %In this case, random inits take place
+[U{1}, V{1}] = GNMF(X{1}, K, W{1}, Goptions);        %In this case, random inits take place
 rand('twister',5489);
 %printResult(V{1}, label, options.K, options.kmeans);        
 for i = 2:viewNum
@@ -74,24 +71,28 @@ sumRound=0;
 while j < Rounds
     sumRound=sumRound+1;
     j = j + 1;
-
+    
     %Update centroid V
     centroidV = (weights(1)^gamma)*V{1};
     for i = 2:viewNum
         centroidV = centroidV + (weights(i)^gamma)*V{i};
     end
     centroidV = centroidV / sum(weights.^gamma);            %Check if the array is modified or not
-    
+
     %Update the weights if the corresponding option is set
     if (options.varWeight > 0)
         H = [];
+        vale = [];
         for i = 1:viewNum
             tmp1 = (X{i} - U{i}*V{i}');
             tmp2 = (V{i} - centroidV);
-            val = gamma*(sum(sum(tmp1.^2))+(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));  
+            val = gamma*(sum(sum(tmp1.^2))+delta*(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));  
+            vale(end+1) = val;
             val = val^(1.0/(1-gamma));
             H(end+1) = val;
         end
+        H
+        vale
         tmpSum = sum(H);
         weights = (H./tmpSum);    
     end
@@ -103,48 +104,37 @@ while j < Rounds
 
     %Compute loss
     logL = 0;
+    logy = [];
     for i = 1:viewNum
         alpha = weights(i)^gamma;
         tmp1 = (X{i} - U{i}*V{i}');
         tmp2 = (V{i} - centroidV);
-        logL = logL + alpha*(sum(sum(tmp1.^2)) + (sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));  %�޸ģ�����SampleW��V'*L*V
+        logL = logL + alpha*(sum(sum(tmp1.^2)) + delta*(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));
+        logy(i) = logL;
     end
     
-    %logL
+    fprintf('%.10f %.10f %.10f\n',logL,logy(1),logy(2)-logy(1));
+    
     log(end+1)=logL;
     rand('twister',5489);
-    ac = printResult(centroidV, label, options.K, options.kmeans);
-    if ac>oldac
-        tempac=ac;
-        tempU=U;
-        tempV=V;
-        tempcentroidV=centroidV;
-
-    elseif oldac>maxac
-        maxac=oldac;
-        maxU=tempU;
-        maxV=tempV;
-        maxcentroidV=tempcentroidV;
-    end
-    oldac=ac;
-    if(tempac>maxac)
-        finalU=tempU;
-        finalV=tempV;
-        finalcentroidV=tempcentroidV;
-
-    else
-        finalU=maxU;
-        finalV=maxV;
-        finalcentroidV=maxcentroidV;
+    ac = ComputeStats(centroidV, label, options.K, 4, 1);
+    if ac > maxac
+        maxac = ac;
+        finalU=U;
+        finalV=V;
+        finalcentroidV=centroidV;
+        finalweights = weights;
     end
     
     if sumRound==Rounds
         break;
     end
     
+    %weights = finalweights;
+    
     %Update the individual view, the weights do not have any role here
     for i = 1:viewNum
-        optionsForPerViewNMF.alpha = options.Gaplpha;
+        %optionsForPerViewNMF.alpha = options.Gaplpha;
         rand('twister',5489);
         [U{i}, V{i}] = PerViewNMF(X{i}, K, centroidV, W{i}, optionsForPerViewNMF, finalU{i}, finalV{i}); 
     end

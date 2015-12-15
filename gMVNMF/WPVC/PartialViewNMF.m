@@ -37,6 +37,8 @@ bSuccess.bSuccess = 1;
 
 Vo = Vc(map,:); %Consensus matrix with the relevant rows of X
 
+%Assume that the weight matrix has not been multiplied before function call
+
 if beta > 0
     W = beta*W;
     DCol = full(sum(W,2));
@@ -60,10 +62,13 @@ if nRepeat == 1
     minIterOrig = 0;
     minIter = 0;
     if isempty(maxIter)
-        objhistory = CalculateObj(X, U, V, Vo,L,alpha);  
+        objhistory = CalculateObj(X, U, V, Vo, L, delta);  
         meanFit = objhistory*10;
     end
 end
+
+%obj = CalculateObj(X, U, V, Vo, L, delta);
+%fprintf('OBJ : %.9f\n',obj);
 
 tryNo = 0;
 while tryNo < nRepeat   
@@ -104,20 +109,21 @@ while tryNo < nRepeat
         U = U.*(XV./max(UVV,0)); 
         
         [U,V] = Normalize(U, V);
+        
         nIter = nIter + 1;
         if nIter > minIter
             if selectInit
-                objhistory = CalculateObj(X, U, V, Vo,L,alpha);
+                objhistory = CalculateObj(X, U, V, Vo, L, delta);
                 maxErr = 0;
             else
                 if isempty(maxIter)
-                    newobj = CalculateObj(X, U, V, Vo, L,alpha);
+                    newobj = CalculateObj(X, U, V, Vo, L, delta);
                     objhistory = [objhistory newobj]; 
                     meanFit = meanFitRatio*meanFit + (1-meanFitRatio)*newobj;
                     maxErr = (meanFit-newobj)/meanFit;
                 else
                     if isfield(options,'Converge') && options.Converge
-                        newobj = CalculateObj(X, U, V, Vo,L, alpha);
+                        newobj = CalculateObj(X, U, V, Vo, L, delta);
                         objhistory = [objhistory newobj]; 
                     end
                     maxErr = 1;
@@ -176,18 +182,19 @@ while tryNo < nRepeat
     end
 end
 
+%obj = CalculateObj(X, U, V, Vo, L, delta);
+%fprintf('OBJ : %.9f\n',obj);
+        
 nIter_final = nIter_final + minIterOrig;
 [U_final, V_final] = Normalize(U_final, V_final);
 
+%obj = CalculateObj(X, U, V, Vo, L, delta);
+%fprintf('OBJ : %.9f\n',obj);
+        
+
 %==========================================================================
 
-function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
-    if ~exist('deltaVU','var')
-        deltaVU = 0;
-    end
-    if ~exist('dVordU','var')
-        dVordU = 1;
-    end
+function [obj, dV] = CalculateObj(X, U, V, Vo, L, delta)
     dV = [];
     maxM = 62500000;
     [mFea, nSmp] = size(X);
@@ -197,22 +204,8 @@ function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
     if mn < maxM
         dX = (U*V'-X);
         obj_NMF = sum(sum(dX.^2));
-        if deltaVU
-            if dVordU
-                dV = dX'*U + L*V;
-            else
-                dV = dX*V;
-            end
-        end
     else
         obj_NMF = 0;
-        if deltaVU
-            if dVordU
-                dV = zeros(size(V));
-            else
-                dV = zeros(size(U));
-            end
-        end
         for i = 1:ceil(nSmp/nBlock)
             if i == ceil(nSmp/nBlock)
                 smpIdx = (i-1)*nBlock+1:nSmp;
@@ -221,26 +214,14 @@ function [obj, dV] = CalculateObj(X, U, V,Vo, L,alpha, deltaVU, dVordU)
             end
             dX = U*V(smpIdx,:)'-X(:,smpIdx);
             obj_NMF = obj_NMF + sum(sum(dX.^2));
-            if deltaVU
-                if dVordU
-                    dV(smpIdx,:) = dX'*U;
-                else
-                    dV = dU+dX*V(smpIdx,:);
-                end
-            end
-        end
-        if deltaVU
-            if dVordU
-                dV = dV + L*V;
-            end
         end
     end
     tmp = (V-Vo);
     obj_Vo = sum(sum(tmp.^2));
-    obj_Lap=sum(sum((V'*L).*V'));
+    obj_Lap = sum(sum((V'*L).*V'));
     dX = (U*V'-X);
     obj_NMF = sum(sum(dX.^2));
-    obj = obj_NMF+ alpha * obj_Vo+obj_Lap;
+    obj = obj_NMF+ delta*obj_Vo + obj_Lap;
 
 function [U, V] = Normalize(U, V)
     [U,V] = NormalizeUV(U, V, 0, 1);

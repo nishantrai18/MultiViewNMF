@@ -44,38 +44,6 @@ if (1)
     PIn = UPI./norm_mat;
     end
   
-    kmeans_avg_iter = 20;
-    
-    fprintf('running k-means...\n');
-    
-    for i=1: kmeans_avg_iter
-        C = kmeans(PIn,numClust,'EmptyAction','drop');
-        [A nmii(i) avgenti(i)] = compute_nmi(truth,C);
-        [Fi(i),Pi(i),Ri(i)] = compute_f(truth,C);
-        [ARi(i),RIi(i),MIi(i),HIi(i)]=RandIndex(truth,C);
-        [Pri(i)]=purity(truth,C);
-    end
-    
-    nmi = mean(nmii);
-    %{
-    F = mean(Fi);
-    P = mean(Pi);
-    R = mean(Ri);
-    avgent = mean(avgenti);
-    AR = mean(ARi);
-    pure = mean(Pri);
-    %workspace
-    %}
-    stats = [];
-    stats = [stats;Fi];
-    stats = [stats;Pi];
-    stats = [stats;Ri];
-    stats = [stats;nmii];
-    stats = [stats;avgenti];
-    stats = [stats;ARi];
-    stats = [stats;Pri];
-    fprintf('nmi: %f(%f)\n', nmi, std(nmii));
-    printResult(UPI, truth, option.K, option.kmeans);
-    fprintf('\n');
+    [~,stats] = ComputeStats(PIn, truth, numClust);
 
    

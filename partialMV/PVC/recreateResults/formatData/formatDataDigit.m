@@ -7,20 +7,29 @@ dataname={'mfeat'};
 delimeter = ' ';
 headersInFile = 0;
 
-for idata=1:length(dataname)  
+for idata=1:length(dataname)
+    X = cell(1,6);
     dataf = strcat(loaddata,lower(dataname(idata)),'-fou'); %Just the datafile name
     cell2mat(dataf(1))
-    X1 = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
+    X{1} = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
     dataf = strcat(loaddata,lower(dataname(idata)),'-pix'); %Just the datafile name
-    X2 = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
+    X{2} = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
+    dataf = strcat(loaddata,lower(dataname(idata)),'-zer'); %Just the datafile name
+    X{3} = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
+    dataf = strcat(loaddata,lower(dataname(idata)),'-mor'); %Just the datafile name
+    X{4} = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
+    dataf = strcat(loaddata,lower(dataname(idata)),'-fac'); %Just the datafile name
+    X{5} = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
+    dataf = strcat(loaddata,lower(dataname(idata)),'-pix'); %Just the datafile name
+    X{6} = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
     truth = [];
     for j=1:10
         for i=1:200
             truth=[truth;j];            
         end
     end
-    dataf=strcat(datasetdir,lower(dataname(idata)),'RnSp.mat');        %Just the datafile name
-    save(cell2mat(dataf(1)), 'X1','X2', 'truth');
+    dataf=strcat(datasetdir,lower(dataname(idata)),'bigRnSp.mat');        %Just the datafile name
+    save(cell2mat(dataf(1)), 'X','truth');
 
     folds = [];
     numInst = size(truth);
@@ -30,7 +39,7 @@ for idata=1:length(dataname)
         folds = [folds;randperm(numInst)];
     end
     
-    dataf=strcat(datasetdir,lower(dataname(idata)),'Folds.mat');        %Just the datafile name
+    dataf=strcat(datasetdir,lower(dataname(idata)),'bigFolds.mat');        %Just the datafile name
     save(cell2mat(dataf(1)), 'folds');
 end
     

@@ -39,19 +39,20 @@ function [Ux Uy P2 P1 P3 objValue stats] = PVCclust(X2,Y2,X1,Y3,numClust,truth,o
   
   UPI=[P2;P1;P3]; 
   
-if (1)
-    norm_mat = repmat(sqrt(sum(UPI.*UPI,2)),1,size(UPI,2));
-    %%avoid divide by zero
-    for i=1:size(norm_mat,1)
-        if (norm_mat(i,1)==0)
-            norm_mat(i,:) = 1;
+    if (1)
+        norm_mat = repmat(sqrt(sum(UPI.*UPI,2)),1,size(UPI,2));
+        %%avoid divide by zero
+        for i=1:size(norm_mat,1)
+            if (norm_mat(i,1)==0)
+                norm_mat(i,:) = 1;
+            end
         end
-    end
-    PIn = UPI./norm_mat;
+        PIn = UPI./norm_mat;
     end
   
     kmeans_avg_iter = 20;
     
+    %{
     fprintf('running k-means...\n');
     
     for i=1: kmeans_avg_iter
@@ -74,3 +75,5 @@ if (1)
     fprintf('nmi: %f(%f)\n', nmi, std(nmii));
     printResult(UPI, truth, option.latentdim, 1);
     fprintf('\n');
+    %}
+    [~,stats] = ComputeStats(PIn, truth, numClust);

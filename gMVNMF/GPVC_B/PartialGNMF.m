@@ -100,7 +100,7 @@ while tryNo < nRepeat
         XU = X'*U;  % mnk or pk (p<<mn)
         UU = U'*U;  % mk^2
         VUU =V*UU; % nk^2
-        if alpha > 0
+        if beta > 0
             WV = W*V;
             DV = D*V;            
             XU = XU + WV;

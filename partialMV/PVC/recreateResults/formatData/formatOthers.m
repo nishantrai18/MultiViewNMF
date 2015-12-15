@@ -1,9 +1,9 @@
 clear all;
 clc;
-addpath(genpath(('../../../../datasets/CiteSeer')));
-loaddata='../../../../datasets/CiteSeer/';
+addpath(genpath(('../../../../datasets/Cora')));
+loaddata='../../../../datasets/Cora/';
 datasetdir='../data/';
-dataname={'CiteSeer'};
+dataname={'Cora'};
 delimeter = ' ';
 headersInFile = 2;
 

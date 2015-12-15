@@ -1,5 +1,5 @@
-clear all;                      %Remove all variables from the workspace
-clc;
+clear;                      %Remove all variables from the workspace
+%clc;
  
 addpath(genpath('measure/'));
 addpath(genpath('misc/'));
@@ -7,9 +7,9 @@ addpath(genpath(('../code/')));
 
 resdir='data/result/';
 datasetdir='data/';
-dataname={'mfeat'};
+dataname={'citeseer'};
 num_views = 2;
-numClust = 10;
+numClust = 6;
 
 ovMean = cell(1,length(dataname));
 ovStd = cell(1,length(dataname));
@@ -21,19 +21,25 @@ for idata=1:length(dataname)
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
     datafname=cell2mat(dataf(1));       
     load (datafname);                                           %Loading the datafile
+
+    X1=readsparse(X1);                                         %Loading a sparse matrix i.e. on the basis of edges                  
+    X2=readsparse(X2);
+
     Xf1 = X1;                                                     %Directly loading the matrices
-    Xf2 = X2;
+    Xf2 = X2;                                                       %Row major form
     X{1} =Xf1;                                                  %View 1
     X{2} =Xf2;                                                  %View 2
  
    load(cell2mat(strcat(datasetdir,dataname(idata),'Folds.mat'))); %Loading the variable folds
+   folds = folds(:,1:800);
+   
    [numFold,numInst]=size(folds);                                   %numInst : numInstances
    dir=strcat(resdir,cell2mat(dataname(idata)),'/'); %    train_target(idnon)=-1;   ranksvm treat weak label {-1: -1; 1:+1; 0:-1}
    %mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiMean = cell(1,length(pairPortion));
    multiStd = cell(1,length(pairPortion));
-   for f=1:6%numFold
+   for f=1:1%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views
@@ -54,7 +60,7 @@ for idata=1:length(dataname)
                    xsingle=X{v1}(singleInstView1,:);                        %View 2 of paired
                    ysingle=X{v2}(singleInstView2,:);                        %View two of single
          
-                  option.lamda=0.01;                                        %Sparsity parameter for Lasso norm
+                  option.lamda=0;                                        %Sparsity parameter for Lasso norm
                   option.latentdim=numClust;
       
                   [U1 U2 P2 P1 P3 objValue stats] = PVCclust(xpaired,ypaired,xsingle,ysingle,numClust,truthF,option);

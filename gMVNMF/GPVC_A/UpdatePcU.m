@@ -22,13 +22,13 @@ function [Pc_final, U1_final, U2_final, nIter_final, objhistory_final] = UpdateP
 %   Written by Deng Cai (dengcai AT gmail.com)
 %	Modified by Nishant Rai (nishantr AT iitk DOT ac DOT in)
 
-if min(min(X1)) < 0                                              %Sanity Checks
-    error('Input should be nonnegative!');
-end
+%if min(min(X1)) < 0                                              %Sanity Checks
+%    error('Input should be nonnegative!');
+%end
 
-if min(min(X2)) < 0                                              %Sanity Checks
-    error('Input should be nonnegative!');
-end
+%if min(min(X2)) < 0                                              %Sanity Checks
+%    error('Input should be nonnegative!');
+%end
 
 if ~isfield(options,'error')                                    %Default values of the errors
     options.error = 1e-5;

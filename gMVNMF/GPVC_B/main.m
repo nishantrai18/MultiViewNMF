@@ -1,4 +1,4 @@
-clear all;                      %Remove all variables from the workspace
+clear;                      %Remove all variables from the workspace
 %clc;
  
 addpath(genpath('../../partialMV/PVC/recreateResults/measure/'));
@@ -15,8 +15,7 @@ options.nRepeat = 30;
 options.minIter = 50;
 options.meanFitRatio = 0.1;
 options.rounds = 30;
-options.K=10;
-options.Gaplpha=1;                            %Graph regularisation parameter
+%options.Gaplpha=1;                            %Graph regularisation parameter
 options.alpha=0.1;
 options.WeightMode='Binary';
 
@@ -29,6 +28,7 @@ datasetdir='../../partialMV/PVC/recreateResults/data/';
 dataname={'mfeat'};
 num_views = 2;
 numClust = 10;
+options.K = numClust;
 
 ovMean = cell(1,length(dataname));
 ovStd = cell(1,length(dataname));
@@ -40,6 +40,8 @@ for idata=1:length(dataname)
     datafname=cell2mat(dataf(1));       
     load (datafname);                                           %Loading the datafile
     
+    %X1=readsparse(X1);                                         %Loading a sparse matrix i.e. on the basis of edges                  
+    %X2=readsparse(X2);
     %% normalize data matrix
         X1 = X1 / sum(sum(X1));
         X2 = X2 / sum(sum(X2));
@@ -49,15 +51,18 @@ for idata=1:length(dataname)
     Xf2 = X2;
     X{1} =Xf1;                                                  %View 1
     X{2} =Xf2;                                                  %View 2    
+    %X should be row major i.e. rows are the data points
     
    load(cell2mat(strcat(datasetdir,dataname(idata),'Folds.mat'))); %Loading the variable folds
+   folds = folds(:,:);
+   
    [numFold,numInst]=size(folds);                                   %numInst : numInstances
    dir=strcat(resdir,cell2mat(dataname(idata)),'/'); %    train_target(idnon)=-1;   ranksvm treat weak label {-1: -1; 1:+1; 0:-1}
    %mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiMean = cell(1,length(pairPortion));
    multiStd = cell(1,length(pairPortion));
-   for f=1:6%numFold
+   for f=1:3%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views
