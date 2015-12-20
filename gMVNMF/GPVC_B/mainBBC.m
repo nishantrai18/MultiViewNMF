@@ -14,13 +14,15 @@ options.error = 1e-6;
 options.nRepeat = 30;
 options.minIter = 50;
 options.meanFitRatio = 0.1;
+
+options.kmeans = 1;
+options.beta=0.01;
 options.rounds = 30;
 options.Gaplpha=1;                            %Graph regularisation parameter
 options.alpha=0.01;
-
 options.alphas = [options.alpha, options.alpha];
-options.kmeans = 1;
-options.beta=0.01;
+options.gamma = 2;
+options.varWeight = 0;
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';
@@ -41,6 +43,9 @@ for idata=1:length(dataname)
     datafname=cell2mat(dataf(1));       
     load (datafname);                                           %Loading the datafile
 
+    %X1=readsparse(X1);                                         %Loading a sparse matrix i.e. on the basis of edges                  
+    %X2=readsparse(X2);
+    
     %% normalize data matrix
         X1 = X1 / sum(sum(X1));
         X2 = X2 / sum(sum(X2));
@@ -52,13 +57,14 @@ for idata=1:length(dataname)
     X{2} =Xf2;                                                  %View 2
  
    load(cell2mat(strcat(datasetdir,dataname(idata),'Folds.mat'))); %Loading the variable folds
+   %folds = folds(:,1:800);
    [numFold,numInst]=size(folds);                                   %numInst : numInstances
    dir=strcat(resdir,cell2mat(dataname(idata)),'/'); %    train_target(idnon)=-1;   ranksvm treat weak label {-1: -1; 1:+1; 0:-1}
    %mkdir(dir);                              %Creates new folder for storing the workspace variables 
     
    multiMean = cell(1,length(pairPortion));
    multiStd = cell(1,length(pairPortion));
-   for f=1:6%numFold
+   for f=4:4%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views
@@ -68,7 +74,7 @@ for idata=1:length(dataname)
                end
                 
                pscore = [];
-               for pairedIdx=1:length(pairPortion)  %here it's 1 ;different percentage of paired instances
+               for pairedIdx=1:1%length(pairPortion)  %here it's 1 ;different percentage of paired instances
                    numpairedInst=floor(numInst*pairPortion(pairedIdx) +0.01);  % number of paired instances that have complete views
                    paired=instanceIdx(1:numpairedInst);                     %The paired instances
                    singledNumView1=ceil(0.5*(length(instanceIdx)-numpairedInst));

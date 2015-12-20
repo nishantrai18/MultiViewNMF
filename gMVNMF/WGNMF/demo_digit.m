@@ -34,16 +34,18 @@ options.gamma = 2;
 %data{1} = fourier';
 %data{2} = pixel';   
 
-dataset = '../../partialMV/PVC/recreateResults/data/3sources3vbigRnSp.mat';
+dataset = '../../partialMV/PVC/recreateResults/data/mfeatRnSp.mat';
 load(dataset);
-data = X;
+data{1} = X1;
+data{2} = X2;
+%data = X;
 gnd = truth;
 
-options.K = 5;
+options.K = 10;
 
 %% normalize data matrix
 for i = 1:length(data)
-    data{i} = data{i};
+    data{i} = data{i}';
     data{i} = data{i} / sum(sum(data{i}));
     options.WeightMode='Binary';
     W{i}=constructW_cai(data{i}',options);           %Need row major

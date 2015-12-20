@@ -31,6 +31,7 @@ dataname={'mfeat'};
 num_views = 2;
 numClust = 10;
 options.K = numClust;
+options.latentdim=numClust;
 
 ovMean = cell(1,length(dataname));
 ovStd = cell(1,length(dataname));
@@ -42,17 +43,14 @@ for idata=1:length(dataname)
     datafname=cell2mat(dataf(1));       
     load (datafname);                                           %Loading the datafile
     
-    %X1=readsparse(X1);                                         %Loading a sparse matrix i.e. on the basis of edges                  
-    %X2=readsparse(X2);
-    %% normalize data matrix
-        X1 = X1 / sum(sum(X1));
-        X2 = X2 / sum(sum(X2));
-    %%
+    X{1}=X1;
+    X{2}=X2;
     
-    Xf1 = X1;                                                     %Directly loading the matrices
-    Xf2 = X2;
-    X{1} =Xf1;                                                  %View 1
-    X{2} =Xf2;                                                  %View 2    
+    %% normalize data matrix
+    for i=1:num_views
+        X{i} = X{i}/sum(sum(X{i}));
+    end
+    %%
     %X should be row major i.e. rows are the data points
     
    load(cell2mat(strcat(datasetdir,dataname(idata),'Folds.mat'))); %Loading the variable folds
@@ -61,9 +59,13 @@ for idata=1:length(dataname)
     
    multiMean = cell(1,length(pairPortion));
    multiStd = cell(1,length(pairPortion));
-   for f=1:3%numFold
+   for f=1:1%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
+        Xt=cell(1,num_views);
+        for i=1:num_views
+                Xt{i} = X{i}(instanceIdx,:);
+        end
         for v1=1:num_views
            for v2=v1+1:num_views
                if v1==v2
@@ -72,22 +74,25 @@ for idata=1:length(dataname)
                 
                meanStats = [];
                stdStats = [];
-               for pairedIdx=1:length(pairPortion)  %here it's 1 ;different percentage of paired instances
+               for pairedIdx=2:length(pairPortion)  %here it's 1 ;different percentage of paired instances
                    numpairedInst=floor(numInst*pairPortion(pairedIdx)+0.01);  % number of paired instances that have complete views
                    paired=instanceIdx(1:numpairedInst);                     %The paired instances
-                   singledNumView1=ceil(0.5*(length(instanceIdx)-numpairedInst));
-                   singleInstView1=instanceIdx(numpairedInst+1:numpairedInst+singledNumView1);   %the first view and second view miss half to half (Since they are mutually exclusive)
-                   singleInstView2=instanceIdx(numpairedInst+singledNumView1+1:end);             %instanceIdx(numpairedInst+numsingleInstView1+1:end);
-                   
+                   singNum=ceil((1.0/num_views)*(length(instanceIdx)-numpairedInst));
+
+                   singView = cell(1,num_views);
                    data = cell(1,num_views);
                    map = cell(1,num_views);
-                   %Construct Map
-                   map{1} = [singleInstView1 paired];
-                   map{2} = [paired singleInstView2];                   
-                   data{1}=X{v1}(map{1},:);                                 %View 1 of paired
-                   data{2}=X{v2}(map{2},:);                                 %View 1 of paired
-                   
-                   options.latentdim=numClust;
+
+                   rear=0;
+                   for i=1:num_views
+                        if (rear+singNum > length(instanceIdx))
+                            singNum = (length(instanceIdx) - rear);
+                        end
+                        singView{i} = instanceIdx(rear+1:rear+singNum);
+                        map{i} = [1:numpairedInst (rear+1):rear+singNum];
+                        data{i} = Xt{i}(map{i},:);
+                        rear = rear+singNum;
+                   end
                    
                     %Create invMap
                     invMap = cell(1,numInst);
@@ -106,9 +111,9 @@ for idata=1:length(dataname)
                         %Weight matrix constructed for each view
                     end
                     
-                  [U, V, centroidV, weights, log] = PartialGNMF(data, numClust, W, map, invMap, truth, options);
+                  [U, V, centroidV, weights, log] = PartialGNMF(data, numClust, W, map, invMap, truthF, options);
                                     
-                  [~,stats] = ComputeStats(centroidV, truth, numClust);
+                  [~,stats] = ComputeStats(centroidV, truthF, numClust);
     
                   for s=1:size(stats,1)
                       meanStats(s) = mean(stats(s,:));

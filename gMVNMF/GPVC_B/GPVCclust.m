@@ -43,7 +43,7 @@ if (1)
     end
     PIn = UPI./norm_mat;
     end
-  
+    %PIn = UPI;
     [~,stats] = ComputeStats(PIn, truth, numClust);
 
    

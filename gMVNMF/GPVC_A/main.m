@@ -14,26 +14,27 @@ options.error = 1e-6;
 options.nRepeat = 30;
 options.minIter = 50;
 options.meanFitRatio = 0.1;
-options.rounds = 20;
-options.Gaplpha=1;                            %Graph regularisation parameter
-options.alpha=0.1;
 options.WeightMode='Binary';
 
-options.alphas = [options.alpha options.alpha];
 options.kmeans = 1;
+
+options.rounds = 30;
+options.Gaplpha=1;                            %Graph regularisation parameter
+options.alpha=0.1;
 options.beta=10;
+options.alphas = 0.1*[options.alpha options.alpha];
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';
-dataname={'mfeat'};
+dataname={'orl'};
 num_views = 2;
-numClust = 10;
+numClust = 40;
 options.K = numClust;
 
 ovMean = cell(1,length(dataname));
 ovStd = cell(1,length(dataname));
 ovAvgStd = cell(1,length(dataname));
-pairPortion=[0];%0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
+pairPortion=[0,0.1,0.3,0.5,0.7,0.9];                  %The array which contains the PER
 pairPortion = 1 - (pairPortion);
 for idata=1:length(dataname)  
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name

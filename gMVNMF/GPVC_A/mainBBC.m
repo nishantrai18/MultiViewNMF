@@ -15,13 +15,14 @@ options.nRepeat = 30;
 options.minIter = 50;
 options.meanFitRatio = 0.1;
 options.rounds = 30;
-options.Gaplpha=1;                            %Graph regularisation parameter
-options.alpha=0.01;
 options.WeightMode='Binary';
 
-options.alphas = [options.alpha, options.alpha];
 options.kmeans = 1;
+
 options.beta=0.01;
+options.Gaplpha=0.1;                            %Graph regularisation parameter
+options.alpha=0.01;
+options.alphas = [options.alpha, options.alpha];
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';
@@ -59,7 +60,7 @@ for idata=1:length(dataname)
     
    multiMean = cell(1,length(pairPortion));
    multiStd = cell(1,length(pairPortion));
-   for f=1:6%numFold
+   for f=1:1%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views

@@ -22,6 +22,8 @@ options.WeightMode='Binary';
 options.alphas = [options.alpha, options.alpha];
 options.kmeans = 1;
 options.beta=10;
+options.gamma = 2;
+options.varWeight = 0;
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';
@@ -62,7 +64,7 @@ for idata=1:length(dataname)
     
    multiMean = cell(1,length(pairPortion));
    multiStd = cell(1,length(pairPortion));
-   for f=1:3%numFold
+   for f=1:1%numFold
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
         for v1=1:num_views

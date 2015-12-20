@@ -7,9 +7,9 @@ addpath(genpath(('../code/')));
 
 resdir='data/result/';
 datasetdir='data/';
-dataname={'bbcsport12'};
+dataname={'mfeat'};
 num_views = 2;
-numClust = 5;
+numClust = 10;
 
 ovMean = cell(1,length(dataname));
 ovStd = cell(1,length(dataname));
@@ -21,8 +21,8 @@ for idata=1:length(dataname)
     dataf=strcat(datasetdir,dataname(idata),'RnSp.mat');        %Just the datafile name
     datafname=cell2mat(dataf(1));       
     load (datafname);                                           %Loading the datafile
-    Xf1 = X1';                                                     %Directly loading the matrices
-    Xf2 = X2';
+    Xf1 = X1;                                                     %Directly loading the matrices
+    Xf2 = X2;
     X{1} =Xf1;                                                  %View 1
     X{2} =Xf2;                                                  %View 2
  

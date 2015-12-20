@@ -24,6 +24,7 @@ Rounds = options.rounds;
 alpha=options.alpha;
 beta=options.beta;
 error=options.error;
+gamma = options.gamma;
 
 K = options.K;
 A1 = horzcat(X1,X2);
@@ -54,6 +55,8 @@ numCom=size(X2',1);
 
 objValue = [];
 
+weights = [0.5 0.5];
+
 %% initialize basis and coefficient matrices, initialize on the basis of standard GNMF algorithm
 tic;
 Goptions.alpha = options.alpha*options.beta;
@@ -75,9 +78,31 @@ while j < Rounds                            %Number of rounds of AO
     sumRound=sumRound+1;
     j = j + 1;
     
-    centroidPc = (options.alphas(1)*P1(singX+1:end,:)) + (options.alphas(2)*P2(1:numCom,:));          
+    centroidPc = (weights(1)^gamma)*(options.alphas(1)*P1(singX+1:end,:)) + (weights(2)^gamma)*(options.alphas(2)*P2(1:numCom,:));          
     %From the paper, we have a definite solution for Pc*
-    centroidPc = centroidPc / sum(options.alphas);
+    tmpSum = (weights(1)^gamma)*options.alphas(1) + (weights(2)^gamma)*(options.alphas(2));
+    centroidPc = centroidPc / tmpSum;
+        
+    %Update the weights if the corresponding option is set
+    if (options.varWeight > 0)
+        H = [];
+        tmp1 = (A1 - Ux*P1');
+        tmp2 = (P1(singX+1:end,:) - centroidPc);
+        H1 = gamma*(sum(sum(tmp1.^2)) + options.alphas(1)*(sum(sum(tmp2.^2)))+ (beta*alpha)*sum(sum((P1'*L1).*P1')));
+        tmp1 = (A2 - Uy*P2');
+        tmp2 = (P2(1:numCom,:) - centroidPc);
+        H2 = gamma*(sum(sum(tmp1.^2)) + options.alphas(2)*(sum(sum(tmp2.^2)))+(beta*alpha)*sum(sum((P2'*L2).*P2')));
+        H1 = H1^(1.0/(1-gamma));
+        H2 = H2^(1.0/(1-gamma));
+        tmpSum = H1+H2;
+        weights(1) = (H1/tmpSum);
+        weights(2) = (H2/tmpSum);
+    end
+    
+    for i=1:2
+        fprintf('%.3f ',weights(i));
+    end
+    fprintf(' weights: %d\n',j);
     
     logL = 0;                                   %Loss for the round
     
@@ -100,7 +125,7 @@ while j < Rounds                            %Number of rounds of AO
         fprintf('Objective value converge to %g at iteration %d before the maxIteration reached \n',objValue(j),j);
         break;
     end
-
+    
     if sumRound==Rounds
         break;
     end
@@ -120,6 +145,12 @@ while j < Rounds                            %Number of rounds of AO
     %Peform optimization with Pc* (centroidPc) fixed and inits finalU, finalV
 
 end
+
+tmp2 = (P1(singX+1:end,:) - centroidPc);
+%sum(sum(tmp2.^2))
+tmp2 = (P2(1:numCom,:) - centroidPc);
+%sum(sum(tmp2.^2))   
+
 
 P1 = P1(1:singX,:);
 P2 = P2(numCom+1:end,:);

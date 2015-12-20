@@ -63,6 +63,12 @@ end
 toc;
 %%
 
+%%
+%for i = 1:viewNum
+%    [U{i}, V{i}] = Normalize(U{i}, V{i});
+%end
+%%
+
 optionsForPerViewNMF = options;
 oldac=0;
 maxac=0;
@@ -79,6 +85,22 @@ while j < Rounds
     end
     centroidV = centroidV / sum(weights.^gamma);            %Check if the array is modified or not
 
+    %Compute loss
+    logL = 0;
+    logy = [];
+    for i = 1:viewNum
+        alpha = weights(i)^gamma;
+        tmp1 = (X{i} - U{i}*V{i}');
+        tmp2 = (V{i} - centroidV);
+        logL = logL + alpha*(sum(sum(tmp1.^2)) + delta*(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));
+        logy(i) = logL;
+    end
+    fprintf('LOG1 %.9f, ',logL);
+    fprintf('%.10f %.10f %.10f\n',logL,logy(1),logy(2)-logy(1));
+    
+    
+    
+    
     %Update the weights if the corresponding option is set
     if (options.varWeight > 0)
         H = [];
@@ -91,8 +113,8 @@ while j < Rounds
             val = val^(1.0/(1-gamma));
             H(end+1) = val;
         end
-        H
-        vale
+        %H
+        %vale
         tmpSum = sum(H);
         weights = (H./tmpSum);    
     end
@@ -112,12 +134,12 @@ while j < Rounds
         logL = logL + alpha*(sum(sum(tmp1.^2)) + delta*(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));
         logy(i) = logL;
     end
-    
+    fprintf('LOG1 %.9f, ',logL);
     fprintf('%.10f %.10f %.10f\n',logL,logy(1),logy(2)-logy(1));
     
     log(end+1)=logL;
     rand('twister',5489);
-    ac = ComputeStats(centroidV, label, options.K, 4, 1);
+    ac = ComputeStats(centroidV, label, options.K, 2, 1);
     if ac > maxac
         maxac = ac;
         finalU=U;
@@ -130,6 +152,8 @@ while j < Rounds
         break;
     end
     
+    %break;    
+    
     %weights = finalweights;
     
     %Update the individual view, the weights do not have any role here
@@ -141,3 +165,36 @@ while j < Rounds
     
 end
 toc
+
+
+function [U, V] = Normalize(U, V)
+    [U,V] = NormalizeUV(U, V, 0, 1);
+
+function [U, V] = NormalizeUV(U, V, NormV, Norm)
+    nSmp = size(V,1);
+    mFea = size(U,1);
+    if Norm == 2
+        if NormV
+            norms = sqrt(sum(V.^2,1));
+            norms = max(norms,1e-10);
+            V = V./repmat(norms,nSmp,1);
+            U = U.*repmat(norms,mFea,1);
+        else
+            norms = sqrt(sum(U.^2,1));
+            norms = max(norms,1e-10);
+            U = U./repmat(norms,mFea,1);
+            V = V.*repmat(norms,nSmp,1);
+        end
+    else
+        if NormV
+            norms = sum(abs(V),1);
+            norms = max(norms,1e-10);
+            V = V./repmat(norms,nSmp,1);
+            U = U.*repmat(norms,mFea,1);
+        else
+            norms = sum(abs(U),1);
+            norms = max(norms,1e-10);
+            U = U./repmat(norms,mFea,1);
+            V = bsxfun(@times, V, norms);
+        end
+    end
