@@ -18,9 +18,9 @@ options.error = 1e-6;
 options.nRepeat = 30;
 options.minIter = 50;
 options.meanFitRatio = 0.1;
-options.rounds = 50;
+options.rounds = 20;
 options.WeightMode='Binary';
-options.varWeight = 0;
+options.varWeight = 1;
 options.kmeans = 1;
 
 options.Gaplpha=1;                            %Graph regularisation parameter
@@ -34,11 +34,11 @@ options.gamma = 2;
 %data{1} = fourier';
 %data{2} = pixel';   
 
-dataset = '../../partialMV/PVC/recreateResults/data/mfeatRnSp.mat';
+dataset = '../../partialMV/PVC/recreateResults/data/mfeatbigRnSp.mat';
 load(dataset);
-data{1} = X1;
-data{2} = X2;
-%data = X;
+%data{1} = X1;
+%data{2} = X2;
+data = X;
 gnd = truth;
 
 options.K = 10;

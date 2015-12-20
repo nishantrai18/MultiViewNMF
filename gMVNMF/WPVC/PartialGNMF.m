@@ -57,6 +57,7 @@ weights(1:viewNum) = (1/viewNum);
 %% initialize basis and coefficient matrices, initialize on the basis of standard GNMF algorithm
 % Change value of Goptions.alpha to get different results in BBCSports
 tic;
+%Goptions.maxIter = options.maxIter;
 Goptions.alpha = options.alpha*beta;
 rand('twister',5489);
 [U{1}, V{1}] = GNMF(X{1}, K, W{1}, Goptions);        %In this case, random inits take place
@@ -99,21 +100,6 @@ while j < Rounds
         centroidV(i,:) = centroidV(i,:)/sumID;
     end
     
-    
-    %Compute loss
-    logL = 0;
-    logy = [];
-    for i = 1:viewNum
-        alpha = weights(i)^gamma;
-        tmp1 = (X{i} - U{i}*V{i}');
-        tmp2 = (V{i} - centroidV(map{i},:));
-        logL = logL + alpha*(sum(sum(tmp1.^2)) + delta*(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));
-        logy(i) = logL;
-    end
-    fprintf('LOG1 %.9f, ',logL);
-    fprintf('%.10f %.10f %.10f\n',logL,logy(1),logy(2)-logy(1));
-    
-    
     %Update the weights if the corresponding option is set
     if (options.varWeight > 0)
         H = [];
@@ -143,12 +129,11 @@ while j < Rounds
         logL = logL + alpha*(sum(sum(tmp1.^2)) + delta*(sum(sum(tmp2.^2))) + sum(sum((V{i}'*L{i}).*V{i}')));
         logy(i) = logL;
     end
-    fprintf('LOG1 %.9f, ',logL);
+    %fprintf('LOG1 %.9f, ',logL);
     %if mod(j,5) == 0
     %    fprintf('\n');
     %end
-    
-    fprintf('%.10f %.10f %.10f\n',logL,logy(1),logy(2)-logy(1));
+    %fprintf('%.10f %.10f %.10f\n',logL,logy(1),logy(2)-logy(1));
     
     %logL
     log(end+1)=logL;
@@ -163,7 +148,7 @@ while j < Rounds
         end
     end
     PIn = UPI./norm_mat;
-    ac = ComputeStats(PIn, label, options.K, 2, 1);
+    ac = ComputeStats(PIn, label, options.K, 1, 1);
     
     if ac > maxac
         maxac = ac;

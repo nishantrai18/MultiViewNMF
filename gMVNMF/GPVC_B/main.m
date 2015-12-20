@@ -27,7 +27,7 @@ options.varWeight = 0;
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';
-dataname={'mfeat'};
+dataname={'mfeatbig'};
 num_views = 2;
 numClust = 10;
 options.K = numClust;
@@ -44,6 +44,10 @@ for idata=1:length(dataname)
     
     %X1=readsparse(X1);                                         %Loading a sparse matrix i.e. on the basis of edges                  
     %X2=readsparse(X2);
+    
+    X1 = X{2};
+    X2 = X{5};
+    X = {};
     %% normalize data matrix
         X1 = X1 / sum(sum(X1));
         X2 = X2 / sum(sum(X2));

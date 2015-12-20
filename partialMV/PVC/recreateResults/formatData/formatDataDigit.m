@@ -8,7 +8,7 @@ delimeter = ' ';
 headersInFile = 0;
 
 for idata=1:length(dataname)
-    X = cell(1,6);
+    X = cell(1,5);
     dataf = strcat(loaddata,lower(dataname(idata)),'-fou'); %Just the datafile name
     cell2mat(dataf(1))
     X{1} = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
@@ -20,8 +20,8 @@ for idata=1:length(dataname)
     X{4} = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
     dataf = strcat(loaddata,lower(dataname(idata)),'-fac'); %Just the datafile name
     X{5} = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
-    dataf = strcat(loaddata,lower(dataname(idata)),'-pix'); %Just the datafile name
-    X{6} = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
+    %dataf = strcat(loaddata,lower(dataname(idata)),'-kar'); %Contains negative values
+    %X{6} = importdata(cell2mat(dataf(1)), delimeter, headersInFile);
     truth = [];
     for j=1:10
         for i=1:200

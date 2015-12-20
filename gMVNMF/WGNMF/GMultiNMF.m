@@ -49,7 +49,8 @@ weights(1:viewNum) = (1/viewNum);
 
 %% initialize basis and coefficient matrices, initialize on the basis of standard GNMF algorithm
 tic;
-Goptions.alpha=options.Gaplpha*beta;
+Goptions.maxIter = options.maxIter;
+Goptions.alpha=options.alpha*beta;
 rand('twister',5489);
 [U{1}, V{1}] = GNMF(X{1}, K, W{1}, Goptions);        %In this case, random inits take place
 rand('twister',5489);
@@ -64,9 +65,9 @@ toc;
 %%
 
 %%
-%for i = 1:viewNum
-%    [U{i}, V{i}] = Normalize(U{i}, V{i});
-%end
+for i = 1:viewNum
+    [U{i}, V{i}] = Normalize(U{i}, V{i});
+end
 %%
 
 optionsForPerViewNMF = options;
@@ -95,24 +96,29 @@ while j < Rounds
         logL = logL + alpha*(sum(sum(tmp1.^2)) + delta*(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));
         logy(i) = logL;
     end
-    fprintf('LOG1 %.9f, ',logL);
-    fprintf('%.10f %.10f %.10f\n',logL,logy(1),logy(2)-logy(1));
-    
-    
-    
-    
+    %fprintf('LOG1 %.9f, ',logL);
+    %fprintf('%.10f %.10f %.10f\n',logL,logy(1),logy(2)-logy(1));
+
+    H = [];
+    vale = [];
+    costs = [];
+    sMean = 0;
+    for i = 1:viewNum
+        sMean = sMean + size(X{i},1);
+    end
+    sMean = sMean/viewNum;
+    for i = 1:viewNum
+        tmp1 = (X{i} - U{i}*V{i}');
+        tmp2 = (V{i} - centroidV);
+        val = gamma*(sum(sum(tmp1.^2))+delta*(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));  
+        costs(end+1) = (sMean*(sum(sum(tmp1.^2))/size(X{i},1)))+0*delta*(sum(sum(tmp2.^2)))+0*sum(sum((V{i}'*L{i}).*V{i}'));
+        vale(end+1) = val;
+        val = val^(1.0/(1-gamma));
+        H(end+1) = val;
+    end
+
     %Update the weights if the corresponding option is set
     if (options.varWeight > 0)
-        H = [];
-        vale = [];
-        for i = 1:viewNum
-            tmp1 = (X{i} - U{i}*V{i}');
-            tmp2 = (V{i} - centroidV);
-            val = gamma*(sum(sum(tmp1.^2))+delta*(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));  
-            vale(end+1) = val;
-            val = val^(1.0/(1-gamma));
-            H(end+1) = val;
-        end
         %H
         %vale
         tmpSum = sum(H);
@@ -123,7 +129,12 @@ while j < Rounds
         fprintf('%.3f ',weights(i));
     end
     fprintf(' comp %d\n',j);
-
+    
+    for i=1:viewNum
+        fprintf('%.9f ',costs(i));
+    end
+    fprintf(' are the costs %d\n',j);
+    
     %Compute loss
     logL = 0;
     logy = [];
@@ -134,12 +145,12 @@ while j < Rounds
         logL = logL + alpha*(sum(sum(tmp1.^2)) + delta*(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));
         logy(i) = logL;
     end
-    fprintf('LOG1 %.9f, ',logL);
-    fprintf('%.10f %.10f %.10f\n',logL,logy(1),logy(2)-logy(1));
+    %fprintf('LOG1 %.9f, ',logL);
+    %fprintf('%.10f %.10f %.10f\n',logL,logy(1),logy(2)-logy(1));
     
     log(end+1)=logL;
     rand('twister',5489);
-    ac = ComputeStats(centroidV, label, options.K, 2, 1);
+    ac = ComputeStats(centroidV, label, options.K, 1, 1);
     if ac > maxac
         maxac = ac;
         finalU=U;
@@ -160,7 +171,7 @@ while j < Rounds
     for i = 1:viewNum
         %optionsForPerViewNMF.alpha = options.Gaplpha;
         rand('twister',5489);
-        [U{i}, V{i}] = PerViewNMF(X{i}, K, centroidV, W{i}, optionsForPerViewNMF, finalU{i}, finalV{i}); 
+        [U{i}, V{i}] = PerViewNMF(X{i}, K, centroidV, W{i}, optionsForPerViewNMF, U{i}, V{i}); 
     end
     
 end
