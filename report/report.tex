@@ -121,15 +121,29 @@
 		+ \lambda_{i}Tr(V^{T}_{i}L_{i}V_{i}) \; \bigg)\\	
 		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;V^{*}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}\\
 		V^{*} \text{ is the consensus matrix, } \\
-		P_{i} \text{ represents the mapping of rows from } V_{i} \text{ to } V^{*}\\
+		P_{i} \text{ represents the mapping of rows from } V_{i} \text{ to } V^{*}
 	\end{align*}	
 
 	\noindent
 	\textbf{Update Procedure:}
 	\begin{itemize}
-		\item \textsc{Rule 1:}	Update rule for updating $V_{c}$ with fixed $U_{v}$, $\overline{V_{v}}$
+		\item \textsc{Rule 1:}	Update rule for updating $U_{v}$, ${V_{v}}$ with fixed $V^{*}$ 
 			\begin{multline}
-			V_{i,j} = V_{i,j} \times \Bigg( \frac{(X^{\text{\small{T}}}U)_{i,j}+\lambda V^{*}_{{\textit{\tiny{I(i),j}}}} +\lambda \times (\mu WV)_{i,j}}{(V U^{\text{\small{T}}} U)_{i,j} + \lambda V_{i,j} +\lambda \times (\mu DV)_{i,j}} \Bigg) \\
+			V_{i,j} = V_{i,j} \times \Bigg( \frac{(X^{\text{\small{T}}}U)_{i,j}+\lambda V^{*}_{{\textit{\small{I(i),j}}}} +\lambda \times (\mu WV)_{i,j}}{(V U^{\text{\small{T}}} U)_{i,j} + \lambda V_{i,j} +\lambda \times (\mu DV)_{i,j}} \Bigg) \\
+			U_{i,j} = U_{i,j} \times \Bigg( \frac{(XV)_{i,j}
+			+ \lambda  \sum_{\text{\tiny{t=1}}}^{\text{\tiny{N}}} 
+			V_{t,j}V^{*}_\textit{\small{I(i),j}}}
+			{(U V^{\text{\small{T}}} V)_{i,j} 
+			+ \lambda \sum_{\text{\tiny{t=1}}}^{\text{\tiny{M}}} U_{t,k} 
+			\sum_{\text{\tiny{s=1}}}^{\text{\tiny{N}}}V_{s,j}} \Bigg)
+			\end{multline}
+		\item \textsc{Rule 2:}	Update rule for updating $V^{*}$ with fixed $U_{v}$, ${V_{v}}$ 
+			\begin{multline}
+			V_{i}^{*} = \frac
+			{\displaystyle \sum_{\textit{\small{(r,f)}} \in I^{-}(i)} \lambda_{f} (V_{f})_{r}}
+			{\displaystyle \sum_{\textit{\small{(r,f)}} \in I^{-}(i)} \lambda_{f} }\\
+			 I^{-}(i) : 
+			\textsc{\small{Tuple of all the views which contain the }} i^{th} {\textsc{\small{ instance i.e. (View, Row)}}}
 			\end{multline}
 	\end{itemize}		
 	
@@ -142,17 +156,17 @@
 		\Output{Basis Matrices ${U_{1}, \dots ,U_{n_{v}}}$, Coefficient Matrices ${V_{1}, \dots ,V_{n_{v}}}$ and Consensus Matrix $V^{*}$}
 		Construct Graph Laplacians $L_{v}$ for each view\;
 		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
-		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. GNMF, New equation\;
+		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. GNMF, (4)\;
 		\Repeat{Eq (1) converges}
 		{
 			\For{$v\leftarrow 1$ \KwTo $n_{v}$}
 			{
 				\Repeat{Eq. (1) converges}
 				{
-					Fix $V^{*}$, update $U_{v}$, $V_{v}$ by Eq. N\;
+					Fix $V^{*}$, update $U_{v}$, $V_{v}$ by Eq. (3)\;
 				}
 			}
-			Fix $U_{v}$, $V_{v}$ update $V^{*}$ by Eq. Y\;		
+			Fix $U_{v}$, $V_{v}$ update $V^{*}$ by Eq. (4)\;		
 		}						
 		\caption{Algorithm for optimizing the given loss}
 	\end{algorithm}
@@ -172,13 +186,26 @@
 		V^{*} \text{ is the consensus matrix, } \\
 		P_{i} \text{ represents the mapping of rows from } V_{i} \text{ to } V^{*}
 	\end{align*}
-	\textbf{Update Procedure:}
-
-	\begin{itemize}
-		\item \textsc{}	
 	
-	\end{itemize}
-
+	\noindent
+	\textbf{Update Procedure:}
+	\begin{itemize}
+		\item \textsc{Rule 1:}	Update rule for updating $U_{v}$, ${V_{v}}$ with fixed $V^{*}$, same as Eq. (3)
+		\item \textsc{Rule 2:}	Update rule for updating $V^{*}$ with fixed $U_{v}$, ${V_{v}}$, same as Eq. (4) 
+		\item \textsc{Rule 3:}	Update rule for updating $w_{v}$ with fixed $U_{v}$, ${V_{v}}$ and $V^{*}$ 
+			\begin{multline}
+			w_{v} = \frac{ \bigg( \gamma H_{v} \bigg)^{\frac{1}{1-\gamma}}}
+			{\displaystyle \sum_{t=1}^{n_{v}}
+			\bigg( \gamma H_{t} \bigg)^{\frac{1}{1-\gamma}}} \;\;\;
+			where, \;\; H_{i} = \; \substack { \begin{Vmatrix} X_{i}-U_{i}V^{\text{\tiny{T}}}_{i}
+			 \end{Vmatrix}^{\text{\tiny{2}}}_{\text{\tiny{F}}} + \mu_{i}\begin{Vmatrix} V_{i}-V^{*}(\, P_{i} \, ) 
+			 \end{Vmatrix}^{\text{\tiny{2}}}_{\text{\tiny{F}}} \\
+			+ \lambda_{i}Tr(V^{\text{\tiny{T}}}_{i}L_{i}V_{i}) }\\
+			\end{multline}
+	\end{itemize}		
+	
+	\noindent
+	\textbf{Pseudo Code:}	
 	\begin{algorithm}
 		\SetKwInOut{Input}{Input}
 		\SetKwInOut{Output}{Output}
@@ -187,18 +214,18 @@
 		Construct Graph Laplacians $L_{v}$ for each view\;
 		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
 		Initialize $w_{v}$ as $w_{v}=${\tiny{${\frac{1}{n_{v}}}$}}\;
-		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. M\;
+		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. GNMF, (4)\;
 		\Repeat{Eq (1) converges}
 		{
 			\For{$v\leftarrow 1$ \KwTo $n_{v}$}
 			{
 				\Repeat{Eq. (1) converges}
 				{
-					Fix $V^{*}$, update $U_{v}$, $V_{v}$ by Eq. N\;
+					Fix $V^{*}$, update $U_{v}$, $V_{v}$ by Eq. (3)\;
 				}
 			}
-			Fix $U_{v}$, $V_{v}$ update $V^{*}$ by Eq. Y\;		
-			Update $w_{v}$ by Eq. O\;
+			Fix $U_{v}$, $V_{v}$ update $V^{*}$ by Eq. (4)\;		
+			Update $w_{v}$ by Eq. (5)\;
 		}						
 		\caption{Algorithm for optimizing the given loss}
 	\end{algorithm}
