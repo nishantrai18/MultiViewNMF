@@ -28,13 +28,41 @@
 
 \begin{document}
 
-	\begin{center}
-	\huge{\textsc{Partial Multi View Clustering}}\\
-	\large{\textsc{Via Non Negative Matrix Factorization}}	
-	\end{center}
-	
-	\vspace{5mm}
+    \newgeometry{left=4cm,right=4cm,top=4cm,bottom=6cm}
+	\begin{titlepage}
+	    \begin{center}
+	        \vspace*{1cm}
+	        
+	       	\huge{\textsc{Partial Multi View Clustering}}\\
+			\Large{\textsc{Via Non Negative Matrix Factorization}}	
 
+	        \vspace{8mm}
+	        \large{Nishant Rai\textsuperscript{1}}\\
+			\large{Sumit Negi\textsuperscript{2}}\\
+			\large{Om Deshmukh\textsuperscript{2}}\\
+			\vspace{3mm}
+			
+			{\normalsize{\textsuperscript{1} Indian Institute of Technology Kanpur\\}}
+			{\normalsize{\textsuperscript{2} Xerox Research Centre India\\}}
+	        \vspace{4mm}
+        	\vspace{7mm}
+	        \textbf{Abstract\\}
+        	\vspace{4mm}
+        	\noindent
+{\justifying\small{The project deals with the problem of construction of Multiple Sense Embeddings for different words. We develop several models to tackle the problem consisting of Online Clustering Methods, Methods involving Parameter Estimation and also look at methods related to Word Word Co-occurrence matrices. The training data used is the April 2010 snapshot of the Wikipedia corpus~\cite{wiki}. Our model uses the popular Word2vec tool~\cite{word2vec} to compute Single Word Embeddings. We compare the performance of our approaches with current state of the art models~\cite{huang}~\cite{neel}and find that our model is comparable to the state of the art models and even outperforms them in some cases. Our model is extremely efficient and takes less than 6 hours for complete training and computation of senses. We also discuss the possibility of our model giving better (semantically coherent) senses than present models. The main task used for comparing the models is the SCWS task~\cite{huang}. The comparisons have been done using human judgment of semantic similarity.} \par}
+			\vfill
+            \vspace{3mm}
+            \large\textsc{December '15 - Present\\}
+            \vspace{1mm}
+            \large\textsc{Xerox Research Centre India}
+	    \end{center}
+	\end{titlepage}
+	\restoregeometry
+
+	\tableofcontents
+
+	\pagebreak	
+	
 	\section{Partial Multi Views}
 
 	\subsection{Proposed Methods}
@@ -43,34 +71,42 @@
 	
 	\subsubsection{Graph Regularized PVC (Hard constraints)}
 	
-	\textsc{Formulation:}\\
+	\textbf{Formulation:}\\
 	We explain the formulation for only 2 views (For simplicity), it can be extended to multiple views in a similar manner. We try to minimize the following cost function,
 	\begin{multline}
 	Loss = \begin{Vmatrix} X_{1}-U_{1}V^{T}_{1} \end{Vmatrix}^{2}_{F}	
 		+ \begin{Vmatrix} X_{2}-U_{2}V^{T}_{2} \end{Vmatrix}^{2}_{F}
 		+ \lambda_{2}Tr(V^{T}_{2}L_{2}V_{2}) + \lambda_{1}Tr(V^{T}_{1}L_{1}V_{1}) \\	
-		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}\\
+		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}
 	\end{multline}
+	\noindent
+	\textbf{Update Procedure:}
+	\begin{itemize}
+		\item \textsc{Rule 1:}	Update rule for updating $V_{c}$ with fixed $U_{v}$, $\overline{V_{v}}$
+			\begin{multline}
+			V_{i,j} = V_{i,j} \times \frac{(X_{\text{\tiny{c,1}}}^{\text{\small{T}}}U_{1}+X_{\text{\tiny{c,2}}}^{\text{\small{T}}}U_{2}+WV^{*})_{i,j}}{(V^{*}(U_{1}U_{1}^{\text{\small{T}}}+U_{2}U_{2}^{\text{\small{T}}})+DV^{*})_{i,j}}, \;\;\; where	\;\;\;
+			\frac{D=\lambda_{1}D_{1}+\lambda_{2}D_{2}}{W=\lambda_{1}W_{1}+\lambda_{2}W_{2}}\\		
+			\end{multline}
+	\end{itemize}		
 	
 	\noindent
-	\textsc{Update Procedure:}
-
+	\textbf{Pseudo Code:}
 	\begin{algorithm}
 		\SetKwInOut{Input}{Input}
 		\SetKwInOut{Output}{Output}
-		\Input{Nonnegative Matrix ${X_{1}, \cdots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \lambda_{2}}$, number of clusters $K$}
+		\Input{Nonnegative Matrix ${X_{1}, \dots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \lambda_{2}}$, number of clusters $K$}
 		\Output{Basis Matrices ${U_{1},U_{2}}$ and Coefficient Matrices ${V_{1},V_{2},V_{c}}$}
 		Construct Graph Laplacians $L_{v}$ for each view\;
 		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
-		Initialize  $U_{v}$, $\overline{V_{v}}$ by Eq. M\;
-		Fix $U_{v}$, $\overline{V_{v}}$ update $V_{c}$ by Eq. N\;		
+		Initialize  $U_{v}$, $\overline{V_{v}}$ by Eq. GNMF\;
+		Fix $U_{v}$, $\overline{V_{v}}$ update $V_{c}$ by Eq. (2)\;		
 		\Repeat{Eq (1) converges}
 		{
 			\Repeat{Eq. (1) converges}
 			{
-				Fix $V_{c}$, update $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ by Eq. N\;
+				Fix $V_{c}$, update $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ by Eq. GNMF\;
 			}
-			Fix $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ update $V_{c}$ by Eq. N\;
+			Fix $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ update $V_{c}$ by Eq. (2)\;
 		}						
 		\caption{Algorithm for optimizing the given loss}
 	\end{algorithm}
@@ -87,17 +123,26 @@
 		V^{*} \text{ is the consensus matrix, } \\
 		P_{i} \text{ represents the mapping of rows from } V_{i} \text{ to } V^{*}\\
 	\end{align*}	
+
 	\noindent
-	\textsc{Update Procedure:}
+	\textbf{Update Procedure:}
+	\begin{itemize}
+		\item \textsc{Rule 1:}	Update rule for updating $V_{c}$ with fixed $U_{v}$, $\overline{V_{v}}$
+			\begin{multline}
+			V_{i,j} = V_{i,j} \times \Bigg( \frac{(X^{\text{\small{T}}}U)_{i,j}+\lambda V^{*}_{{\textit{\tiny{I(i),j}}}} +\lambda \times (\mu WV)_{i,j}}{(V U^{\text{\small{T}}} U)_{i,j} + \lambda V_{i,j} +\lambda \times (\mu DV)_{i,j}} \Bigg) \\
+			\end{multline}
+	\end{itemize}		
 	
+	\noindent
+	\textbf{Pseudo Code:}	
 	\begin{algorithm}
 		\SetKwInOut{Input}{Input}
 		\SetKwInOut{Output}{Output}
-		\Input{Nonnegative Matrix ${X_{1}, \cdots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \mu_{1}, \cdots ,\lambda_{n_{v}},\mu_{n_{v}}}$, number of clusters $K$}
-		\Output{Basis Matrices ${U_{1}, \cdots ,U_{n_{v}}}$, Coefficient Matrices ${V_{1}, \cdots ,V_{n_{v}}}$ and Consensus Matrix $V^{*}$}
+		\Input{Nonnegative Matrix ${X_{1}, \dots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \mu_{1}, \dots ,\lambda_{n_{v}},\mu_{n_{v}}}$, number of clusters $K$}
+		\Output{Basis Matrices ${U_{1}, \dots ,U_{n_{v}}}$, Coefficient Matrices ${V_{1}, \dots ,V_{n_{v}}}$ and Consensus Matrix $V^{*}$}
 		Construct Graph Laplacians $L_{v}$ for each view\;
 		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
-		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. M\;
+		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. GNMF, New equation\;
 		\Repeat{Eq (1) converges}
 		{
 			\For{$v\leftarrow 1$ \KwTo $n_{v}$}
@@ -115,7 +160,7 @@
 
 	\subsubsection{Weighted Graph Regularized PVC (Soft constraints)}
 	
-	\textsc{Formulation:}\\
+	\textbf{Formulation:}\\
 	We explain the formulation for multiple views. We adopt the following cost function,
 	\begin{align*}
 	Loss = \displaystyle\sum_{i=1}^{n_{v}} \; \alpha_{i}^{\gamma} \; 
@@ -127,13 +172,18 @@
 		V^{*} \text{ is the consensus matrix, } \\
 		P_{i} \text{ represents the mapping of rows from } V_{i} \text{ to } V^{*}
 	\end{align*}
-	\textsc{Update Procedure:}
+	\textbf{Update Procedure:}
+
+	\begin{itemize}
+		\item \textsc{}	
+	
+	\end{itemize}
 
 	\begin{algorithm}
 		\SetKwInOut{Input}{Input}
 		\SetKwInOut{Output}{Output}
-		\Input{Nonnegative Matrix ${X_{1}, \cdots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \mu_{1}, \cdots ,\lambda_{n_{v}},\mu_{n_{v}}}$, number of clusters $K$}
-		\Output{Basis Matrices ${U_{1}, \cdots ,U_{n_{v}}}$, Coefficient Matrices ${V_{1}, \cdots ,V_{n_{v}}}$, View Weights ${w_{1}, \cdots ,w_{n_{v}}}$ and Consensus Matrix $V^{*}$}
+		\Input{Nonnegative Matrix ${X_{1}, \dots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \mu_{1}, \dots ,\lambda_{n_{v}},\mu_{n_{v}}}$, number of clusters $K$}
+		\Output{Basis Matrices ${U_{1}, \dots ,U_{n_{v}}}$, Coefficient Matrices ${V_{1}, \dots ,V_{n_{v}}}$, View Weights ${w_{1}, \cdots ,w_{n_{v}}}$ and Consensus Matrix $V^{*}$}
 		Construct Graph Laplacians $L_{v}$ for each view\;
 		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
 		Initialize $w_{v}$ as $w_{v}=${\tiny{${\frac{1}{n_{v}}}$}}\;
