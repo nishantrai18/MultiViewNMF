@@ -1,0 +1,399 @@
+\documentclass[a4paper]{article}
+\usepackage[margin=3.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage[export]{adjustbox}
+\usepackage{enumerate}
+\usepackage{url}
+\usepackage{authblk}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{setspace}
+\usepackage{mdframed}
+\usepackage{booktabs}
+\usepackage{ragged2e}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{tabularx}
+\usepackage[linesnumbered,ruled]{algorithm2e}
+
+\graphicspath{{plots/}}
+
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist 
+
+\DeclareMathSizes{10}{10}{10}{10}
+
+\begin{document}
+
+	\begin{center}
+	\huge{\textsc{Partial Multi View Clustering}}\\
+	\large{\textsc{Via Non Negative Matrix Factorization}}	
+	\end{center}
+	
+	\vspace{5mm}
+
+	\section{Partial Multi Views}
+
+	\subsection{Proposed Methods}
+	
+	The methods proposed and their details are given in the following sections.	
+	
+	\subsubsection{Graph Regularized PVC (Hard constraints)}
+	
+	\textsc{Formulation:}\\
+	We explain the formulation for only 2 views (For simplicity), it can be extended to multiple views in a similar manner. We try to minimize the following cost function,
+	\begin{multline}
+	Loss = \begin{Vmatrix} X_{1}-U_{1}V^{T}_{1} \end{Vmatrix}^{2}_{F}	
+		+ \begin{Vmatrix} X_{2}-U_{2}V^{T}_{2} \end{Vmatrix}^{2}_{F}
+		+ \lambda_{2}Tr(V^{T}_{2}L_{2}V_{2}) + \lambda_{1}Tr(V^{T}_{1}L_{1}V_{1}) \\	
+		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}
+	\end{multline}
+	
+	\textsc{Update Procedure:}
+
+	\begin{algorithm}
+		\SetKwInOut{Input}{Input}
+		\SetKwInOut{Output}{Output}
+		\Input{Something}
+		\Output{Else}
+		Construct Graph Laplacians $L_{v}$ for each view\;
+		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
+		Initialize  $U_{v}$ and $V_{v}$ by Eq. M\;
+		\Repeat{Eq (1) converges}
+		{
+			\Repeat{Eq. (1) converges}
+			{
+				Fix $P_{c}$, update $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ by Eq. N\;
+			}
+			Fix $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ update $P_{c}$ by Eq. N\;
+		}						
+		\caption{Algorithm for optimizing the given loss}
+	\end{algorithm}
+
+	\subsubsection{Graph Regularized PVC (Soft constraints)}
+	
+	\textsc{Formulation:}\\
+	We explain the formulation for multiple views. We adopt the following cost function,
+	\begin{align*}	
+	Loss = \displaystyle\sum_{i=1}^{n_{v}} \; \bigg(\begin{Vmatrix} X_{i}-U_{i}V^{T}_{i} \end{Vmatrix}^{2}_{F}	
+		+ \mu_{i}\begin{Vmatrix} V_{i}-V^{*}(\, P_{i} \, ) \end{Vmatrix}^{2}_{F}
+		+ \lambda_{i}Tr(V^{T}_{i}L_{i}V_{i}) \; \bigg)\\	
+		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;V^{*}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}\\
+		V^{*} \text{ is the consensus matrix, } \\
+		P_{i} \text{ represents the mapping of rows from } V_{i} \text{ to } V^{*}
+	\end{align*}	
+	\textsc{Update Procedure:}
+	
+	\begin{algorithm}
+		\SetKwInOut{Input}{Input}
+		\SetKwInOut{Output}{Output}
+		\Input{Something}
+		\Output{Else}
+		Construct Graph Laplacians $L_{v}$ for each view\;
+		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
+		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. M\;
+		\Repeat{Eq (1) converges}
+		{
+			\For{$v\leftarrow 1$ \KwTo $n_{v}$}
+			{
+				\Repeat{Eq. (1) converges}
+				{
+					Fix $V^{*}$, update $U_{v}$, $V_{v}$ by Eq. N\;
+				}
+			}
+			Fix $U_{v}$, $V_{v}$ update $V^{*}$ by Eq. Y\;		
+		}						
+		\caption{Algorithm for optimizing the given loss}
+	\end{algorithm}
+
+
+	\subsubsection{Weighted Graph Regularized PVC (Soft constraints)}
+	
+	\textsc{Formulation:}\\
+	We explain the formulation for multiple views. We adopt the following cost function,
+	\begin{align*}
+	Loss = \displaystyle\sum_{i=1}^{n_{v}} \; \alpha_{i}^{\gamma} \; 
+		\bigg(\begin{Vmatrix} X_{i}-U_{i}V^{T}_{i} \end{Vmatrix}^{2}_{F}	
+		+ \mu_{i}\begin{Vmatrix} V_{i}-V^{*}(\, P_{i} \, ) \end{Vmatrix}^{2}_{F}
+		+ \lambda_{i}Tr(V^{T}_{i}L_{i}V_{i}) \; \bigg)\\	
+		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;V^{*}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}
+		\;\; and \;\; \sum_{i=1}^{n_{v}} \alpha_{i} = 1 \\
+		V^{*} \text{ is the consensus matrix, } \\
+		P_{i} \text{ represents the mapping of rows from } V_{i} \text{ to } V^{*}
+	\end{align*}
+	\textsc{Update Procedure:}
+
+	\begin{algorithm}
+		\SetKwInOut{Input}{Input}
+		\SetKwInOut{Output}{Output}
+		\Input{Something}
+		\Output{Else}
+		Construct Graph Laplacians $L_{v}$ for each view\;
+		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
+		Initialize $w_{v}$ as $w_{v}=${\tiny{${\frac{1}{n_{v}}}$}}\;
+		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. M\;
+		\Repeat{Eq (1) converges}
+		{
+			\For{$v\leftarrow 1$ \KwTo $n_{v}$}
+			{
+				\Repeat{Eq. (1) converges}
+				{
+					Fix $V^{*}$, update $U_{v}$, $V_{v}$ by Eq. N\;
+				}
+			}
+			Fix $U_{v}$, $V_{v}$ update $V^{*}$ by Eq. Y\;		
+			Update $w_{v}$ by Eq. O\;
+		}						
+		\caption{Algorithm for optimizing the given loss}
+	\end{algorithm}
+
+	\subsection{Methods}
+	
+	The evaluated methods are as follows,
+	\begin{itemize}
+	\item {Partial Multi View Clustering (Li et al.) (PVC)}
+	\item {Graph Regularized PVC (Hard constraints) (GPVC-A)	\small\textbf{(Proposed)}}
+	\item {Graph Regularized PVC (Soft constraints) (GPVC-B)	\small\textbf{(Proposed)}}
+	\item {Weighted Graph Regularized PVC (Soft constraints) (WGPVC)	\small\textbf{(Proposed)}}
+	\end{itemize}
+
+	\subsection{Datasets}
+	
+	The datasets used for evaluation are as follows,
+	\begin{itemize}
+	\item \textsc{3-Sources} : It is collected from three online news sources: BBC, Reuters, and The Guardian. In total there are 948 news articles covering 416 distinct news stories from the period February to April 2009. Of these stories, 169 were reported in all three sources. Each story was manually annotated with one of the six topical labels. We use the news reports common in any two sources in the experiments.
+	\item \textsc{BBCSport} : Collection of sports news reports from BBC. Consists of 544 reports with 2 views each.
+	\item \textsc{UCI Handwritten Digit dataset} : This hand-written digits (0-9) data is from the UCI repository.The dataset consists of 2000 examples, with view-1 being the 76 Fourier coefficients and view-2 being the 240 pixel averages in 2 × 3 windows.	
+	\item \textsc{CiteSeer} : Collection of 3312 documents over 6 labels. It is made of 2 views (content, cites) on the same documents.
+	\item \textsc{ORL} : Collection of facial images of 40 subjects. Consists of 400 images with 2 views each.	
+	\end{itemize}
+
+	\subsection{Evaluation Measures}
+
+	The evaluation measures used are as follows,
+	\begin{itemize}
+	\item {Normalised Mutual Information (NMI)}
+	\item {Average Entropy (ENT)}
+	\item {Adjusted Random Index (ARI)}
+	\item {Purity (PR)}
+	\item {Accuracy (ACC)}
+	\end{itemize}
+	
+    \newgeometry{left=0.8cm,right=0.8cm,top=2cm,bottom=2cm}
+
+	\subsection{Result Table}	
+
+	\begin{table}[h!]
+	  \begin{center}
+	    \begin{tabular}{r|c|c|c|c|c}
+	      \toprule
+	      \textsc{DataSet} & \textsc{Method} & \textsc{NMI} & \textsc{Entropy} & \textsc{AdjustRI} & \textsc{Purity} 	\\
+            
+		  \midrule
+		  & \textsc{GraphRegPVC} &	0.8347 (0.0165) & 0.5843 (0.0643) & 0.7515 (0.0364) & 0.8349 (0.0314)\\	  
+		  & \textsc{(Hard)} &&&& \\	  
+		  \textsc{Digit} &  
+		  \textsc{GraphRegPVC} & \textbf{0.8892 (0.0256)} & \textbf{0.3959 (0.1099)} 
+		  & \textbf{0.8371 (0.0638)} & \textbf{0.8975 (0.0527)}\\
+		  & \textsc{(Soft)} &&&&\\	  
+		  & \textsc{PartialMV} & 0.6274 (0.0180) & 1.2547 (0.0643) & 0.5192 (0.0311) & 0.6998 (0.0337)\\
+		  & \textsc{(Hard)} &&&&\\
+                        
+	      \midrule
+		  & \textsc{GraphRegPVC} & 0.5556 (0.0265) & 1.0095 (0.0690) & 0.4391 (0.0518) & 0.7329 (0.0286)\\
+		  & \textsc{(Hard)} &&&&\\
+		  \textsc{3 Sources (BG)} & 
+		  \textsc{GraphRegPVC} & 0.5493 (0.0187) & 1.1643 (0.0492) & 0.4625 (0.0261) & 0.6746 (0.0156)\\
+		  & \textsc{(Soft)} &&&&\\	  
+		  & \textsc{PartialMV} & \textbf{0.6434 (0.0169)} & \textbf{0.9001 (0.0404)} 
+		  & \textbf{0.6010 (0.0358)} & \textbf{0.7543 (0.0171)}\\
+		  & \textsc{(Hard)} &&&&\\
+		  
+	      \midrule
+		  & \textsc{GraphRegPVC} &	\textbf{0.5917 (0.0227)} & 1.0347 (0.0595) 
+		  & \textbf{0.5018 (0.0420)} & 0.6991 (0.0168) \\	  
+		  & \textsc{(Hard)} &&&&\\	              
+		  \textsc{3 Sources (BR)} & 
+		  \textsc{GraphRegPVC} & 0.5500 (0.0213) & 1.0444 (0.0628) & 0.4266 (0.0264) & 0.7108 (0.0196)\\
+		  & \textsc{(Soft)} &&&&\\	  
+		  & \textsc{PartialMV} & 0.5674 (0.0189) & \textbf{1.0076 (0.0461)} & 0.4626 (0.0366) 
+		  & \textbf{0.7351 (0.0187)}\\
+		  & \textsc{(Hard)} &&&&\\
+
+	      \midrule
+		  & \textsc{GraphRegPVC} &	0.5697 (0.0192) & 0.9923 (0.0450) & 0.4466 (0.0433) & 0.7252 (0.0166)\\	  
+		  & \textsc{(Hard)} &&&& \\            
+		  \textsc{3 Sources (GR)} &
+		  \textsc{GraphRegPVC} & \textbf{0.5844 (0.0279)} & \textbf{0.9450 (0.0676)}
+		  & \textbf{0.4940 (0.0450)} & \textbf{0.7452 (0.0284)}\\
+		  & \textsc{(Soft)} &&&&\\	  
+		  & \textsc{PartialMV} & 0.5467 (0.0303) & 1.0263 (0.0701) & 0.4546 (0.0547) & 0.7322 (0.0267)\\
+		  & \textsc{(Hard)} &&&&\\
+		  
+		  \midrule
+		  & \textsc{GraphRegPVC} &	\textbf{0.5294 (0.0167)} & \textbf{1.0270 (0.0316)}
+		  & 0.4651 (0.0375) & 0.7014 (0.0161)\\	  
+		  & \textsc{(Hard)} &&&& \\	  
+		  \textsc{BBCSports} & 
+		  \textsc{GraphRegPVC} & 0.4763 (0.0124) & 1.1405 (0.0347) & 0.4073 (0.0226) & 0.6856 (0.0082) \\
+		  & \textsc{(Soft)} &&&& \\	  
+		  & \textsc{PartialMV} & 0.5049 (0.0199) & 1.1006 (0.0391) 
+		  & \textbf{0.4895 (0.0356)} & \textbf{0.7065 (0.0218)}\\
+		  & \textsc{(Hard)} &&&&\\            
+		  
+		  \bottomrule
+	    \end{tabular}
+	    \caption{\textsc{Table for Results\\(For PER = 1.0)}}
+	  \end{center}
+	\end{table}		
+
+	\restoregeometry	
+	
+	\pagebreak
+	
+		
+    \newgeometry{left=1.5cm,right=1.5cm,top=3cm,bottom=3cm}
+
+	\subsection{Plots}	
+	
+	\begin{figure}[H]
+	
+	\begin{tabular}[H]{ccc}
+		\subfloat[Digit]{\includegraphics[width=5.5cm]{digitacc.jpg}} 
+    	& \subfloat[Digit]{\includegraphics[width=5.5cm]{digitnmi.jpg}}
+    	& \subfloat[Digit]{\includegraphics[width=5.5cm]{digitpur.jpg}}\\
+	   
+ 	    \subfloat[ORL]{\includegraphics[width=5.5cm]{orlacc.jpg}} 
+    	& \subfloat[ORL]{\includegraphics[width=5.5cm]{orlnmi.jpg}}
+    	& \subfloat[ORL]{\includegraphics[width=5.5cm]{orlpur.jpg}}\\
+	    
+	    \subfloat[CiteSeer]{\includegraphics[width=5.5cm]{csacc.jpg}} 
+    	& \subfloat[CiteSeer]{\includegraphics[width=5.5cm]{csnmi.jpg}}
+    	& \subfloat[CiteSeer]{\includegraphics[width=5.5cm]{cspur.jpg}}\\
+	\end{tabular}
+	\vspace{5mm}
+	\caption*{\textsc{Results for varying PERs}}\label{foo}
+	\end{figure}
+
+	\restoregeometry	
+	
+	\pagebreak
+
+
+	\section{Complete Multi Views}
+
+	\subsection{Proposed Methods}
+	
+	The methods proposed and their details are given in the following sections.	
+	
+	\subsubsection{Weighted Graph Regularized PVC (Soft constraints)}
+	
+	\textsc{Formulation:}\\
+	We explain the formulation for multiple views. We adopt the following cost function,
+	\begin{align*}
+	Loss = \displaystyle\sum_{i=1}^{n_{v}} \; \alpha_{i}^{\gamma} \; 
+		\bigg(\begin{Vmatrix} X_{i}-U_{i}V^{T}_{i} \end{Vmatrix}^{2}_{F}	
+		+ \mu_{i}\begin{Vmatrix} V_{i}-V^{*} \end{Vmatrix}^{2}_{F}
+		+ \lambda_{i}Tr(V^{T}_{i}L_{i}V_{i}) \; \bigg)\\	
+		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;V^{*}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}
+		\;\; and \;\; \sum_{i=1}^{n_{v}} \alpha_{i} = 1 \\
+		V^{*} \text{ is the consensus matrix, }
+	\end{align*}
+	\textsc{Update Procedure:}
+
+
+	\subsection{Methods}
+	
+	The proposed methods are as follows,
+	\begin{itemize}
+	\item {Multi View Clustering (Liu et al.) (MultiNMF)}
+	\item {Graph Regularized MultiNMF (GMultiNMF)}
+	\item {Weighted Graph Regularized MultiNMF (WGNMF)	\small\textbf{(Proposed)}}
+	\end{itemize}
+
+	\subsection{Datasets}
+	
+	The datasets used for evaluation are as follows,
+	\begin{itemize}
+	\item \textsc{3-Sources} : It is collected from three online news sources: BBC, Reuters, and The Guardian. In total there are 948 news articles covering 416 distinct news stories from the period February to April 2009. Of these stories, 169 were reported in all three sources. Each story was manually annotated with one of the six labels. We use the news reports common in all sources in the experiments.
+	\item \textsc{BBCSport} : Collection of sports news reports from BBC. Consists of 544 reports with 2 views each. Some reports have also 3-4 views in common. They are also used in the experiments.
+	\item \textsc{UCI Handwritten Digit dataset} : This hand-written digits (0-9) data is from the UCI repository.The dataset consists of 2000 examples, with view-1 being the 76 Fourier coefficients and view-2 being the 240 pixel averages in 2 × 3 windows. All 6 provided views are also considered for experiments.
+	\item \textsc{ORL} : Collection of facial images of 40 subjects. Consists of 400 images with 2 views each.
+	\item \textsc{CiteSeer} : Collection of 3312 documents over 6 labels. It is made of 4 views (content, inbound, outbound, cites) on the same documents.
+	\end{itemize}
+
+	\subsection{Evaluation Measures}
+
+	The evaluation measures used are as follows,
+	\begin{itemize}
+	\item {Accuracy (ACC)}
+	\item {Normalised Mutual Information (NMI)}
+	\item {Purity (PR)}
+	\end{itemize}
+	
+    \newgeometry{left=0.8cm,right=0.8cm,top=2cm,bottom=2cm}
+
+	\subsection{Result Table}	
+
+	We show the results for the Digit dataset,	
+	\begin{table}[h!]
+	  \begin{center}
+	    \begin{tabular}{c|c|c|c}
+	      \toprule
+	      \textsc{Method} & \textsc{Accuracy (\%) } & \textsc{NMI (\%) } 
+	      & \textsc{Purity (\%)} 	\\
+            
+		  \midrule
+			\textsc{BSV} & 68.5 & 63.4 & NA\\
+			\textsc{WSV} & 63.5 & 60.3 & NA\\
+			\textsc{ConcatNMF} & 67.8 & 60.3 & NA\\
+			\textsc{ColNMF} & 66.0 & 62.1 & NA\\
+			\textsc{Co-reguSC} & 86.6 & 77.0 & NA\\
+			\textsc{MultiNMF} & 88.1 & 80.4 & NA\\
+			\textsc{SC-ML} & 88.1 & 87.6 & NA\\
+			\textsc{GPVC-S} & 95.1 & 90.1 & 95.1\\  
+			\textsc{WPVC} & \textbf{96.8} & \textbf{93.2} & \textbf{96.8}\\
+		  
+		  \bottomrule
+	    \end{tabular}
+	    \caption*{\textsc{Results for Digit (2 views)}}
+	  \end{center}
+	\end{table}		
+
+	We show the results for the multiple datasets, but compare only GPVC-S and WPVC,	
+	\begin{table}[h!]
+	  \begin{center}
+	    \begin{tabular}{c|c|c|c|c}
+	      \toprule
+		  \textsc{Dataset} & \textsc{Method} & \textsc{Accuracy (\%) } & \textsc{NMI (\%) } 
+	      & \textsc{Purity (\%)} 	\\
+            
+		  \midrule
+			\textsc{Digit} & \textsc{GPVC-S} & 73.3 & 68.6 & 73.3\\  
+			\footnotesize\textsc{(6 Views)} & \textsc{WPVC} & \textbf{93.0} & \textbf{87.5} & \textbf{93.0}\\
+			& \textsc{MVC} & 86.3 & 78.1 & 86.3\\  
+		  \midrule
+	    	\textsc{3Sources} & \textsc{GPVC-S} & 62.7 & 54.5 & 68.6\\  
+			\footnotesize\textsc{(3 Views)} & \textsc{WPVC} & \textbf{63.2} & \textbf{57.1} & \textbf{69.2}\\
+			& \textsc{MVC} & 46.7 & 37.1 & 61.5\\  
+		  \midrule
+	    	\textsc{BBCSports} & \textsc{GPVC-S} & \textbf{59.2} & \textbf{26.2} & \textbf{59.6}\\  
+			\footnotesize\textsc{(3 Views)} & \textsc{WPVC} & {57.4} & {21.7} & {57.8}\\
+			& \textsc{MVC} & 53.2 & 23.4 & 53.9\\  
+		  \midrule
+
+	    \end{tabular}
+	    \caption*{\textsc{Results for Digit (2 views)}}
+	  \end{center}
+	\end{table}		
+
+
+
+	\restoregeometry	
+	
+\end{document}
+
+
