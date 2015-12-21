@@ -49,26 +49,28 @@
 	Loss = \begin{Vmatrix} X_{1}-U_{1}V^{T}_{1} \end{Vmatrix}^{2}_{F}	
 		+ \begin{Vmatrix} X_{2}-U_{2}V^{T}_{2} \end{Vmatrix}^{2}_{F}
 		+ \lambda_{2}Tr(V^{T}_{2}L_{2}V_{2}) + \lambda_{1}Tr(V^{T}_{1}L_{1}V_{1}) \\	
-		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}
+		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}\\
 	\end{multline}
 	
+	\noindent
 	\textsc{Update Procedure:}
 
 	\begin{algorithm}
 		\SetKwInOut{Input}{Input}
 		\SetKwInOut{Output}{Output}
-		\Input{Something}
-		\Output{Else}
+		\Input{Nonnegative Matrix ${X_{1}, \cdots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \lambda_{2}}$, number of clusters $K$}
+		\Output{Basis Matrices ${U_{1},U_{2}}$ and Coefficient Matrices ${V_{1},V_{2},V_{c}}$}
 		Construct Graph Laplacians $L_{v}$ for each view\;
 		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
-		Initialize  $U_{v}$ and $V_{v}$ by Eq. M\;
+		Initialize  $U_{v}$, $\overline{V_{v}}$ by Eq. M\;
+		Fix $U_{v}$, $\overline{V_{v}}$ update $V_{c}$ by Eq. N\;		
 		\Repeat{Eq (1) converges}
 		{
 			\Repeat{Eq. (1) converges}
 			{
-				Fix $P_{c}$, update $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ by Eq. N\;
+				Fix $V_{c}$, update $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ by Eq. N\;
 			}
-			Fix $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ update $P_{c}$ by Eq. N\;
+			Fix $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ update $V_{c}$ by Eq. N\;
 		}						
 		\caption{Algorithm for optimizing the given loss}
 	\end{algorithm}
@@ -83,15 +85,16 @@
 		+ \lambda_{i}Tr(V^{T}_{i}L_{i}V_{i}) \; \bigg)\\	
 		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;V^{*}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}\\
 		V^{*} \text{ is the consensus matrix, } \\
-		P_{i} \text{ represents the mapping of rows from } V_{i} \text{ to } V^{*}
+		P_{i} \text{ represents the mapping of rows from } V_{i} \text{ to } V^{*}\\
 	\end{align*}	
+	\noindent
 	\textsc{Update Procedure:}
 	
 	\begin{algorithm}
 		\SetKwInOut{Input}{Input}
 		\SetKwInOut{Output}{Output}
-		\Input{Something}
-		\Output{Else}
+		\Input{Nonnegative Matrix ${X_{1}, \cdots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \mu_{1}, \cdots ,\lambda_{n_{v}},\mu_{n_{v}}}$, number of clusters $K$}
+		\Output{Basis Matrices ${U_{1}, \cdots ,U_{n_{v}}}$, Coefficient Matrices ${V_{1}, \cdots ,V_{n_{v}}}$ and Consensus Matrix $V^{*}$}
 		Construct Graph Laplacians $L_{v}$ for each view\;
 		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
 		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. M\;
@@ -129,8 +132,8 @@
 	\begin{algorithm}
 		\SetKwInOut{Input}{Input}
 		\SetKwInOut{Output}{Output}
-		\Input{Something}
-		\Output{Else}
+		\Input{Nonnegative Matrix ${X_{1}, \cdots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \mu_{1}, \cdots ,\lambda_{n_{v}},\mu_{n_{v}}}$, number of clusters $K$}
+		\Output{Basis Matrices ${U_{1}, \cdots ,U_{n_{v}}}$, Coefficient Matrices ${V_{1}, \cdots ,V_{n_{v}}}$, View Weights ${w_{1}, \cdots ,w_{n_{v}}}$ and Consensus Matrix $V^{*}$}
 		Construct Graph Laplacians $L_{v}$ for each view\;
 		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
 		Initialize $w_{v}$ as $w_{v}=${\tiny{${\frac{1}{n_{v}}}$}}\;
