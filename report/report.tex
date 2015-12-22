@@ -52,7 +52,7 @@
 	        \textbf{Abstract\\}
         	\vspace{4mm}
         	\noindent
-{\justifying\small{The project deals with the problem of construction of Multiple Sense Embeddings for different words. We develop several models to tackle the problem consisting of Online Clustering Methods, Methods involving Parameter Estimation and also look at methods related to Word Word Co-occurrence matrices. The training data used is the April 2010 snapshot of the Wikipedia corpus~\cite{wiki}. Our model uses the popular Word2vec tool~\cite{word2vec} to compute Single Word Embeddings. We compare the performance of our approaches with current state of the art models~\cite{huang}~\cite{neel}and find that our model is comparable to the state of the art models and even outperforms them in some cases. Our model is extremely efficient and takes less than 6 hours for complete training and computation of senses. We also discuss the possibility of our model giving better (semantically coherent) senses than present models. The main task used for comparing the models is the SCWS task~\cite{huang}. The comparisons have been done using human judgment of semantic similarity.} \par}
+{\justifying\small{The project deals with the problem of clustering data using information present in Multiple Views. We propose several models to tackle the problem involving Graph Regularization, Introduction of Consensus Matrices and varying View Weights. We use both Image and Textual training data \cite{greene2009matrix} to analyze the performance of our algorithms with previous work \cite{pvc15}, \cite{nmfsdm}. Our models use both Graph Regularization \cite{GReg} and agreement towards a common Consensus to compute clusterings \cite{nmfsdm}. We compare the performance of our approaches with previous models in the field \cite{pvc15}, \cite{nmfsdm}, \cite{GReg} and find that our model outperforms them. The proposed models have simple update rules which result in ease of computation. We also study the effect of Graph Regularization on the results and the effect of varying Kernels on it. We also discuss the possibility of our model automatically computing the goodness (importance) of the provided views \cite{cai2013multi}.} \par}
 			\vfill
             \vspace{3mm}
             \large\textsc{December '15 - Present\\}
@@ -85,7 +85,7 @@ The method was first proposed in ~\cite{nmfsdm}. The basic idea is as follows. F
 	\subsection{Graph Regularized NMF}
 	
 	By using the non-negative constraints, NMF can learn a parts-based representation. However, NMF performs
-this learning in the Euclidean space. It fails to discover the intrinsic geometrical and discriminating structure of the data space, which is essential to the real-world applications. The method was proposed in ~\cite{GReg} and has been used in many applications of NMF since then.	\\
+this learning in the Euclidean space. It fails to discover the intrinsic geometrical and discriminating structure of the data space \cite{cai2008non}, which is essential to the real-world applications. The method was proposed in ~\cite{GReg} and has been used in many applications of NMF since then.	\\
 
 	\noindent
 	\textbf{Formulation:}\\
@@ -97,7 +97,7 @@ this learning in the Euclidean space. It fails to discover the intrinsic geometr
 
 	\section{Partial Multi Views}
 
-Partial Multi View Clustering is a much more realistic model. Here, not all instances have complete views (i.e. do not have all sets of views). Which is highly likely for real world datasets. The setup remains roughly the same but with existence of partial views for instances. We discuss the existing work done in the field and propose different algorithms for the same.
+Partial Multi View Clustering \cite{pvc15} is a much more realistic model. Here, not all instances have complete views (i.e. do not have all sets of views). Which is highly likely for real world datasets. The setup remains roughly the same but with existence of partial views for instances. We discuss the existing work done in the field and propose different algorithms for the same.
 
 	\subsection{Existing Methods}
 
@@ -120,7 +120,7 @@ Partial Multi View Clustering is a much more realistic model. Here, not all inst
 	
 	\subsubsection{Graph Regularized PVC (Hard constraints)}
 	
-	The following method is inspired from ~\cite{pvc15}, ~\cite{Greg}. We use both hard constraints and graph regularization together to simultaneously respect the underlying intrinsic structure and also the common latent structure of the data.\\	
+	The following method is inspired from ~\cite{pvc15}, ~\cite{GReg}. We use both hard constraints and graph regularization together to simultaneously respect the underlying intrinsic structure and also the common latent structure of the data.\\	
 	
 	\noindent
 	\textbf{Formulation:}\\
@@ -163,10 +163,11 @@ Partial Multi View Clustering is a much more realistic model. Here, not all inst
 		\caption{Algorithm for minimizing the loss in Graph regularized PVC (Hard Constraints), given by Eq. (2). Based on Alternate Optimization}
 	\end{algorithm}
 
+	\pagebreak
 
 	\subsubsection{Graph Regularized PVC (Soft constraints)}
 	
-	The following method is inspired from ~\cite{nmfsdm}, ~\cite{Greg}. It has been shown in ~\cite{nmfsdm} that applying soft constraints is better than hard constraints. Thus, we use soft constraints and graph regularization together to simultaneously respect the underlying intrinsic structure and also the common latent structure of the data.\\	
+	The following method is inspired from \cite{nmfsdm}, \cite{GReg}. The complete multi View version has been explored in \cite{wangfeature}. It has been shown in \cite{nmfsdm} that applying soft constraints is better than hard constraints. Thus, we use soft constraints and graph regularization together to simultaneously respect the underlying intrinsic structure and also the common latent structure of the data.\\	
 	
 	\noindent
 	\textbf{Formulation:}\\
@@ -210,8 +211,7 @@ Partial Multi View Clustering is a much more realistic model. Here, not all inst
 		\SetKwInOut{Output}{Output}
 		\Input{Nonnegative Matrix ${X_{1}, \dots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \mu_{1}, \dots ,\lambda_{n_{v}},\mu_{n_{v}}}$, number of clusters $K$, mappings between the views and instances $P$}
 		\Output{Basis Matrices ${U_{1}, \dots ,U_{n_{v}}}$, Coefficient Matrices ${V_{1}, \dots ,V_{n_{v}}}$ and Consensus Matrix $V^{*}$}
-		Construct Graph Laplacians $L_{v}$ for each view\;
-		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
+		Construct Graph Laplacians $L_{v}$, normalize $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $ for each view\;
 		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. (1), (6)\;
 		\Repeat{Eq (4) converges}
 		{
@@ -230,7 +230,7 @@ Partial Multi View Clustering is a much more realistic model. Here, not all inst
 
 	\subsubsection{Weighted Graph Regularized PVC (Soft constraints)}
 	
-	The following method is grossly similar to the previous one. The only difference being in the introduction of view weights. It is easy to realize that not all views are equally important, some might be not be important at all while others might be quite important. We introduce view weights as parameters to be learned during the optimization.\\	
+	The following method is grossly similar to the previous one. The only difference being in the introduction of view weights \cite{cai2013multi}. It is easy to realize that not all views are equally important, some might be not be important at all while others might be quite important. We introduce view weights as parameters to be learned during the optimization.\\	
 	
 	\noindent	
 	\textbf{Formulation:}\\
@@ -320,7 +320,9 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	\item \textsc{CiteSeer} : Collection of 3312 documents over 6 labels. It is made of 2 views (content, cites) on the same documents.
 	\item \textsc{ORL} : Collection of facial images of 40 subjects. Consists of 400 images with 2 views each.	
 	\end{itemize}
-
+	
+	\null \hfill {\footnotesize{\textsc{(Results for the other Datasets present in the Supplementary file)}}}\\
+	
 	\subsection{Evaluation Measures}
 
 	The evaluation measures used are as follows,
@@ -339,9 +341,15 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	\item {Partial Multi View Clustering (Li et al.) ~\cite{pvc15}}
 	\item {Graph Regularized PVC (Hard constraints) (GPVC-A)	\small\textbf{(Proposed)}}
 	\item {Graph Regularized PVC (Soft constraints) (GPVC-B)	\small\textbf{(Proposed)}}
-	\item {Weighted Graph Regularized PVC (Soft constraints) (WGPVC)	\small\textbf{(Proposed)}}
+	\item {Weighted Graph Regularized PVC (Soft constraints) (WPVC)	\small\textbf{(Proposed)}}
 	\end{itemize}	
 
+	\subsubsection{Conclusions}
+
+	As we can see in the plots shown in the next section, the proposed models outperform PVC in the UCI Digit dataset by a huge margin. While there is no clear winner in the other two datasets. Note that this is also caused due to inappropriate choice of the Graph Laplacian, which will be discussed in further sections. For example, using Dot Product weighting (Cosine Similarity) in case of BBCSports results in our proposed Models outperforming the others.\\
+	Notice that GPVC-A degrades extremely quickly with increasing PER, it's due to an issue of comparability between views.\\
+	Also observe that our models perform better initially but the performance is slightly reduced with increasing PER.
+	
     \newgeometry{left=1.5cm,right=1.5cm,top=2.5cm,bottom=2.5cm}
 
 	\subsubsection{Plots}
@@ -366,8 +374,6 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	\end{figure}
 
 	\restoregeometry	
-	
-	\subsubsection{Conclusions}
 
 	\subsection{Experiment with Multi Views}	
 
@@ -376,8 +382,13 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	Since the implementations for the other models could not scale up to more than two views. We evaluate the performance of only the following methods,
 	\begin{itemize}
 	\item {Graph Regularized PVC (Soft constraints) (GPVC-B)	\small\textbf{(Proposed)}}
-	\item {Weighted Graph Regularized PVC (Soft constraints) (WGPVC)	\small\textbf{(Proposed)}}
+	\item {Weighted Graph Regularized PVC (Soft constraints) (WPVC)	\small\textbf{(Proposed)}}
 	\end{itemize}	
+
+	\subsubsection{Conclusions}
+	
+	As we can see in the plots shown in the next section, GPVC-B surprisingly outperforms WPVC in the Digit Dataset. This can be caused due to multiple issues which will be discussed in future sections.\\
+	Note that the results are almost the same in case of the text dataset (BBCSports). A possible reason could be the similar views for BBCSports, resulting in WPVC being 'almost' the same as GPVC-B.
 
     \newgeometry{left=1.5cm,right=1.5cm,top=2.5cm,bottom=2.5cm}
 
@@ -408,8 +419,6 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	\end{figure}
 
 	\restoregeometry	
-	
-	\subsubsection{Conclusions}
 
 	\section{Varying Kernels}
 	
@@ -417,7 +426,7 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	
 	\subsection{Kernels Used}
 
-	We define the various kernels used to construct the Graph Laplacian (The descriptions are taken from ~\cite{GReg}),
+	We define the various kernels used to construct the Graph Laplacian (The descriptions are taken from \cite{GReg}),
 	\begin{itemize}
 	\item \textsc{0-1 Weighting :} If nodes $j$ and $l$ are connected by an edge, put $W_{j,l} = 1$. This is the simplest weighting method and is very easy to compute. In our experiments we consider the nearest neighbor graph i.e. there is an edge between u, v if is one of the p nearest neighbors of u (We use p = 5).
 	\item \textsc{Heat kernel weighting :} If nodes $j$ and $l$ are connected, put $W_{j,l} = e^{\frac{\|x_{j}-x_{l}\|^{\text{\tiny{2}}}}{\sigma}}$
@@ -493,7 +502,7 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	
 	\subsection{Intuition}
 		
-	The introduction of view weights is motivated by the observation that not all views are equally important. It is easy to realize that some views might be not be important at all while others might be quite important. We introduce view weights as parameters to be learned during the optimization. Hoping that the parameters learned would automatically give us the importance (goodness) of views.
+	The introduction of view weights is motivated by the observation that not all views are equally important. It is easy to realize that some views might be not be important at all while others might be quite important. We introduce view weights as parameters to be learned during the optimization. Hoping that the parameters learned would automatically give us the importance (goodness) of views \cite{cai2013multi}.
 
 	\subsection{Results}
 
@@ -561,13 +570,19 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	There are many extensions and improvements to the present model, some of them being,
 	\begin{itemize}
 		\item Modify the formulation of the varying view weights model as discussed in the previous sections. Improve reliability of the computed weights.
-		\item Inclusion of $L_{21}$ norm in the framework to be more robust to outliers and noisy data.
-		\item Incorporate View Specific Feature Weights in the current framework
+		\item Inclusion of $L_{21}$ norm in the framework to be more robust to outliers and noisy data \cite{huang2014robust}
+		\item Incorporate View Specific Feature Weights in the current framework \cite{wang2013multi}
 		\item Scaling up the model for large data sets (Since standard graph Laplacian based regularization methods scale poorly w.r.t. the graph size).
-		\item Considering other variations of the multiview clustering problem, e.g., collective matrix factorization \cite{SOME} and clustering multiple networks \cite{SPM}, and many others.	
+		\item Considering other variations of the multiview clustering problem, e.g., collective matrix factorization \cite{bouchard2013convex} and clustering multiple networks \cite{ni2015flexible}, and many others.	
 	\end{itemize}		
 	
+	\pagebreak	
 	
+	\section{Bibliography}	
+	
+	\bibliographystyle{plain}
+
+	\bibliography{sources}	
 	
 \end{document}
 
