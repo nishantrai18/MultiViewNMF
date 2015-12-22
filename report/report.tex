@@ -1,8 +1,8 @@
 \documentclass[a4paper]{article}
 \usepackage[margin=3cm]{geometry}
-\usepackage{graphicx}
 \usepackage{wrapfig}
-\usepackage{caption}
+\usepackage{graphicx}
+\usepackage[justification=centering]{caption}
 \usepackage{amsmath}
 \usepackage[export]{adjustbox}
 \usepackage{enumerate}
@@ -14,9 +14,7 @@
 \usepackage{mdframed}
 \usepackage{booktabs}
 \usepackage{ragged2e}
-\usepackage{graphicx}
 \usepackage{subfig}
-\usepackage{tabularx}
 \usepackage[linesnumbered,ruled]{algorithm2e}
 
 \graphicspath{{plots/}}
@@ -312,16 +310,6 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	
 	\section{Results}
 
-	\subsection{Evaluated Methods}
-	
-	We evaluate the performance of the following methods,
-	\begin{itemize}
-	\item {Partial Multi View Clustering (Li et al.) ~\cite{pvc15}}
-	\item {Graph Regularized PVC (Hard constraints) (GPVC-A)	\small\textbf{(Proposed)}}
-	\item {Graph Regularized PVC (Soft constraints) (GPVC-B)	\small\textbf{(Proposed)}}
-	\item {Weighted Graph Regularized PVC (Soft constraints) (WGPVC)	\small\textbf{(Proposed)}}
-	\end{itemize}
-
 	\subsection{Datasets}
 	
 	The datasets used for evaluation are as follows,
@@ -342,26 +330,36 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	\item \textsc{Purity (PUR):} Each cluster is assigned to the class which is most frequent in the cluster, and then the accuracy of this assignment is measured by counting the number of correctly assigned documents and dividing by the total samples.
 	\end{itemize}
 
-	\pagebreak	
+	\subsection{Experiment with Two Views}	
 
-    \newgeometry{left=1.5cm,right=1.5cm,top=3cm,bottom=3cm}
+	\subsubsection{Evaluated Methods}
+		
+	We evaluate the performance of the following methods,
+	\begin{itemize}
+	\item {Partial Multi View Clustering (Li et al.) ~\cite{pvc15}}
+	\item {Graph Regularized PVC (Hard constraints) (GPVC-A)	\small\textbf{(Proposed)}}
+	\item {Graph Regularized PVC (Soft constraints) (GPVC-B)	\small\textbf{(Proposed)}}
+	\item {Weighted Graph Regularized PVC (Soft constraints) (WGPVC)	\small\textbf{(Proposed)}}
+	\end{itemize}	
 
-	\subsection{Plots}	
-	
+    \newgeometry{left=1.5cm,right=1.5cm,top=2.5cm,bottom=2.5cm}
+
+	\subsubsection{Plots}
+		
 	\begin{figure}[H]
 	
 	\begin{tabular}[H]{ccc}
-		\subfloat[Digit]{\includegraphics[width=5.5cm]{digitacc.jpg}} 
-    	& \subfloat[Digit]{\includegraphics[width=5.5cm]{digitnmi.jpg}}
-    	& \subfloat[Digit]{\includegraphics[width=5.5cm]{digitpur.jpg}}\\
+		\subfloat[Digit]{\includegraphics[width=5.5cm]{digitaccP.jpg}} 
+    	& \subfloat[Digit]{\includegraphics[width=5.5cm]{digitnmiP.jpg}}
+    	& \subfloat[Digit]{\includegraphics[width=5.3cm]{digitpurP.jpg}}\\
 	   
- 	    \subfloat[ORL]{\includegraphics[width=5.5cm]{orlacc.jpg}} 
-    	& \subfloat[ORL]{\includegraphics[width=5.5cm]{orlnmi.jpg}}
-    	& \subfloat[ORL]{\includegraphics[width=5.5cm]{orlpur.jpg}}\\
+ 	    \subfloat[ORL]{\includegraphics[width=5.2cm]{orlaccP.jpg}} 
+    	& \subfloat[ORL]{\includegraphics[width=5.6cm]{orlnmiP.jpg}}
+    	& \subfloat[ORL]{\includegraphics[width=5.5cm]{orlpurP.jpg}}\\
 	    
-	    \subfloat[CiteSeer]{\includegraphics[width=5.5cm]{csacc.jpg}} 
-    	& \subfloat[CiteSeer]{\includegraphics[width=5.5cm]{csnmi.jpg}}
-    	& \subfloat[CiteSeer]{\includegraphics[width=5.5cm]{cspur.jpg}}\\
+	    \subfloat[BBCSports]{\includegraphics[width=5.5cm]{bbcaccP.jpg}} 
+    	& \subfloat[BBCSports]{\includegraphics[width=5.6cm]{bbcnmiP.jpg}}
+    	& \subfloat[BBCSports]{\includegraphics[width=5.5cm]{bbcpurP.jpg}}\\
 	\end{tabular}
 	\vspace{5mm}
 	\caption*{\textsc{Results for varying PERs}}\label{foo}
@@ -369,9 +367,50 @@ To simulate the partial view setting, we randomly select a fraction of instances
 
 	\restoregeometry	
 	
-	\pagebreak
+	\subsubsection{Conclusions}
 
-	\subsection{Conclusions}
+	\subsection{Experiment with Multi Views}	
+
+	\subsubsection{Evaluated Methods}
+		
+	Since the implementations for the other models could not scale up to more than two views. We evaluate the performance of only the following methods,
+	\begin{itemize}
+	\item {Graph Regularized PVC (Soft constraints) (GPVC-B)	\small\textbf{(Proposed)}}
+	\item {Weighted Graph Regularized PVC (Soft constraints) (WGPVC)	\small\textbf{(Proposed)}}
+	\end{itemize}	
+
+    \newgeometry{left=1.5cm,right=1.5cm,top=2.5cm,bottom=2.5cm}
+
+	\subsubsection{Plots}
+
+	\begin{figure}[H]
+	
+	\begin{tabular}[H]{ccc}
+		\subfloat[Accuracy]{\includegraphics[width=5.5cm]{dig5vacc.jpg}} 
+    	& \subfloat[NMI]{\includegraphics[width=5.5cm]{dig5vnmi.jpg}}
+    	& \subfloat[Purity]{\includegraphics[width=5.5cm]{dig5vpur.jpg}}
+	\end{tabular}
+	\vspace{5mm}
+	
+	\caption*{\textsc{Results for UCI Handwritten Digit dataset (5 Views)\\The PERs used are \{0, 10, 30, 50, 70, 90\} in the same order on the axes\\	The Parameters used are $ \lambda_{i}=1.0, \; \mu_{i}=0.1 \;and\; \gamma=2$ }}
+	\end{figure}
+	
+	\begin{figure}[H]
+	
+	\begin{tabular}[H]{ccc}
+	   \subfloat[3Sources]{\includegraphics[width=5.5cm]{3source3vacc.jpg}} 
+    	& \subfloat[3Sources]{\includegraphics[width=5.5cm]{3source3vnmi.jpg}}
+    	& \subfloat[3Sources]{\includegraphics[width=5.5cm]{3source3vpur.jpg}}
+	\end{tabular}
+	\vspace{5mm}
+	
+	\caption*{\textsc{Results for 3Sources dataset (3 Sources)\\The PERs used are \{0, 10, 30, 50, 70, 90\} in the same order on the axes\\	The Parameters used are $ \lambda_{i}=0.01, \; \mu_{i}=0.1 \;and\; \gamma=2$ }}
+	\end{figure}
+
+	\restoregeometry	
+	
+	\subsubsection{Conclusions}
+
 
 	\section{Varying Kernels}
 	
@@ -386,11 +425,65 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	\item \textsc{Dot-product weighting :} If nodes $j$ and $l$ are connected, put $W_{j,l} = x^{T}_{j}x_{l}$. Note that, if x is normalized to 1, the dot product of two vectors is equivalent to the cosine similarity of the two vectors. Which is what we've used in our experiments.
 	
 	\end{itemize}	
+
+	\pagebreak
+	
+    \newgeometry{left=2cm,right=2cm,top=2.5cm,bottom=2.5cm}	
 	
 	\subsection{Results}
-	\subsubsection{Image Dataset : UCI Digit}
-	\subsubsection{Text Dataset : BBCSports, 3Sources}
 	
+	\subsubsection{Image Dataset : UCI Digit}
+
+	\begin{figure}[H]
+	
+	\begin{tabular}{ccc}
+		\subfloat[Accuracy]{\includegraphics[width=5cm]{dig5vGPVCKeracc.jpg}} 
+    	& \subfloat[NMI]{\includegraphics[width=5cm]{dig5vGPVCKernmi.jpg}}
+    	& \subfloat[Purity]{\includegraphics[width=5.1cm]{dig5vGPVCKerpur.jpg}}
+	\end{tabular}
+	\vspace{5mm}
+	
+	\caption*{\textsc{Effect of Different Kernels on Results Of GPVC-B\\	The Parameters used are $ \lambda_{i}=1.0, \; \mu_{i}=0.1$}}
+	\end{figure}	
+	
+	\begin{figure}[H]
+	
+	\begin{tabular}{ccc}
+		\subfloat[Accuracy]{\includegraphics[width=5cm]{dig5vWPVCKeracc.jpg}} 
+    	& \subfloat[NMI]{\includegraphics[width=5cm]{dig5vWPVCKernmi.jpg}}
+    	& \subfloat[Purity]{\includegraphics[width=4.9cm]{dig5vWPVCKerpur.jpg}}
+	\end{tabular}
+	\vspace{5mm}
+	
+	\caption*{\textsc{Effect of Different Kernels on Results Of WPVC\\	The Parameters used are $ \lambda_{i}=1.0, \; \mu_{i}=0.1 \;and\; \gamma=2 $}}
+	\end{figure}		
+	
+	\pagebreak			
+	
+    \newgeometry{left=2cm,right=2cm,top=3cm,bottom=3cm}	
+
+	\subsubsection{Text Dataset : 3Sources}
+
+	\vspace{5mm}
+	
+	\begin{tabular}[H]{ccc}
+		{\includegraphics[width=5.5cm]{3SGPVCKeracc.jpg}} 
+    	& {\includegraphics[width=5.4cm]{3SGPVCKernmi.jpg}}
+    	& {\includegraphics[width=5.3cm]{3SGPVCKerpur.jpg}}
+	\end{tabular}
+	\captionof*{table}{\textsc{Effect of Different Kernels on Results Of GPVC-B\\	The Parameters used are $ \lambda_{i}=0.01, \; \mu_{i}=0.1$}}
+	\vspace{10mm}
+	
+	\begin{tabular}[H]{ccc}
+		{\includegraphics[width=5.4cm]{3SWPVCKeracc.jpg}} 
+    	& {\includegraphics[width=5.5cm]{3SWPVCKernmi.jpg}}
+    	& {\includegraphics[width=5.3cm]{3SWPVCKerpur.jpg}}
+	\end{tabular}
+	\captionof*{table}{\textsc{Effect of Different Kernels on Results Of WPVC\\	The Parameters used are $ \lambda_{i}=0.01, \; \mu_{i}=0.1$}}
+	\vspace{5mm}
+	
+
+	\restoregeometry	
 	\section{Weight Learning}
 	
 	\subsection{Intuition}
@@ -406,6 +499,8 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	\subsection{Conclusions}
 	
 	\section{Future Work}	
+	
+	
 	
 \end{document}
 
