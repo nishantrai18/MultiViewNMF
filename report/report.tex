@@ -293,9 +293,26 @@ Partial Multi View Clustering is a much more realistic model. Here, not all inst
 
 	\pagebreak
 
+	\section{Partial View Experiment}	
+	
+	\subsection{Experiment Details}
+	
+	There are extremely few real partial view datasets. And even if we use them we'll be unable to analyse the effect of incomplete views on our models. Thus, we artificially create partial views as explained in the following sections.
+	
+	\subsubsection{Construction of Partial View datasets}	
+To simulate the partial view setting, we randomly select a fraction of instances to be partial examples, i.e., they are described by only one of the views, and the remaining ones appear in all the views (i.e. they are complete).
+	
+	\subsubsection{Parameters Involved}	
+	We denote the ratio of the incomplete instances to the total number of instances as PER (Partial Example Ratio) ~\cite{pvc15}. We vary PER from 10\% to 90\%, to get an idea of how our models perform in different conditions.	
+	
+	\subsubsection{Possible Improvements}
+	
+	Notice that here any instance has either all views or only one view. This is highly unlikely in any real world dataset. Thus, it can be said that the partial view instance generated is the worst possible dataset possible with the given value of PER (Worst in terms of the information carried with it).\\
+	A slightly realistic way to generate the partial view instance would be to equally distribute the instances to all subsets i.e. if there are 3 views and 7 incomplete instances, then only 1 would have a single view, 3 would have two views and so on.
+	
 	\section{Results}
 
-	\subsection{Methods}
+	\subsection{Evaluated Methods}
 	
 	We evaluate the performance of the following methods,
 	\begin{itemize}
@@ -311,7 +328,7 @@ Partial Multi View Clustering is a much more realistic model. Here, not all inst
 	\begin{itemize}
 	\item \textsc{3-Sources} : It is collected from three online news sources: BBC, Reuters, and The Guardian. In total there are 948 news articles covering 416 distinct news stories from the period February to April 2009. Of these stories, 169 were reported in all three sources. Each story was manually annotated with one of the six topical labels. We use the news reports common in any two sources in the experiments.
 	\item \textsc{BBCSports} : Collection of sports news reports from BBC. Consists of 544 reports with 2 views each.
-	\item \textsc{UCI Handwritten Digit dataset} : This hand-written digits (0-9) data is from the UCI repository.The dataset consists of 2000 examples, with view-1 being the 76 Fourier coefficients and view-2 being the 240 pixel averages in 2 × 3 windows.	
+	\item \textsc{UCI Handwritten Digit dataset} : This hand-written digits (0-9) data is from the UCI repository.The dataset consists of 2000 examples, with view-1 being the 76 Fourier coefficients and view-2 being the 240 pixel averages in 2x3 windows.	
 	\item \textsc{CiteSeer} : Collection of 3312 documents over 6 labels. It is made of 2 views (content, cites) on the same documents.
 	\item \textsc{ORL} : Collection of facial images of 40 subjects. Consists of 400 images with 2 views each.	
 	\end{itemize}
@@ -320,93 +337,13 @@ Partial Multi View Clustering is a much more realistic model. Here, not all inst
 
 	The evaluation measures used are as follows,
 	\begin{itemize}
-	\item {Normalised Mutual Information (NMI)}
-	\item {Average Entropy (ENT)}
-	\item {Adjusted Random Index (ARI)}
-	\item {Purity (PR)}
-	\item {Accuracy (ACC)}
+	\item \textsc{Accuracy (ACC):} There is no obvious way of computing accuracy in case of clustering. Instead, we find the best map of the clusters to the classes (Using Hungarian Algorithm) and compute the measure.
+	\item \textsc{Normalized Mutual Information (NMI):} Measure of how much knowing one thing can tell you about the other thing.
+	\item \textsc{Purity (PUR):} Each cluster is assigned to the class which is most frequent in the cluster, and then the accuracy of this assignment is measured by counting the number of correctly assigned documents and dividing by the total samples.
 	\end{itemize}
-	
-	\section{Partial View Experiment}	
-	
-	\subsection{Experiment Details}
-	
-	\subsubsection{Construction of Partial View datasets}	
-	\subsubsection{Parameters Involved}	
-	\subsubsection{Possible Improvements}
-	
-    \newgeometry{left=0.8cm,right=0.8cm,top=2cm,bottom=2cm}
 
-	\subsection{Result Table}	
+	\pagebreak	
 
-	\begin{table}[h!]
-	  \begin{center}
-	    \begin{tabular}{r|c|c|c|c|c}
-	      \toprule
-	      \textsc{DataSet} & \textsc{Method} & \textsc{NMI} & \textsc{Entropy} & \textsc{AdjustRI} & \textsc{Purity} 	\\
-            
-		  \midrule
-		  & \textsc{GraphRegPVC} &	0.8347 (0.0165) & 0.5843 (0.0643) & 0.7515 (0.0364) & 0.8349 (0.0314)\\	  
-		  & \textsc{(Hard)} &&&& \\	  
-		  \textsc{Digit} &  
-		  \textsc{GraphRegPVC} & \textbf{0.8892 (0.0256)} & \textbf{0.3959 (0.1099)} 
-		  & \textbf{0.8371 (0.0638)} & \textbf{0.8975 (0.0527)}\\
-		  & \textsc{(Soft)} &&&&\\	  
-		  & \textsc{PartialMV} & 0.6274 (0.0180) & 1.2547 (0.0643) & 0.5192 (0.0311) & 0.6998 (0.0337)\\
-		  & \textsc{(Hard)} &&&&\\
-                        
-	      \midrule
-		  & \textsc{GraphRegPVC} & 0.5556 (0.0265) & 1.0095 (0.0690) & 0.4391 (0.0518) & 0.7329 (0.0286)\\
-		  & \textsc{(Hard)} &&&&\\
-		  \textsc{3 Sources (BG)} & 
-		  \textsc{GraphRegPVC} & 0.5493 (0.0187) & 1.1643 (0.0492) & 0.4625 (0.0261) & 0.6746 (0.0156)\\
-		  & \textsc{(Soft)} &&&&\\	  
-		  & \textsc{PartialMV} & \textbf{0.6434 (0.0169)} & \textbf{0.9001 (0.0404)} 
-		  & \textbf{0.6010 (0.0358)} & \textbf{0.7543 (0.0171)}\\
-		  & \textsc{(Hard)} &&&&\\
-		  
-	      \midrule
-		  & \textsc{GraphRegPVC} &	\textbf{0.5917 (0.0227)} & 1.0347 (0.0595) 
-		  & \textbf{0.5018 (0.0420)} & 0.6991 (0.0168) \\	  
-		  & \textsc{(Hard)} &&&&\\	              
-		  \textsc{3 Sources (BR)} & 
-		  \textsc{GraphRegPVC} & 0.5500 (0.0213) & 1.0444 (0.0628) & 0.4266 (0.0264) & 0.7108 (0.0196)\\
-		  & \textsc{(Soft)} &&&&\\	  
-		  & \textsc{PartialMV} & 0.5674 (0.0189) & \textbf{1.0076 (0.0461)} & 0.4626 (0.0366) 
-		  & \textbf{0.7351 (0.0187)}\\
-		  & \textsc{(Hard)} &&&&\\
-
-	      \midrule
-		  & \textsc{GraphRegPVC} &	0.5697 (0.0192) & 0.9923 (0.0450) & 0.4466 (0.0433) & 0.7252 (0.0166)\\	  
-		  & \textsc{(Hard)} &&&& \\            
-		  \textsc{3 Sources (GR)} &
-		  \textsc{GraphRegPVC} & \textbf{0.5844 (0.0279)} & \textbf{0.9450 (0.0676)}
-		  & \textbf{0.4940 (0.0450)} & \textbf{0.7452 (0.0284)}\\
-		  & \textsc{(Soft)} &&&&\\	  
-		  & \textsc{PartialMV} & 0.5467 (0.0303) & 1.0263 (0.0701) & 0.4546 (0.0547) & 0.7322 (0.0267)\\
-		  & \textsc{(Hard)} &&&&\\
-		  
-		  \midrule
-		  & \textsc{GraphRegPVC} &	\textbf{0.5294 (0.0167)} & \textbf{1.0270 (0.0316)}
-		  & 0.4651 (0.0375) & 0.7014 (0.0161)\\	  
-		  & \textsc{(Hard)} &&&& \\	  
-		  \textsc{BBCSports} & 
-		  \textsc{GraphRegPVC} & 0.4763 (0.0124) & 1.1405 (0.0347) & 0.4073 (0.0226) & 0.6856 (0.0082) \\
-		  & \textsc{(Soft)} &&&& \\	  
-		  & \textsc{PartialMV} & 0.5049 (0.0199) & 1.1006 (0.0391) 
-		  & \textbf{0.4895 (0.0356)} & \textbf{0.7065 (0.0218)}\\
-		  & \textsc{(Hard)} &&&&\\            
-		  
-		  \bottomrule
-	    \end{tabular}
-	    \caption{\textsc{Table for Results\\(For PER = 1.0)}}
-	  \end{center}
-	\end{table}		
-
-	\restoregeometry	
-	
-	\pagebreak
-			
     \newgeometry{left=1.5cm,right=1.5cm,top=3cm,bottom=3cm}
 
 	\subsection{Plots}	
@@ -436,128 +373,39 @@ Partial Multi View Clustering is a much more realistic model. Here, not all inst
 
 	\subsection{Conclusions}
 
-	\section{Complete Multi Views}
-
-	\subsection{Proposed Methods}
-	
-	The methods proposed and their details are given in the following sections.	
-	
-	\subsubsection{Weighted Graph Regularized PVC (Soft constraints)}
-	
-	\textsc{Formulation:}\\
-	We explain the formulation for multiple views. We adopt the following cost function,
-	\begin{align*}
-	Loss = \displaystyle\sum_{i=1}^{n_{v}} \; \alpha_{i}^{\gamma} \; 
-		\bigg(\begin{Vmatrix} X_{i}-U_{i}V^{T}_{i} \end{Vmatrix}^{2}_{F}	
-		+ \mu_{i}\begin{Vmatrix} V_{i}-V^{*} \end{Vmatrix}^{2}_{F}
-		+ \lambda_{i}Tr(V^{T}_{i}L_{i}V_{i}) \; \bigg)\\	
-		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;V^{*}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}
-		\;\; and \;\; \sum_{i=1}^{n_{v}} \alpha_{i} = 1 \\
-		V^{*} \text{ is the consensus matrix, }
-	\end{align*}
-	\textsc{Update Procedure:}
-
-
-	\subsection{Methods}
-	
-	The proposed methods are as follows,
-	\begin{itemize}
-	\item {Multi View Clustering (Liu et al.) (MultiNMF)}
-	\item {Graph Regularized MultiNMF (GMultiNMF)}
-	\item {Weighted Graph Regularized MultiNMF (WGNMF)	\small\textbf{(Proposed)}}
-	\end{itemize}
-
-	\subsection{Datasets}
-	
-	The datasets used for evaluation are as follows,
-	\begin{itemize}
-	\item \textsc{3-Sources} : It is collected from three online news sources: BBC, Reuters, and The Guardian. In total there are 948 news articles covering 416 distinct news stories from the period February to April 2009. Of these stories, 169 were reported in all three sources. Each story was manually annotated with one of the six labels. We use the news reports common in all sources in the experiments.
-	\item \textsc{BBCSport} : Collection of sports news reports from BBC. Consists of 544 reports with 2 views each. Some reports have also 3-4 views in common. They are also used in the experiments.
-	\item \textsc{UCI Handwritten Digit dataset} : This hand-written digits (0-9) data is from the UCI repository.The dataset consists of 2000 examples, with view-1 being the 76 Fourier coefficients and view-2 being the 240 pixel averages in 2 × 3 windows. All 6 provided views are also considered for experiments.
-	\item \textsc{ORL} : Collection of facial images of 40 subjects. Consists of 400 images with 2 views each.
-	\item \textsc{CiteSeer} : Collection of 3312 documents over 6 labels. It is made of 4 views (content, inbound, outbound, cites) on the same documents.
-	\end{itemize}
-
-	\subsection{Evaluation Measures}
-
-	The evaluation measures used are as follows,
-	\begin{itemize}
-	\item {Accuracy (ACC)}
-	\item {Normalised Mutual Information (NMI)}
-	\item {Purity (PR)}
-	\end{itemize}
-	
-    \newgeometry{left=0.8cm,right=0.8cm,top=2cm,bottom=2cm}
-
-	\subsection{Result Table}	
-
-	We show the results for the Digit dataset,	
-	\begin{table}[h!]
-	  \begin{center}
-	    \begin{tabular}{c|c|c|c}
-	      \toprule
-	      \textsc{Method} & \textsc{Accuracy (\%) } & \textsc{NMI (\%) } 
-	      & \textsc{Purity (\%)} 	\\
-            
-		  \midrule
-			\textsc{BSV} & 68.5 & 63.4 & NA\\
-			\textsc{WSV} & 63.5 & 60.3 & NA\\
-			\textsc{ConcatNMF} & 67.8 & 60.3 & NA\\
-			\textsc{ColNMF} & 66.0 & 62.1 & NA\\
-			\textsc{Co-reguSC} & 86.6 & 77.0 & NA\\
-			\textsc{MultiNMF} & 88.1 & 80.4 & NA\\
-			\textsc{SC-ML} & 88.1 & 87.6 & NA\\
-			\textsc{GPVC-S} & 95.1 & 90.1 & 95.1\\  
-			\textsc{WPVC} & \textbf{96.8} & \textbf{93.2} & \textbf{96.8}\\
-		  
-		  \bottomrule
-	    \end{tabular}
-	    \caption*{\textsc{Results for Digit (2 views)}}
-	  \end{center}
-	\end{table}		
-
-	We show the results for the multiple datasets, but compare only GPVC-S and WPVC,	
-	\begin{table}[h!]
-	  \begin{center}
-	    \begin{tabular}{c|c|c|c|c}
-	      \toprule
-		  \textsc{Dataset} & \textsc{Method} & \textsc{Accuracy (\%) } & \textsc{NMI (\%) } 
-	      & \textsc{Purity (\%)} 	\\
-            
-		  \midrule
-			\textsc{Digit} & \textsc{GPVC-S} & 73.3 & 68.6 & 73.3\\  
-			\footnotesize\textsc{(6 Views)} & \textsc{WPVC} & \textbf{93.0} & \textbf{87.5} & \textbf{93.0}\\
-			& \textsc{MVC} & 86.3 & 78.1 & 86.3\\  
-		  \midrule
-	    	\textsc{3Sources} & \textsc{GPVC-S} & 62.7 & 54.5 & 68.6\\  
-			\footnotesize\textsc{(3 Views)} & \textsc{WPVC} & \textbf{63.2} & \textbf{57.1} & \textbf{69.2}\\
-			& \textsc{MVC} & 46.7 & 37.1 & 61.5\\  
-		  \midrule
-	    	\textsc{BBCSports} & \textsc{GPVC-S} & \textbf{59.2} & \textbf{26.2} & \textbf{59.6}\\  
-			\footnotesize\textsc{(3 Views)} & \textsc{WPVC} & {57.4} & {21.7} & {57.8}\\
-			& \textsc{MVC} & 53.2 & 23.4 & 53.9\\  
-		  \midrule
-
-	    \end{tabular}
-	    \caption*{\textsc{Results for Digit (2 views)}}
-	  \end{center}
-	\end{table}		
-
-	\restoregeometry	
-
 	\section{Varying Kernels}
 	
+	Observe that the graph Laplacian used plays a vital role in affecting the quality of the results. Thus, the way we construct the Graph Laplacian is extremely important. In the following sections, we discuss the major methods to construct them and also discuss some results and their implications.
+	
 	\subsection{Kernels Used}
+
+	We define the various kernels used to construct the Graph Laplacian (The descriptions are taken from ~\cite{GReg}),
+	\begin{itemize}
+	\item \textsc{0-1 Weighting :} If nodes $j$ and $l$ are connected by an edge, put $W_{j,l} = 1$. This is the simplest weighting method and is very easy to compute. In our experiments we consider the nearest neighbor graph i.e. there is an edge between u, v if is one of the p nearest neighbors of u (We use p = 5).
+	\item \textsc{Heat kernel weighting :} If nodes $j$ and $l$ are connected, put $W_{j,l} = e^{\frac{\|x_{j}-x_{l}\|^{\text{\tiny{2}}}}{\sigma}}$
+	\item \textsc{Dot-product weighting :} If nodes $j$ and $l$ are connected, put $W_{j,l} = x^{T}_{j}x_{l}$. Note that, if x is normalized to 1, the dot product of two vectors is equivalent to the cosine similarity of the two vectors. Which is what we've used in our experiments.
+	
+	\end{itemize}	
+	
 	\subsection{Results}
 	\subsubsection{Image Dataset : UCI Digit}
 	\subsubsection{Text Dataset : BBCSports, 3Sources}
 	
 	\section{Weight Learning}
+	
 	\subsection{Intuition}
+		
+	The introduction of view weights is motivated by the observation that not all views are equally important. It is easy to realize that some views might be not be important at all while others might be quite important. We introduce view weights as parameters to be learned during the optimization. Hoping that the parameters learned would automatically give us the importance (goodness) of views.
+
 	\subsection{Results}
+
+	We show the plots of the performance of the Weighted Graph Regularized PVC example on different datasets. We also consider the best 2 views based on the weights, and check if they are truly the most informative views or not.	
+	
 	\subsubsection{Digit}
 	\subsubsection{3Sources}
 	\subsection{Conclusions}
+	
+	\section{Future Work}	
 	
 \end{document}
 
