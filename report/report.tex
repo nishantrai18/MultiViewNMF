@@ -1,5 +1,5 @@
 \documentclass[a4paper]{article}
-\usepackage[margin=3.5cm]{geometry}
+\usepackage[margin=3cm]{geometry}
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{caption}
@@ -23,6 +23,11 @@
 
 \def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
 \let\endchangemargin=\endlist 
+
+\makeatletter
+\newcommand{\pushright}[1]{\ifmeasuring@#1\else\omit\hfill$\displaystyle#1$\fi\ignorespaces}
+\newcommand{\pushleft}[1]{\ifmeasuring@#1\else\omit$\displaystyle#1$\hfill\fi\ignorespaces}
+\makeatother
 
 \DeclareMathSizes{10}{10}{10}{10}
 
@@ -63,21 +68,70 @@
 
 	\pagebreak	
 	
+	\section{Existing Work in NMF based Clustering}
+	
+	\subsection{Multi View Clustering using NMF}
+
+The method was first proposed in ~\cite{nmfsdm}. The basic idea is as follows. For clustering, we assume that a data point in different views would be assigned to the same cluster with high probability. Therefore, in terms of matrix factorization, we require coefficient matrices learnt from different views to be softly regularize towards a common consensus. This consensus matrix is considered to reflect the latent clustering structure shared by different views.\\
+	
+	\noindent
+	\textbf{Formulation:}\\
+	We explain the formulation for multiple view clustering using NMF. We adopt the following cost function (the rest of the procedure remains same as the standard NMF),
+	\begin{multline*}	
+	Loss = \displaystyle\sum_{i=1}^{n_{v}} \; \bigg(\begin{Vmatrix} X_{i}-U_{i}V^{T}_{i} \end{Vmatrix}^{2}_{F}	
+		+ \mu_{i}\begin{Vmatrix} V_{i}-V^{*}\end{Vmatrix}^{2}_{F} \bigg) \\	
+		\hfill {\text{s.t.}} \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;V^{*}\geq0,\; \forall i \;\;s.t.\; 1 \leq i \leq n_{v}\\
+		\hfill V^{*} \text{ is the consensus matrix}
+	\end{multline*}	
+	
+	\subsection{Graph Regularized NMF}
+	
+	By using the non-negative constraints, NMF can learn a parts-based representation. However, NMF performs
+this learning in the Euclidean space. It fails to discover the intrinsic geometrical and discriminating structure of the data space, which is essential to the real-world applications. The method was proposed in ~\cite{GReg} and has been used in many applications of NMF since then.	\\
+
+	\noindent
+	\textbf{Formulation:}\\
+	We explain the formulation for multiple view clustering using NMF. We adopt the following cost function (the rest of the procedure remains same as the standard NMF),
+	\begin{multline}	
+	\hfill Loss = \big(\begin{Vmatrix} X-UV^{T} \end{Vmatrix}^{2}_{F}	
+		+ \lambda Tr(V^{T} L V) \big) \;\; s.t. \hspace{2mm}  U\geq0,\; V\geq0,\;L\text{ : Graph Laplacian}
+	\end{multline}	
+
 	\section{Partial Multi Views}
+
+Partial Multi View Clustering is a much more realistic model. Here, not all instances have complete views (i.e. do not have all sets of views). Which is highly likely for real world datasets. The setup remains roughly the same but with existence of partial views for instances. We discuss the existing work done in the field and propose different algorithms for the same.
+
+	\subsection{Existing Methods}
+
+	There has been relatively less work done in this area compared to Multi View Clustering. We discuss one of the models proposed in ~\cite{pvc15}. The basic idea is keeping a part of the view matrices common, which represents the common latent structure of the instances which have both views.\\
+	
+	\noindent
+	\textbf{Formulation:}\\
+	We explain the formulation for only 2 views (For simplicity), it can be extended to multiple views in a similar manner. We try to minimize the following cost function,
+	\begin{multline*}
+	Loss = \begin{Vmatrix} X_{1}-U_{1}V^{T}_{1} \end{Vmatrix}^{2}_{F}	
+		+ \begin{Vmatrix} X_{2}-U_{2}V^{T}_{2} \end{Vmatrix}^{2}_{F}
+		+ \lambda_{1} \Omega(V_{1}) + \lambda_{2} \Omega (V_{2})\\	
+		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq 2,
+		\; \Omega \text{ represents the Lasso norm}
+	\end{multline*}
 
 	\subsection{Proposed Methods}
 	
-	The methods proposed and their details are given in the following sections.	
+	We formulate new methods using extensions like Graph Regularization and varying Weights. The methods proposed and their details are given in the following sections.	
 	
 	\subsubsection{Graph Regularized PVC (Hard constraints)}
 	
+	The following method is inspired from ~\cite{pvc15}, ~\cite{Greg}. We use both hard constraints and graph regularization together to simultaneously respect the underlying intrinsic structure and also the common latent structure of the data.\\	
+	
+	\noindent
 	\textbf{Formulation:}\\
 	We explain the formulation for only 2 views (For simplicity), it can be extended to multiple views in a similar manner. We try to minimize the following cost function,
 	\begin{multline}
 	Loss = \begin{Vmatrix} X_{1}-U_{1}V^{T}_{1} \end{Vmatrix}^{2}_{F}	
 		+ \begin{Vmatrix} X_{2}-U_{2}V^{T}_{2} \end{Vmatrix}^{2}_{F}
 		+ \lambda_{2}Tr(V^{T}_{2}L_{2}V_{2}) + \lambda_{1}Tr(V^{T}_{1}L_{1}V_{1}) \\	
-		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}
+		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq 2
 	\end{multline}
 	\noindent
 	\textbf{Update Procedure:}
@@ -98,31 +152,35 @@
 		\Output{Basis Matrices ${U_{1},U_{2}}$ and Coefficient Matrices ${V_{1},V_{2},V_{c}}$}
 		Construct Graph Laplacians $L_{v}$ for each view\;
 		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
-		Initialize  $U_{v}$, $\overline{V_{v}}$ by Eq. GNMF\;
-		Fix $U_{v}$, $\overline{V_{v}}$ update $V_{c}$ by Eq. (2)\;		
-		\Repeat{Eq (1) converges}
+		Initialize  $U_{v}$, $\overline{V_{v}}$ by Eq. (1)\;
+		Fix $U_{v}$, $\overline{V_{v}}$ update $V_{c}$ by Eq. (3)\;		
+		\Repeat{Eq (2) converges}
 		{
-			\Repeat{Eq. (1) converges}
+			\Repeat{Eq. (2) converges}
 			{
-				Fix $V_{c}$, update $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ by Eq. GNMF\;
+				Fix $V_{c}$, update $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ by Eq. (1)\;
 			}
-			Fix $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ update $V_{c}$ by Eq. (2)\;
+			Fix $U_{1}$, $U_{2}$, $\overline{V_{1}}$, $\overline{V_{2}}$ update $V_{c}$ by Eq. (3)\;
 		}						
-		\caption{Algorithm for optimizing the given loss}
+		\caption{Algorithm for minimizing the loss in Graph regularized PVC (Hard Constraints), given by Eq. (2). Based on Alternate Optimization}
 	\end{algorithm}
+
 
 	\subsubsection{Graph Regularized PVC (Soft constraints)}
 	
-	\textsc{Formulation:}\\
+	The following method is inspired from ~\cite{nmfsdm}, ~\cite{Greg}. It has been shown in ~\cite{nmfsdm} that applying soft constraints is better than hard constraints. Thus, we use soft constraints and graph regularization together to simultaneously respect the underlying intrinsic structure and also the common latent structure of the data.\\	
+	
+	\noindent
+	\textbf{Formulation:}\\
 	We explain the formulation for multiple views. We adopt the following cost function,
-	\begin{align*}	
+	\begin{multline}	
 	Loss = \displaystyle\sum_{i=1}^{n_{v}} \; \bigg(\begin{Vmatrix} X_{i}-U_{i}V^{T}_{i} \end{Vmatrix}^{2}_{F}	
 		+ \mu_{i}\begin{Vmatrix} V_{i}-V^{*}(\, P_{i} \, ) \end{Vmatrix}^{2}_{F}
 		+ \lambda_{i}Tr(V^{T}_{i}L_{i}V_{i}) \; \bigg)\\	
-		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;V^{*}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}\\
-		V^{*} \text{ is the consensus matrix, } \\
+		\hfill s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;V^{*}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}\\
+		\hfill V^{*} \text{ is the consensus matrix, }
 		P_{i} \text{ represents the mapping of rows from } V_{i} \text{ to } V^{*}
-	\end{align*}	
+	\end{multline}	
 
 	\noindent
 	\textbf{Update Procedure:}
@@ -152,46 +210,49 @@
 	\begin{algorithm}
 		\SetKwInOut{Input}{Input}
 		\SetKwInOut{Output}{Output}
-		\Input{Nonnegative Matrix ${X_{1}, \dots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \mu_{1}, \dots ,\lambda_{n_{v}},\mu_{n_{v}}}$, number of clusters $K$}
+		\Input{Nonnegative Matrix ${X_{1}, \dots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \mu_{1}, \dots ,\lambda_{n_{v}},\mu_{n_{v}}}$, number of clusters $K$, mappings between the views and instances $P$}
 		\Output{Basis Matrices ${U_{1}, \dots ,U_{n_{v}}}$, Coefficient Matrices ${V_{1}, \dots ,V_{n_{v}}}$ and Consensus Matrix $V^{*}$}
 		Construct Graph Laplacians $L_{v}$ for each view\;
 		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
-		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. GNMF, (4)\;
-		\Repeat{Eq (1) converges}
+		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. (1), (6)\;
+		\Repeat{Eq (4) converges}
 		{
 			\For{$v\leftarrow 1$ \KwTo $n_{v}$}
 			{
-				\Repeat{Eq. (1) converges}
+				\Repeat{Eq. (4) converges}
 				{
-					Fix $V^{*}$, update $U_{v}$, $V_{v}$ by Eq. (3)\;
+					Fix $V^{*}$, update $U_{v}$, $V_{v}$ by Eq. (5)\;
 				}
 			}
-			Fix $U_{v}$, $V_{v}$ update $V^{*}$ by Eq. (4)\;		
+			Fix $U_{v}$, $V_{v}$ update $V^{*}$ by Eq. (6)\;		
 		}						
-		\caption{Algorithm for optimizing the given loss}
+		\caption{Algorithm for minimizing the loss in Graph regularized PVC (Soft Constraints), given by Eq. (4). Based on Alternate Optimization}
 	\end{algorithm}
 
 
 	\subsubsection{Weighted Graph Regularized PVC (Soft constraints)}
 	
+	The following method is grossly similar to the previous one. The only difference being in the introduction of view weights. It is easy to realize that not all views are equally important, some might be not be important at all while others might be quite important. We introduce view weights as parameters to be learned during the optimization.\\	
+	
+	\noindent	
 	\textbf{Formulation:}\\
 	We explain the formulation for multiple views. We adopt the following cost function,
-	\begin{align*}
+	\begin{multline}
 	Loss = \displaystyle\sum_{i=1}^{n_{v}} \; \alpha_{i}^{\gamma} \; 
 		\bigg(\begin{Vmatrix} X_{i}-U_{i}V^{T}_{i} \end{Vmatrix}^{2}_{F}	
 		+ \mu_{i}\begin{Vmatrix} V_{i}-V^{*}(\, P_{i} \, ) \end{Vmatrix}^{2}_{F}
-		+ \lambda_{i}Tr(V^{T}_{i}L_{i}V_{i}) \; \bigg)\\	
-		s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;V^{*}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}
+		+ \lambda_{i}Tr(V^{T}_{i}L_{i}V_{i}) \; \bigg) \\	
+		\hfill s.t. \hspace{2mm}  U_{i}\geq0,\;V_{i}\geq0,\;V^{*}\geq0,\;\forall i \;\;s.t.\; 1 \leq i \leq n_{v}
 		\;\; and \;\; \sum_{i=1}^{n_{v}} \alpha_{i} = 1 \\
-		V^{*} \text{ is the consensus matrix, } \\
+		\hfill V^{*} \text{ is the consensus matrix, }
 		P_{i} \text{ represents the mapping of rows from } V_{i} \text{ to } V^{*}
-	\end{align*}
+	\end{multline}
 	
 	\noindent
 	\textbf{Update Procedure:}
 	\begin{itemize}
-		\item \textsc{Rule 1:}	Update rule for updating $U_{v}$, ${V_{v}}$ with fixed $V^{*}$, same as Eq. (3)
-		\item \textsc{Rule 2:}	Update rule for updating $V^{*}$ with fixed $U_{v}$, ${V_{v}}$, same as Eq. (4) 
+		\item \textsc{Rule 1:}	Update rule for updating $U_{v}$, ${V_{v}}$ with fixed $V^{*}$, same as Eq. (5)
+		\item \textsc{Rule 2:}	Update rule for updating $V^{*}$ with fixed $U_{v}$, ${V_{v}}$, same as Eq. (6) 
 		\item \textsc{Rule 3:}	Update rule for updating $w_{v}$ with fixed $U_{v}$, ${V_{v}}$ and $V^{*}$ 
 			\begin{multline}
 			w_{v} = \frac{ \bigg( \gamma H_{v} \bigg)^{\frac{1}{1-\gamma}}}
@@ -209,32 +270,36 @@
 	\begin{algorithm}
 		\SetKwInOut{Input}{Input}
 		\SetKwInOut{Output}{Output}
-		\Input{Nonnegative Matrix ${X_{1}, \dots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \mu_{1}, \dots ,\lambda_{n_{v}},\mu_{n_{v}}}$, number of clusters $K$}
+		\Input{Nonnegative Matrix ${X_{1}, \dots ,X_{n_{v}}}$, parameters ${\lambda_{1}, \mu_{1}, \dots ,\lambda_{n_{v}},\mu_{n_{v}}}$, number of clusters $K$, mappings between the views and instances $P$}
 		\Output{Basis Matrices ${U_{1}, \dots ,U_{n_{v}}}$, Coefficient Matrices ${V_{1}, \dots ,V_{n_{v}}}$, View Weights ${w_{1}, \cdots ,w_{n_{v}}}$ and Consensus Matrix $V^{*}$}
 		Construct Graph Laplacians $L_{v}$ for each view\;
 		Normalize each view $X_{v}$ such that $\|X_{v}\|_{\text{\tiny1}} = 1 $\;
 		Initialize $w_{v}$ as $w_{v}=${\tiny{${\frac{1}{n_{v}}}$}}\;
-		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. GNMF, (4)\;
-		\Repeat{Eq (1) converges}
+		Initialize  $U_{v}$, $V_{v}$ and $V^{*}$ by Eq. (1), (6)\;
+		\Repeat{Eq (7) converges}
 		{
 			\For{$v\leftarrow 1$ \KwTo $n_{v}$}
 			{
-				\Repeat{Eq. (1) converges}
+				\Repeat{Eq. (7) converges}
 				{
-					Fix $V^{*}$, update $U_{v}$, $V_{v}$ by Eq. (3)\;
+					Fix $V^{*}$, update $U_{v}$, $V_{v}$ by Eq. (5)\;
 				}
 			}
-			Fix $U_{v}$, $V_{v}$ update $V^{*}$ by Eq. (4)\;		
-			Update $w_{v}$ by Eq. (5)\;
+			Fix $U_{v}$, $V_{v}$ update $V^{*}$ by Eq. (6)\;		
+			Update $w_{v}$ by Eq. (8)\;
 		}						
 		\caption{Algorithm for optimizing the given loss}
 	\end{algorithm}
 
+	\pagebreak
+
+	\section{Results}
+
 	\subsection{Methods}
 	
-	The evaluated methods are as follows,
+	We evaluate the performance of the following methods,
 	\begin{itemize}
-	\item {Partial Multi View Clustering (Li et al.) (PVC)}
+	\item {Partial Multi View Clustering (Li et al.) ~\cite{pvc15}}
 	\item {Graph Regularized PVC (Hard constraints) (GPVC-A)	\small\textbf{(Proposed)}}
 	\item {Graph Regularized PVC (Soft constraints) (GPVC-B)	\small\textbf{(Proposed)}}
 	\item {Weighted Graph Regularized PVC (Soft constraints) (WGPVC)	\small\textbf{(Proposed)}}
@@ -245,7 +310,7 @@
 	The datasets used for evaluation are as follows,
 	\begin{itemize}
 	\item \textsc{3-Sources} : It is collected from three online news sources: BBC, Reuters, and The Guardian. In total there are 948 news articles covering 416 distinct news stories from the period February to April 2009. Of these stories, 169 were reported in all three sources. Each story was manually annotated with one of the six topical labels. We use the news reports common in any two sources in the experiments.
-	\item \textsc{BBCSport} : Collection of sports news reports from BBC. Consists of 544 reports with 2 views each.
+	\item \textsc{BBCSports} : Collection of sports news reports from BBC. Consists of 544 reports with 2 views each.
 	\item \textsc{UCI Handwritten Digit dataset} : This hand-written digits (0-9) data is from the UCI repository.The dataset consists of 2000 examples, with view-1 being the 76 Fourier coefficients and view-2 being the 240 pixel averages in 2 × 3 windows.	
 	\item \textsc{CiteSeer} : Collection of 3312 documents over 6 labels. It is made of 2 views (content, cites) on the same documents.
 	\item \textsc{ORL} : Collection of facial images of 40 subjects. Consists of 400 images with 2 views each.	
@@ -261,6 +326,14 @@
 	\item {Purity (PR)}
 	\item {Accuracy (ACC)}
 	\end{itemize}
+	
+	\section{Partial View Experiment}	
+	
+	\subsection{Experiment Details}
+	
+	\subsubsection{Construction of Partial View datasets}	
+	\subsubsection{Parameters Involved}	
+	\subsubsection{Possible Improvements}
 	
     \newgeometry{left=0.8cm,right=0.8cm,top=2cm,bottom=2cm}
 
@@ -333,8 +406,7 @@
 	\restoregeometry	
 	
 	\pagebreak
-	
-		
+			
     \newgeometry{left=1.5cm,right=1.5cm,top=3cm,bottom=3cm}
 
 	\subsection{Plots}	
@@ -362,6 +434,7 @@
 	
 	\pagebreak
 
+	\subsection{Conclusions}
 
 	\section{Complete Multi Views}
 
@@ -470,9 +543,21 @@
 	  \end{center}
 	\end{table}		
 
-
-
 	\restoregeometry	
+
+	\section{Varying Kernels}
+	
+	\subsection{Kernels Used}
+	\subsection{Results}
+	\subsubsection{Image Dataset : UCI Digit}
+	\subsubsection{Text Dataset : BBCSports, 3Sources}
+	
+	\section{Weight Learning}
+	\subsection{Intuition}
+	\subsection{Results}
+	\subsubsection{Digit}
+	\subsubsection{3Sources}
+	\subsection{Conclusions}
 	
 \end{document}
 
