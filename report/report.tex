@@ -411,7 +411,6 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	
 	\subsubsection{Conclusions}
 
-
 	\section{Varying Kernels}
 	
 	Observe that the graph Laplacian used plays a vital role in affecting the quality of the results. Thus, the way we construct the Graph Laplacian is extremely important. In the following sections, we discuss the major methods to construct them and also discuss some results and their implications.
@@ -426,13 +425,18 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	
 	\end{itemize}	
 
+	\subsection{Conclusions}
+
+	As we can see in the plots shown in the next section. Cosine Similarity performs extremely well for Text Datasets, which is coherent with our knowledge of textual data being related by the cosine metric. Thus, computing the Graph Laplacian using Dot Product Weighting works much better for text data.\\
+	Surprisingly, heat kernels do not work very well for the Image dataset (It may be partly due to the value of $\sigma$ chosen).\\
+
 	\pagebreak
 	
     \newgeometry{left=2cm,right=2cm,top=2.5cm,bottom=2.5cm}	
 	
 	\subsection{Results}
 	
-	\subsubsection{Image Dataset : UCI Digit}
+	\subsubsection{Image Dataset : UCI Digit (5 Views)}
 
 	\begin{figure}[H]
 	
@@ -462,9 +466,9 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	
     \newgeometry{left=2cm,right=2cm,top=3cm,bottom=3cm}	
 
-	\subsubsection{Text Dataset : 3Sources}
+	\subsubsection{Text Dataset : 3Sources (3 Sources)}
 
-	\vspace{5mm}
+	\vspace{10mm}
 	
 	\begin{tabular}[H]{ccc}
 		{\includegraphics[width=5.5cm]{3SGPVCKeracc.jpg}} 
@@ -481,9 +485,10 @@ To simulate the partial view setting, we randomly select a fraction of instances
 	\end{tabular}
 	\captionof*{table}{\textsc{Effect of Different Kernels on Results Of WPVC\\	The Parameters used are $ \lambda_{i}=0.01, \; \mu_{i}=0.1$}}
 	\vspace{5mm}
-	
 
 	\restoregeometry	
+
+
 	\section{Weight Learning}
 	
 	\subsection{Intuition}
@@ -494,11 +499,73 @@ To simulate the partial view setting, we randomly select a fraction of instances
 
 	We show the plots of the performance of the Weighted Graph Regularized PVC example on different datasets. We also consider the best 2 views based on the weights, and check if they are truly the most informative views or not.	
 	
-	\subsubsection{Digit}
+	\subsubsection{UCI Digit (5 Views)}
+
+	The views used are as follows,
+	\vspace{-0.2cm}
+	\begin{enumerate}[(A)]
+	\setlength\itemsep{-0.05em}
+	{
+		\item 76 Fourier coefficients of the character shapes
+		\item 216 profile correlations
+		\item 6 morphological features
+		\item 240 pixel averages in 2x3 windows 
+		\item 47 Zernike moments
+	}\end{enumerate}		
+
+	On the basis of the computed weights, \textbf{(B), (D), (A), (E), (C)} are the most important views (In decreasing order).\\
+	The exact weights computed are,	\textsc{A: 0.050, B: 0.847, C: 0.007, D: 0.063, E: 0.033}\\
+	Notice that the weights reflect an extremely skewed representation of the view importance. \\
+	When we consider the best 2 views based on the weights i.e. \textbf{(B), (D)} then the results are worse than the pair \textbf{(A), (D)} (Which is the best view pair in the case).\\
+	\null \hfill {\footnotesize{\textsc{(Detailed Results in the Supplementary Result file)}}}\\\\
+	But also observe that it correctly identifies \textbf{(C)} as a relatively poor view (Which is true). Meaning that the weights approach needs to tuned further before we can extract reliable information from it.
+
 	\subsubsection{3Sources}
+	
+	The views used are collected from the following sources,
+	\vspace{-0.2cm}
+	\begin{enumerate}[(A)]
+	\setlength\itemsep{-0.05em}
+		\item BBC
+		\item Reuters
+		\item The Guardian
+	\end{enumerate}		
+
+	On the basis of the computed weights, \textbf{(B), (A), (C)} are the most important views (In decreasing order).\\
+	The exact weights computed are,	\textsc{A: 0.32, B:	0.36, C: 0.31}\\
+	When we consider the best 2 views based on the weights i.e. \textbf{(B), (A)} then the results are better than all the other pairs.\\
+	\null \hfill {\footnotesize{\textsc{(Detailed Results in the Supplementary Result file)}}}\\ \\
+	Meaning that the weights approach computes correct results in this case. Note that the weights are similar due to similarity in the views.
+	
 	\subsection{Conclusions}
 	
+	The computed weights are not correct in every case an the formulation needs to be changed before claiming it to be reliable. The weights computed are also skewed in some cases, which is not desirable.\\
+	The noticeable downsides in current formulation are, 
+	\begin{itemize}
+	\item Equal importance to all components of the loss (i.e. Divergence from Consensus, Graph Laplacian Loss)
+	\item Looking at the update for Consensus Matrix closely, we can see that it gets increasingly skewed to the view with higher weights (More than what is desired). This increases with the increase in $\gamma$. 
+	\item An underlying assumption in the model is that lower loss implies a better view, which is not necessarily true in real world data.
+	\end{itemize}
+	
+	\subsection{Possible Improvements}
+	
+	We have discussed some of the flaws in the current model in the previous section. The possible improvements to it are as follows,
+	\begin{itemize}
+	\item Assigning different components different importance, on the basis of different $\gamma$ for each component.
+	\item Reducing the skewness while updating the Consensus Matrix i.e. reducing the $\gamma$ associated with the corresponding component.
+	\item Since the weights are updated on the basis of the corresponding View Loss, modifying the loss to make each view loss comparable should be critical.
+	\end{itemize}
+	
 	\section{Future Work}	
+	
+	There are many extensions and improvements to the present model, some of them being,
+	\begin{itemize}
+		\item Modify the formulation of the varying view weights model as discussed in the previous sections. Improve reliability of the computed weights.
+		\item Inclusion of $L_{21}$ norm in the framework to be more robust to outliers and noisy data.
+		\item Incorporate View Specific Feature Weights in the current framework
+		\item Scaling up the model for large data sets (Since standard graph Laplacian based regularization methods scale poorly w.r.t. the graph size).
+		\item Considering other variations of the multiview clustering problem, e.g., collective matrix factorization \cite{SOME} and clustering multiple networks \cite{SPM}, and many others.	
+	\end{itemize}		
 	
 	
 	
