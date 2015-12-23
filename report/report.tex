@@ -52,7 +52,7 @@
 	        \textbf{Abstract\\}
         	\vspace{4mm}
         	\noindent
-{\justifying\small{The project deals with the problem of clustering data using information present in Multiple Views. We propose several models to tackle the problem involving Graph Regularization, Introduction of Consensus Matrices and varying View Weights. We use both Image and Textual training data \cite{greene2009matrix} to analyze the performance of our algorithms with previous work \cite{pvc15}, \cite{nmfsdm}. Our models use both Graph Regularization \cite{GReg} and agreement towards a common Consensus to compute clusterings \cite{nmfsdm}. We compare the performance of our approaches with previous models in the field \cite{pvc15}, \cite{nmfsdm}, \cite{GReg} and find that our model outperforms them. The proposed models have simple update rules which result in ease of computation. We also study the effect of Graph Regularization on the results and the effect of varying Kernels on it. We also discuss the possibility of our model automatically computing the goodness (importance) of the provided views \cite{cai2013multi}.} \par}
+{\justifying\small{The project deals with the problem of clustering data using information present in Multiple Views. We propose several extensions to tackle the Partial Multi View problem which involve Graph Regularization, introduction of Consensus Matrices and varying View Weights. Our models use both Graph Regularization \cite{GReg} and agreement towards a common Consensus to compute clusterings \cite{nmfsdm}. The proposed models have simple update rules which result in ease of computation. We compare the performance of our approaches with previous models in the field \cite{GReg}, \cite{nmfsdm}, \cite{pvc15} and find that our model outperforms them. We use both Image and Textual training data \cite{greene2009matrix} to ensure diversity in data during the experiments. We also study the effect of Graph Regularization on the results and the effect of varying Kernels on it. We also discuss the possibility of our model automatically computing the goodness (importance) of the provided views \cite{cai2013multi}.} \par}
 			\vfill
             \vspace{3mm}
             \large\textsc{December '15 - Present\\}
@@ -381,9 +381,65 @@ To simulate the partial view setting, we randomly select a fraction of instances
 		
 	Since the implementations for the other models could not scale up to more than two views. We evaluate the performance of only the following methods,
 	\begin{itemize}
-	\item {Graph Regularized PVC (Soft constraints) (GPVC-B)	\small\textbf{(Proposed)}}
+	\item {Graph Regularized PVC (Soft constraints) (GPVC-B)	\cite{wangfeature}}
 	\item {Weighted Graph Regularized PVC (Soft constraints) (WPVC)	\small\textbf{(Proposed)}}
 	\end{itemize}	
+
+	\subsubsection{Complete Multi View Results}
+	
+	In this section, we explore the performance of the weighted PVC algorithm with the others. The experiments are performed on complete Multi View Datasets. The following table contains the results for Digit (2 View) dataset,	
+	\begin{table}[h!]
+	  \begin{center}
+	    \begin{tabular}{c|c|c|c}
+	      \toprule
+	      \textsc{Method} & \textsc{Accuracy (\%) } & \textsc{NMI (\%) } 
+	      & \textsc{Purity (\%)} 	\\
+            
+		  \midrule
+			\textsc{BSV \cite{xu2003document}} & 68.5 & 63.4 & NA\\
+			\textsc{WSV \cite{xu2003document}} & 63.5 & 60.3 & NA\\
+			\textsc{ConcatNMF \cite{xu2003document}} & 67.8 & 60.3 & NA\\
+			\textsc{ColNMF \cite{akata2011non}} & 66.0 & 62.1 & NA\\
+			\textsc{Co-reguSC \cite{kumar2011co}} & 86.6 & 77.0 & NA\\
+			\textsc{MultiNMF \cite{nmfsdm}} & 88.1 & 80.4 & NA\\
+			\textsc{SC-ML \cite{dong2014clustering}} & 88.1 & 87.6 & NA\\
+			\textsc{GPVC-S \cite{wangfeature}} & 95.1 & 90.1 & 95.1\\  
+			\textsc{WPVC} & \textbf{96.8} & \textbf{93.2} & \textbf{96.8}\\
+		  
+		  \bottomrule
+	    \end{tabular}
+	    \caption*{\textsc{Results for Digit (2 views)}}
+	  \end{center}
+	\end{table}		
+	
+	\noindent
+	We also show results for the other Multi View datasets, (Here MVC refers to MultiNMF \cite{nmfsdm})	
+	\begin{table}[h!]
+	  \begin{center}
+	    \begin{tabular}{c|c|c|c|c}
+	      \toprule
+		  \textsc{Dataset} & \textsc{Method} & \textsc{Accuracy (\%) } & \textsc{NMI (\%) } 
+	      & \textsc{Purity (\%)} 	\\
+            
+		  \midrule
+			\textsc{Digit} & \textsc{GPVC-S} & 73.3 & 68.6 & 73.3\\  
+			\footnotesize\textsc{(6 Views)} & \textsc{WPVC} & \textbf{93.0} & \textbf{87.5} & \textbf{93.0}\\
+			& \textsc{MVC} & 86.3 & 78.1 & 86.3\\  
+		  \midrule
+	    	\textsc{3Sources} & \textsc{GPVC-S} & 62.7 & 54.5 & 68.6\\  
+			\footnotesize\textsc{(3 Views)} & \textsc{WPVC} & \textbf{63.2} & \textbf{57.1} & \textbf{69.2}\\
+			& \textsc{MVC} & 46.7 & 37.1 & 61.5\\  
+		  \midrule
+	    	\textsc{BBCSports} & \textsc{GPVC-S} & \textbf{59.2} & \textbf{26.2} & \textbf{59.6}\\  
+			\footnotesize\textsc{(3 Views)} & \textsc{WPVC} & {57.4} & {21.7} & {57.8}\\
+			& \textsc{MVC} & 53.2 & 23.4 & 53.9\\  
+		  \midrule
+
+	    \end{tabular}
+	    \caption*{\textsc{Results for other Multi View Datasets\\Kernel used: Nearest Neighbors}}
+	  \end{center}
+	\end{table}		
+
 
 	\subsubsection{Conclusions}
 	
