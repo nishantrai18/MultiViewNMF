@@ -22,14 +22,14 @@ options.delta = 0.1;
 options.Gaplpha=1;
 options.alpha=0.1;
 options.gamma = 2;
-options.beta=0.1;
-options.rounds = 100;
+options.beta=10;
+options.rounds = 30;
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';
-dataname={'3sources3vbig'};
-num_views = 3;
-numClust = 6;
+dataname={'mfeatbig'};
+num_views = 5;
+numClust = 10;
 options.K = numClust;
 options.latentdim=numClust;
 
@@ -47,7 +47,7 @@ for idata=1:length(dataname)
     %% normalize data matrix
     for i=1:num_views
         X{i} = X{i}/sum(sum(X{i}));
-        X{i} = X{i}';
+        X{i} = X{i};
     end
     %%
     %X should be row major i.e. rows are the data points
@@ -59,7 +59,7 @@ for idata=1:length(dataname)
    multiMean = cell(1,length(pairPortion));
    multiStd = cell(1,length(pairPortion));
    multiWeight = cell(1,length(pairPortion));
-   for f=1:3%numFold
+   for f=1:1%numFold
         fprintf('Fold No. %d\n',f);
         instanceIdx=folds(f,:);
         truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances
@@ -69,7 +69,7 @@ for idata=1:length(dataname)
         end
            meanStats = [];
            stdStats = [];
-           for pairedIdx=1:length(pairPortion)  %here it's 1 ;different percentage of paired instances
+           for pairedIdx=1:1%length(pairPortion)  %here it's 1 ;different percentage of paired instances
                fprintf('Paired Idx. %d\n',pairedIdx);
                numpairedInst=floor(numInst*pairPortion(pairedIdx)+0.01);  % number of paired instances that have complete views
                paired=instanceIdx(1:numpairedInst);                     %The paired instances
@@ -101,10 +101,10 @@ for idata=1:length(dataname)
                 
                 for i=1:num_views
                     data{i} = data{i}';
-                    options.WeightMode='Cosine';
-                    %sz = size(data{i},2);
-                    %M = EuDist2(data{i}',[],0);          %Row Major input
-                    %options.t = sqrt(sum(sum(M.^2))/(sz*sz));
+                    options.WeightMode='Binary';
+                    sz = size(data{i},2);
+                    M = EuDist2(data{i}',[],0);          %Row Major input
+                    options.t = sqrt(sum(sum(M.^2))/(sz*sz));
                     W{i} = constructW_cai(data{i}',options);
                     %Weight matrix constructed for each view
                 end

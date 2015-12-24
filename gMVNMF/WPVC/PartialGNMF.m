@@ -31,6 +31,8 @@ gamma = options.gamma;
 beta = options.beta;
 delta = options.delta;
 numData = size(invMap, 2);
+varWeight = options.varWeight;      %If 0, then no varying weights
+                                    %If 1 then sum(alpha)=1, if 2 then sum(alpha^gamma)=1
 error = 1e-4;
 
 U = cell(1, viewNum);
@@ -94,24 +96,39 @@ while j < Rounds
         for tj=1:size(invMap{i},1)
             id = invMap{i}(tj,1);
             row = invMap{i}(tj,2);
-            centroidV(i,:) = centroidV(i,:) + (weights(id)^gamma)*V{id}(row,:);
-            sumID = sumID + (weights(id)^gamma);
+            if (varWeight == 0)
+                centroidV(i,:) = centroidV(i,:) + V{id}(row,:);
+                sumID = sumID + 1;
+            elseif (varWeight == 1)
+                centroidV(i,:) = centroidV(i,:) + (weights(id)^gamma)*V{id}(row,:);
+                sumID = sumID + (weights(id)^gamma);
+            else
+                centroidV(i,:) = centroidV(i,:) + (weights(id))*V{id}(row,:);
+                sumID = sumID + (weights(id));
+            end
         end
         centroidV(i,:) = centroidV(i,:)/sumID;
     end
     
     %Update the weights if the corresponding option is set
-    if (options.varWeight > 0)
+    if (varWeight > 0)
         H = [];
         for i = 1:viewNum
             tmp1 = (X{i} - U{i}*V{i}');
             tmp2 = (V{i} - centroidV(map{i},:));
-            val = gamma*(sum(sum(tmp1.^2))+delta*(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));  
-            val = val^(1.0/(1-gamma));
+            val = (sum(sum(tmp1.^2))+delta*(sum(sum(tmp2.^2)))+sum(sum((V{i}'*L{i}).*V{i}')));  
+            if (varWeight == 1)
+                val = val^(1.0/(1-gamma));
+            else
+                val = val^(gamma/(gamma-1.0));
+            end
             H(end+1) = val;
         end
         tmpSum = sum(H);
         weights = (H./tmpSum);    
+        if (varWeight == 2)
+            weights = weights.^(1.0/gamma)
+        end
     end
     
     for i=1:viewNum
@@ -123,7 +140,13 @@ while j < Rounds
     logL = 0;
     logy = [];
     for i = 1:viewNum
-        alpha = weights(i)^gamma;
+        if (varWeight == 0)
+            alpha = 1;
+        elseif (varWeight == 1)
+            alpha = weights(i)^gamma;
+        else
+            alpha = weights(i);
+        end
         tmp1 = (X{i} - U{i}*V{i}');
         tmp2 = (V{i} - centroidV(map{i},:));
         logL = logL + alpha*(sum(sum(tmp1.^2)) + delta*(sum(sum(tmp2.^2))) + sum(sum((V{i}'*L{i}).*V{i}')));
