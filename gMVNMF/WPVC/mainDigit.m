@@ -17,13 +17,13 @@ options.meanFitRatio = 0.1;
 options.WeightMode='Binary';
 options.kmeans = 1;
 
-options.varWeight = 1;
+options.varWeight = 2;
 options.delta = 0.1;
 options.Gaplpha=1;
 options.alpha=0.1;
-options.gamma = 2;
+options.gamma = 0.5;
 options.beta=10;
-options.rounds = 30;
+options.rounds = 50;
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';

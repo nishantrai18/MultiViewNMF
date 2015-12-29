@@ -59,7 +59,7 @@ weights(1:viewNum) = (1/viewNum);
 %% initialize basis and coefficient matrices, initialize on the basis of standard GNMF algorithm
 % Change value of Goptions.alpha to get different results in BBCSports
 tic;
-%Goptions.maxIter = options.maxIter;
+Goptions.maxIter = options.maxIter;             %Works faster and gives better results when uncommented
 Goptions.alpha = options.alpha*beta;
 rand('twister',5489);
 [U{1}, V{1}] = GNMF(X{1}, K, W{1}, Goptions);        %In this case, random inits take place
@@ -127,7 +127,7 @@ while j < Rounds
         tmpSum = sum(H);
         weights = (H./tmpSum);    
         if (varWeight == 2)
-            weights = weights.^(1.0/gamma)
+            weights = weights.^(1.0/gamma);
         end
     end
     
