@@ -52,7 +52,7 @@
 	        \textbf{Abstract\\}
         	\vspace{4mm}
         	\noindent
-{\justifying\small{The project deals with the problem of clustering data using information present in Multiple Views. We propose several extensions to tackle the Partial Multi View problem which involve Graph Regularization, introduction of Consensus Matrices and varying View Weights. Our models use both Graph Regularization \cite{GReg} and agreement towards a common Consensus to compute clusterings \cite{nmfsdm}. The proposed models have simple update rules which result in ease of computation. We compare the performance of our approaches with previous models in the field \cite{GReg}, \cite{nmfsdm}, \cite{pvc15} and find that our model outperforms them. We use both Image and Textual training data \cite{greene2009matrix} to ensure diversity in data during the experiments. We also study the effect of Graph Regularization on the results and the effect of varying Kernels on it. We also discuss the possibility of our model automatically computing the goodness (importance) of the provided views \cite{cai2013multi}.} \par}
+{\justifying\small{The project deals with the problem of clustering data using information present in Multiple Views. We propose several extensions to tackle the Partial Multi View problem which involve Graph Regularization, introduction of Consensus Matrices and varying View Weights. Our models use both Graph Regularization \cite{GReg} and agreement towards a common Consensus to compute clusterings \cite{nmfsdm}. The proposed models have simple update rules which result in ease of computation. We compare the performance of our approaches with previous models in the field \cite{GReg}, \cite{nmfsdm}, \cite{pvc15} and find that our model outperforms them. We use both Image and Textual data \cite{greene2009matrix} to ensure diversity during the experiments. We also study the effect of Graph Regularization on the results and the effect of varying Kernels on it. We also discuss the possibility of our model automatically computing the goodness (importance) of the provided views \cite{cai2013multi}.} \par}
 			\vfill
             \vspace{3mm}
             \large\textsc{December '15 - Present\\}
@@ -436,7 +436,7 @@ To simulate the partial view setting, we randomly select a fraction of instances
 		  \midrule
 
 	    \end{tabular}
-	    \caption*{\textsc{Results for other Multi View Datasets\\Kernel used: Nearest Neighbors}}
+	    \caption*{\textsc{Results for other Multi View Datasets\\Graph Laplacian constructed Using 0-1 Weighted Nearest Neighbors}}
 	  \end{center}
 	\end{table}		
 
