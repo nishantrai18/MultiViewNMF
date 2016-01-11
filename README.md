@@ -1,4 +1,4 @@
-Multi View Clustering Using Non Negative Matrix Factorization:
+Temporary Title:
 --------------------------------------------------------------
 
 The project deals with the problem of clustering data using information present in Multiple Views. Further details will be available at a later time.
