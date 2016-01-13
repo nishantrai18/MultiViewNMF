@@ -1,0 +1,619 @@
+diary on
+optParam
+cora
+Elapsed time is 0.830301 seconds.
+Elapsed time is 16.944991 seconds.
+alpha: 0.0100 delta: 0.0100 beta: 0.1000
+running k-means... ac: 0.324,  nmi:0.150,  purity:0.374,  errors: 338/500
+Elapsed time is 0.765459 seconds.
+Elapsed time is 14.980158 seconds.
+alpha: 0.0100 delta: 0.0100 beta: 1.0000
+running k-means... ac: 0.356,  nmi:0.204,  purity:0.452,  errors: 322/500
+Elapsed time is 0.827799 seconds.
+Elapsed time is 12.272101 seconds.
+alpha: 0.0100 delta: 0.0100 beta: 10.0000
+running k-means... ac: 0.360,  nmi:0.250,  purity:0.426,  errors: 320/500
+Elapsed time is 0.838008 seconds.
+Elapsed time is 12.979557 seconds.
+alpha: 0.0100 delta: 0.1000 beta: 0.1000
+running k-means... ac: 0.438,  nmi:0.283,  purity:0.476,  errors: 281/500
+Elapsed time is 0.763904 seconds.
+Elapsed time is 12.846205 seconds.
+alpha: 0.0100 delta: 0.1000 beta: 1.0000
+running k-means... ac: 0.364,  nmi:0.202,  purity:0.434,  errors: 318/500
+Elapsed time is 0.883419 seconds.
+Elapsed time is 12.234591 seconds.
+alpha: 0.0100 delta: 0.1000 beta: 10.0000
+running k-means... ac: 0.326,  nmi:0.208,  purity:0.420,  errors: 337/500
+Elapsed time is 0.896934 seconds.
+Elapsed time is 11.530960 seconds.
+alpha: 0.0100 delta: 1.0000 beta: 0.1000
+running k-means... ac: 0.336,  nmi:0.194,  purity:0.434,  errors: 332/500
+Elapsed time is 0.895366 seconds.
+Elapsed time is 11.875286 seconds.
+alpha: 0.0100 delta: 1.0000 beta: 1.0000
+running k-means... ac: 0.354,  nmi:0.228,  purity:0.446,  errors: 323/500
+Elapsed time is 0.770870 seconds.
+Elapsed time is 11.816791 seconds.
+alpha: 0.0100 delta: 1.0000 beta: 10.0000
+running k-means... ac: 0.338,  nmi:0.232,  purity:0.426,  errors: 331/500
+Elapsed time is 0.783853 seconds.
+Elapsed time is 15.260539 seconds.
+alpha: 0.1000 delta: 0.0100 beta: 0.1000
+running k-means... ac: 0.356,  nmi:0.204,  purity:0.452,  errors: 322/500
+Elapsed time is 0.865595 seconds.
+Elapsed time is 12.644715 seconds.
+alpha: 0.1000 delta: 0.0100 beta: 1.0000
+running k-means... ac: 0.360,  nmi:0.250,  purity:0.426,  errors: 320/500
+Elapsed time is 0.845491 seconds.
+Elapsed time is 11.824263 seconds.
+alpha: 0.1000 delta: 0.0100 beta: 10.0000
+running k-means... ac: 0.282,  nmi:0.191,  purity:0.368,  errors: 359/500
+Elapsed time is 0.743658 seconds.
+Elapsed time is 12.877053 seconds.
+alpha: 0.1000 delta: 0.1000 beta: 0.1000
+running k-means... ac: 0.364,  nmi:0.202,  purity:0.434,  errors: 318/500
+Elapsed time is 0.821130 seconds.
+Elapsed time is 12.070584 seconds.
+alpha: 0.1000 delta: 0.1000 beta: 1.0000
+running k-means... ac: 0.326,  nmi:0.208,  purity:0.420,  errors: 337/500
+Elapsed time is 0.793059 seconds.
+Elapsed time is 11.516234 seconds.
+alpha: 0.1000 delta: 0.1000 beta: 10.0000
+running k-means... ac: 0.282,  nmi:0.191,  purity:0.368,  errors: 359/500
+Elapsed time is 0.771351 seconds.
+Elapsed time is 11.417006 seconds.
+alpha: 0.1000 delta: 1.0000 beta: 0.1000
+running k-means... ac: 0.354,  nmi:0.228,  purity:0.446,  errors: 323/500
+Elapsed time is 0.914931 seconds.
+Elapsed time is 11.541453 seconds.
+alpha: 0.1000 delta: 1.0000 beta: 1.0000
+running k-means... ac: 0.338,  nmi:0.232,  purity:0.426,  errors: 331/500
+Elapsed time is 0.840375 seconds.
+Elapsed time is 11.591996 seconds.
+alpha: 0.1000 delta: 1.0000 beta: 10.0000
+running k-means... ac: 0.282,  nmi:0.191,  purity:0.368,  errors: 359/500
+Elapsed time is 0.945185 seconds.
+Elapsed time is 13.092997 seconds.
+alpha: 1.0000 delta: 0.0100 beta: 0.1000
+running k-means... ac: 0.360,  nmi:0.250,  purity:0.426,  errors: 320/500
+Elapsed time is 0.813179 seconds.
+Elapsed time is 11.890378 seconds.
+alpha: 1.0000 delta: 0.0100 beta: 1.0000
+running k-means... ac: 0.282,  nmi:0.191,  purity:0.368,  errors: 359/500
+Elapsed time is 0.742267 seconds.
+Elapsed time is 11.727170 seconds.
+alpha: 1.0000 delta: 0.0100 beta: 10.0000
+running k-means... ac: 0.282,  nmi:0.191,  purity:0.368,  errors: 359/500
+Elapsed time is 0.888017 seconds.
+Elapsed time is 12.209209 seconds.
+alpha: 1.0000 delta: 0.1000 beta: 0.1000
+running k-means... ac: 0.326,  nmi:0.208,  purity:0.420,  errors: 337/500
+Elapsed time is 0.894517 seconds.
+Elapsed time is 11.835102 seconds.
+alpha: 1.0000 delta: 0.1000 beta: 1.0000
+running k-means... ac: 0.282,  nmi:0.191,  purity:0.368,  errors: 359/500
+Elapsed time is 0.830696 seconds.
+Elapsed time is 11.846571 seconds.
+alpha: 1.0000 delta: 0.1000 beta: 10.0000
+running k-means... ac: 0.282,  nmi:0.191,  purity:0.368,  errors: 359/500
+Elapsed time is 0.810988 seconds.
+Elapsed time is 11.900779 seconds.
+alpha: 1.0000 delta: 1.0000 beta: 0.1000
+running k-means... ac: 0.338,  nmi:0.232,  purity:0.426,  errors: 331/500
+Elapsed time is 0.768272 seconds.
+Elapsed time is 11.455484 seconds.
+alpha: 1.0000 delta: 1.0000 beta: 1.0000
+running k-means... ac: 0.282,  nmi:0.191,  purity:0.368,  errors: 359/500
+Elapsed time is 0.769174 seconds.
+Elapsed time is 11.140110 seconds.
+alpha: 1.0000 delta: 1.0000 beta: 10.0000
+running k-means... ac: 0.282,  nmi:0.191,  purity:0.368,  errors: 359/500
+alpha: 0.010 delta: 0.010 beta: 0.100 | ac: 0.3240 nmi: 0.1496 pur: 0.3740
+alpha: 0.010 delta: 0.010 beta: 1.000 | ac: 0.3560 nmi: 0.2041 pur: 0.4520
+alpha: 0.010 delta: 0.010 beta: 10.000 | ac: 0.3600 nmi: 0.2504 pur: 0.4260
+alpha: 0.010 delta: 0.100 beta: 0.100 | ac: 0.4380 nmi: 0.2831 pur: 0.4760
+alpha: 0.010 delta: 0.100 beta: 1.000 | ac: 0.3640 nmi: 0.2018 pur: 0.4340
+alpha: 0.010 delta: 0.100 beta: 10.000 | ac: 0.3260 nmi: 0.2084 pur: 0.4200
+alpha: 0.010 delta: 1.000 beta: 0.100 | ac: 0.3360 nmi: 0.1941 pur: 0.4340
+alpha: 0.010 delta: 1.000 beta: 1.000 | ac: 0.3540 nmi: 0.2278 pur: 0.4460
+alpha: 0.010 delta: 1.000 beta: 10.000 | ac: 0.3380 nmi: 0.2323 pur: 0.4260
+alpha: 0.100 delta: 0.010 beta: 0.100 | ac: 0.3560 nmi: 0.2041 pur: 0.4520
+alpha: 0.100 delta: 0.010 beta: 1.000 | ac: 0.3600 nmi: 0.2504 pur: 0.4260
+alpha: 0.100 delta: 0.010 beta: 10.000 | ac: 0.2820 nmi: 0.1914 pur: 0.3680
+alpha: 0.100 delta: 0.100 beta: 0.100 | ac: 0.3640 nmi: 0.2018 pur: 0.4340
+alpha: 0.100 delta: 0.100 beta: 1.000 | ac: 0.3260 nmi: 0.2084 pur: 0.4200
+alpha: 0.100 delta: 0.100 beta: 10.000 | ac: 0.2820 nmi: 0.1914 pur: 0.3680
+alpha: 0.100 delta: 1.000 beta: 0.100 | ac: 0.3540 nmi: 0.2278 pur: 0.4460
+alpha: 0.100 delta: 1.000 beta: 1.000 | ac: 0.3380 nmi: 0.2323 pur: 0.4260
+alpha: 0.100 delta: 1.000 beta: 10.000 | ac: 0.2820 nmi: 0.1914 pur: 0.3680
+alpha: 1.000 delta: 0.010 beta: 0.100 | ac: 0.3600 nmi: 0.2504 pur: 0.4260
+alpha: 1.000 delta: 0.010 beta: 1.000 | ac: 0.2820 nmi: 0.1914 pur: 0.3680
+alpha: 1.000 delta: 0.010 beta: 10.000 | ac: 0.2820 nmi: 0.1914 pur: 0.3680
+alpha: 1.000 delta: 0.100 beta: 0.100 | ac: 0.3260 nmi: 0.2084 pur: 0.4200
+alpha: 1.000 delta: 0.100 beta: 1.000 | ac: 0.2820 nmi: 0.1914 pur: 0.3680
+alpha: 1.000 delta: 0.100 beta: 10.000 | ac: 0.2820 nmi: 0.1914 pur: 0.3680
+alpha: 1.000 delta: 1.000 beta: 0.100 | ac: 0.3380 nmi: 0.2323 pur: 0.4260
+alpha: 1.000 delta: 1.000 beta: 1.000 | ac: 0.2820 nmi: 0.1914 pur: 0.3680
+alpha: 1.000 delta: 1.000 beta: 10.000 | ac: 0.2820 nmi: 0.1914 pur: 0.3680
+diary optimalParams
+m = [1,2];
+m = [1,2]
+
+m =
+
+     1     2
+
+optParam
+bbcsports12
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('load')" style="font-weight:bold">load</a>
+Unable to read file '../../partialMV/PVC/recreateResults/data/bbcsports12RnSp.mat'. No such file or directory.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('optParam', '/users/cse/bt/nishantr/Xerox/code/gMVNMF/WPVC/optParam.m', 47)" style="font-weight:bold">optParam</a> (<a href="matlab: opentoline('/users/cse/bt/nishantr/Xerox/code/gMVNMF/WPVC/optParam.m',47,0)">line 47</a>)
+    load (datafname);                                           %Loading the datafile
+} 
+optParam
+bbcsport12
+Elapsed time is 1.586560 seconds.
+Elapsed time is 19.630590 seconds.
+alpha: 0.0100 delta: 0.0100 beta: 0.1000
+running k-means... ac: 0.695,  nmi:0.511,  purity:0.754,  errors: 166/544
+Elapsed time is 1.378284 seconds.
+Elapsed time is 20.224796 seconds.
+alpha: 0.0100 delta: 0.0100 beta: 1.0000
+running k-means... ac: 0.562,  nmi:0.413,  purity:0.643,  errors: 238/544
+Elapsed time is 1.428945 seconds.
+Elapsed time is 19.002573 seconds.
+alpha: 0.0100 delta: 0.0100 beta: 10.0000
+running k-means... ac: 0.711,  nmi:0.597,  purity:0.765,  errors: 157/544
+Elapsed time is 1.732357 seconds.
+Elapsed time is 19.050082 seconds.
+alpha: 0.0100 delta: 0.1000 beta: 0.1000
+running k-means... ac: 0.419,  nmi:0.244,  purity:0.528,  errors: 316/544
+Elapsed time is 1.383099 seconds.
+Elapsed time is 18.598732 seconds.
+alpha: 0.0100 delta: 0.1000 beta: 1.0000
+running k-means... ac: 0.678,  nmi:0.471,  purity:0.678,  errors: 175/544
+Elapsed time is 1.566184 seconds.
+Elapsed time is 18.519047 seconds.
+alpha: 0.0100 delta: 0.1000 beta: 10.0000
+running k-means... ac: 0.676,  nmi:0.573,  purity:0.768,  errors: 176/544
+Elapsed time is 1.436811 seconds.
+Elapsed time is 19.298474 seconds.
+alpha: 0.0100 delta: 1.0000 beta: 0.1000
+running k-means... ac: 0.450,  nmi:0.268,  purity:0.513,  errors: 299/544
+Elapsed time is 1.472581 seconds.
+Elapsed time is 18.880775 seconds.
+alpha: 0.0100 delta: 1.0000 beta: 1.0000
+running k-means... ac: 0.450,  nmi:0.230,  purity:0.500,  errors: 299/544
+Elapsed time is 1.393012 seconds.
+Elapsed time is 18.159649 seconds.
+alpha: 0.0100 delta: 1.0000 beta: 10.0000
+running k-means... ac: 0.375,  nmi:0.252,  purity:0.504,  errors: 340/544
+Elapsed time is 1.526673 seconds.
+Elapsed time is 20.332634 seconds.
+alpha: 0.1000 delta: 0.0100 beta: 0.1000
+running k-means... ac: 0.562,  nmi:0.413,  purity:0.643,  errors: 238/544
+Elapsed time is 1.471645 seconds.
+Elapsed time is 18.040261 seconds.
+alpha: 0.1000 delta: 0.0100 beta: 1.0000
+running k-means... ac: 0.711,  nmi:0.597,  purity:0.765,  errors: 157/544
+Elapsed time is 1.621954 seconds.
+Elapsed time is 21.868236 seconds.
+alpha: 0.1000 delta: 0.0100 beta: 10.0000
+running k-means... ac: 0.566,  nmi:0.440,  purity:0.680,  errors: 236/544
+Elapsed time is 1.867365 seconds.
+Elapsed time is 22.281857 seconds.
+alpha: 0.1000 delta: 0.1000 beta: 0.1000
+running k-means... ac: 0.678,  nmi:0.471,  purity:0.678,  errors: 175/544
+Elapsed time is 1.775600 seconds.
+Elapsed time is 22.333443 seconds.
+alpha: 0.1000 delta: 0.1000 beta: 1.0000
+running k-means... ac: 0.676,  nmi:0.573,  purity:0.768,  errors: 176/544
+Elapsed time is 1.670857 seconds.
+Elapsed time is 20.463296 seconds.
+alpha: 0.1000 delta: 0.1000 beta: 10.0000
+running k-means... ac: 0.471,  nmi:0.262,  purity:0.498,  errors: 288/544
+Elapsed time is 1.664888 seconds.
+Elapsed time is 20.514029 seconds.
+alpha: 0.1000 delta: 1.0000 beta: 0.1000
+running k-means... ac: 0.450,  nmi:0.230,  purity:0.500,  errors: 299/544
+Elapsed time is 1.568240 seconds.
+Elapsed time is 21.411235 seconds.
+alpha: 0.1000 delta: 1.0000 beta: 1.0000
+running k-means... ac: 0.375,  nmi:0.252,  purity:0.504,  errors: 340/544
+Elapsed time is 1.801876 seconds.
+Elapsed time is 21.841941 seconds.
+alpha: 0.1000 delta: 1.0000 beta: 10.0000
+running k-means... ac: 0.452,  nmi:0.275,  purity:0.546,  errors: 298/544
+Elapsed time is 1.702121 seconds.
+Elapsed time is 20.646624 seconds.
+alpha: 1.0000 delta: 0.0100 beta: 0.1000
+running k-means... ac: 0.711,  nmi:0.597,  purity:0.765,  errors: 157/544
+Elapsed time is 1.625166 seconds.
+Elapsed time is 21.573097 seconds.
+alpha: 1.0000 delta: 0.0100 beta: 1.0000
+running k-means... ac: 0.566,  nmi:0.440,  purity:0.680,  errors: 236/544
+Elapsed time is 1.728750 seconds.
+Elapsed time is 24.981503 seconds.
+alpha: 1.0000 delta: 0.0100 beta: 10.0000
+running k-means... ac: 0.366,  nmi:0.174,  purity:0.426,  errors: 345/544
+Elapsed time is 2.135939 seconds.
+Elapsed time is 24.001732 seconds.
+alpha: 1.0000 delta: 0.1000 beta: 0.1000
+running k-means... ac: 0.676,  nmi:0.573,  purity:0.768,  errors: 176/544
+Elapsed time is 1.839092 seconds.
+Elapsed time is 21.515884 seconds.
+alpha: 1.0000 delta: 0.1000 beta: 1.0000
+running k-means... ac: 0.471,  nmi:0.262,  purity:0.498,  errors: 288/544
+Elapsed time is 1.592002 seconds.
+Elapsed time is 20.891732 seconds.
+alpha: 1.0000 delta: 0.1000 beta: 10.0000
+running k-means... ac: 0.366,  nmi:0.174,  purity:0.426,  errors: 345/544
+Elapsed time is 1.481126 seconds.
+Elapsed time is 21.332957 seconds.
+alpha: 1.0000 delta: 1.0000 beta: 0.1000
+running k-means... ac: 0.375,  nmi:0.252,  purity:0.504,  errors: 340/544
+Elapsed time is 1.569751 seconds.
+Elapsed time is 20.918003 seconds.
+alpha: 1.0000 delta: 1.0000 beta: 1.0000
+running k-means... ac: 0.452,  nmi:0.275,  purity:0.546,  errors: 298/544
+Elapsed time is 1.747142 seconds.
+Elapsed time is 20.844400 seconds.
+alpha: 1.0000 delta: 1.0000 beta: 10.0000
+running k-means... ac: 0.366,  nmi:0.174,  purity:0.426,  errors: 345/544
+alpha: 0.010 delta: 0.010 beta: 0.100 | ac: 0.6949 nmi: 0.5110 pur: 0.7537
+alpha: 0.010 delta: 0.010 beta: 1.000 | ac: 0.5625 nmi: 0.4129 pur: 0.6434
+alpha: 0.010 delta: 0.010 beta: 10.000 | ac: 0.7114 nmi: 0.5972 pur: 0.7647
+alpha: 0.010 delta: 0.100 beta: 0.100 | ac: 0.4191 nmi: 0.2442 pur: 0.5276
+alpha: 0.010 delta: 0.100 beta: 1.000 | ac: 0.6783 nmi: 0.4708 pur: 0.6783
+alpha: 0.010 delta: 0.100 beta: 10.000 | ac: 0.6765 nmi: 0.5728 pur: 0.7684
+alpha: 0.010 delta: 1.000 beta: 0.100 | ac: 0.4504 nmi: 0.2678 pur: 0.5129
+alpha: 0.010 delta: 1.000 beta: 1.000 | ac: 0.4504 nmi: 0.2300 pur: 0.5000
+alpha: 0.010 delta: 1.000 beta: 10.000 | ac: 0.3750 nmi: 0.2525 pur: 0.5037
+alpha: 0.100 delta: 0.010 beta: 0.100 | ac: 0.5625 nmi: 0.4129 pur: 0.6434
+alpha: 0.100 delta: 0.010 beta: 1.000 | ac: 0.7114 nmi: 0.5972 pur: 0.7647
+alpha: 0.100 delta: 0.010 beta: 10.000 | ac: 0.5662 nmi: 0.4404 pur: 0.6801
+alpha: 0.100 delta: 0.100 beta: 0.100 | ac: 0.6783 nmi: 0.4708 pur: 0.6783
+alpha: 0.100 delta: 0.100 beta: 1.000 | ac: 0.6765 nmi: 0.5728 pur: 0.7684
+alpha: 0.100 delta: 0.100 beta: 10.000 | ac: 0.4706 nmi: 0.2623 pur: 0.4982
+alpha: 0.100 delta: 1.000 beta: 0.100 | ac: 0.4504 nmi: 0.2300 pur: 0.5000
+alpha: 0.100 delta: 1.000 beta: 1.000 | ac: 0.3750 nmi: 0.2525 pur: 0.5037
+alpha: 0.100 delta: 1.000 beta: 10.000 | ac: 0.4522 nmi: 0.2748 pur: 0.5460
+alpha: 1.000 delta: 0.010 beta: 0.100 | ac: 0.7114 nmi: 0.5972 pur: 0.7647
+alpha: 1.000 delta: 0.010 beta: 1.000 | ac: 0.5662 nmi: 0.4404 pur: 0.6801
+alpha: 1.000 delta: 0.010 beta: 10.000 | ac: 0.3658 nmi: 0.1743 pur: 0.4265
+alpha: 1.000 delta: 0.100 beta: 0.100 | ac: 0.6765 nmi: 0.5728 pur: 0.7684
+alpha: 1.000 delta: 0.100 beta: 1.000 | ac: 0.4706 nmi: 0.2623 pur: 0.4982
+alpha: 1.000 delta: 0.100 beta: 10.000 | ac: 0.3658 nmi: 0.1743 pur: 0.4265
+alpha: 1.000 delta: 1.000 beta: 0.100 | ac: 0.3750 nmi: 0.2525 pur: 0.5037
+alpha: 1.000 delta: 1.000 beta: 1.000 | ac: 0.4522 nmi: 0.2748 pur: 0.5460
+alpha: 1.000 delta: 1.000 beta: 10.000 | ac: 0.3658 nmi: 0.1743 pur: 0.4265
+diary on
+diary optimalParams
+optParam
+mfeat
+optParam
+mfeat
+if system_dependent('IsDebugMode')==1, dbcont; end
+Elapsed time is 0.606249 seconds.
+Elapsed time is 11.815385 seconds.
+alpha: 0.0100 delta: 0.0100 beta: 0.1000
+running k-means... ac: 0.785,  nmi:0.700,  purity:0.785,  errors: 430/2000
+Elapsed time is 0.538498 seconds.
+Elapsed time is 9.460769 seconds.
+alpha: 0.0100 delta: 0.0100 beta: 1.0000
+running k-means... ac: 0.839,  nmi:0.783,  purity:0.839,  errors: 322/2000
+Elapsed time is 0.446769 seconds.
+Elapsed time is 8.002791 seconds.
+alpha: 0.0100 delta: 0.0100 beta: 10.0000
+running k-means... ac: 0.788,  nmi:0.780,  purity:0.788,  errors: 423/2000
+Elapsed time is 0.469146 seconds.
+Elapsed time is 7.305970 seconds.
+alpha: 0.0100 delta: 0.0100 beta: 100.0000
+running k-means... ac: 0.895,  nmi:0.852,  purity:0.895,  errors: 211/2000
+Elapsed time is 0.436403 seconds.
+Elapsed time is 7.408746 seconds.
+alpha: 0.0100 delta: 0.1000 beta: 0.1000
+running k-means... ac: 0.870,  nmi:0.784,  purity:0.870,  errors: 260/2000
+Elapsed time is 0.430528 seconds.
+Elapsed time is 7.256877 seconds.
+alpha: 0.0100 delta: 0.1000 beta: 1.0000
+running k-means... ac: 0.879,  nmi:0.811,  purity:0.879,  errors: 242/2000
+Elapsed time is 0.458787 seconds.
+Elapsed time is 7.477302 seconds.
+alpha: 0.0100 delta: 0.1000 beta: 10.0000
+running k-means... ac: 0.921,  nmi:0.871,  purity:0.921,  errors: 157/2000
+Elapsed time is 0.427437 seconds.
+Elapsed time is 6.844481 seconds.
+alpha: 0.0100 delta: 0.1000 beta: 100.0000
+running k-means... ac: 0.959,  nmi:0.918,  purity:0.959,  errors: 83/2000
+Elapsed time is 0.428856 seconds.
+Elapsed time is 6.817200 seconds.
+alpha: 0.0100 delta: 1.0000 beta: 0.1000
+running k-means... ac: 0.805,  nmi:0.743,  purity:0.805,  errors: 390/2000
+Elapsed time is 0.540264 seconds.
+Elapsed time is 7.037337 seconds.
+alpha: 0.0100 delta: 1.0000 beta: 1.0000
+running k-means... ac: 0.854,  nmi:0.779,  purity:0.854,  errors: 292/2000
+Elapsed time is 0.495054 seconds.
+Elapsed time is 7.779077 seconds.
+alpha: 0.0100 delta: 1.0000 beta: 10.0000
+running k-means... ac: 0.801,  nmi:0.833,  purity:0.823,  errors: 398/2000
+Elapsed time is 0.504445 seconds.
+Elapsed time is 7.717872 seconds.
+alpha: 0.0100 delta: 1.0000 beta: 100.0000
+running k-means... ac: 0.812,  nmi:0.842,  purity:0.832,  errors: 375/2000
+Elapsed time is 0.565865 seconds.
+Elapsed time is 7.822641 seconds.
+alpha: 0.0100 delta: 10.0000 beta: 0.1000
+running k-means... ac: 0.733,  nmi:0.703,  purity:0.750,  errors: 534/2000
+Elapsed time is 0.447725 seconds.
+Elapsed time is 7.395676 seconds.
+alpha: 0.0100 delta: 10.0000 beta: 1.0000
+running k-means... ac: 0.788,  nmi:0.799,  purity:0.816,  errors: 424/2000
+Elapsed time is 0.558165 seconds.
+Elapsed time is 7.827970 seconds.
+alpha: 0.0100 delta: 10.0000 beta: 10.0000
+running k-means... ac: 0.893,  nmi:0.834,  purity:0.893,  errors: 214/2000
+Elapsed time is 0.487558 seconds.
+Elapsed time is 7.997162 seconds.
+alpha: 0.0100 delta: 10.0000 beta: 100.0000
+running k-means... ac: 0.846,  nmi:0.840,  purity:0.846,  errors: 308/2000
+Elapsed time is 0.554605 seconds.
+Elapsed time is 9.317989 seconds.
+alpha: 0.1000 delta: 0.0100 beta: 0.1000
+running k-means... ac: 0.839,  nmi:0.783,  purity:0.839,  errors: 322/2000
+Elapsed time is 0.554464 seconds.
+Elapsed time is 7.921855 seconds.
+alpha: 0.1000 delta: 0.0100 beta: 1.0000
+running k-means... ac: 0.788,  nmi:0.780,  purity:0.788,  errors: 423/2000
+Elapsed time is 0.495886 seconds.
+Elapsed time is 7.906564 seconds.
+alpha: 0.1000 delta: 0.0100 beta: 10.0000
+running k-means... ac: 0.895,  nmi:0.852,  purity:0.895,  errors: 211/2000
+Elapsed time is 0.506234 seconds.
+Elapsed time is 7.508291 seconds.
+alpha: 0.1000 delta: 0.0100 beta: 100.0000
+running k-means... ac: 0.892,  nmi:0.858,  purity:0.892,  errors: 215/2000
+Elapsed time is 0.508121 seconds.
+Elapsed time is 7.707165 seconds.
+alpha: 0.1000 delta: 0.1000 beta: 0.1000
+running k-means... ac: 0.879,  nmi:0.811,  purity:0.879,  errors: 242/2000
+Elapsed time is 0.541438 seconds.
+Elapsed time is 7.425414 seconds.
+alpha: 0.1000 delta: 0.1000 beta: 1.0000
+running k-means... ac: 0.921,  nmi:0.871,  purity:0.921,  errors: 157/2000
+Elapsed time is 0.510086 seconds.
+Elapsed time is 7.390294 seconds.
+alpha: 0.1000 delta: 0.1000 beta: 10.0000
+running k-means... ac: 0.959,  nmi:0.918,  purity:0.959,  errors: 83/2000
+Elapsed time is 0.451187 seconds.
+Elapsed time is 7.095689 seconds.
+alpha: 0.1000 delta: 0.1000 beta: 100.0000
+running k-means... ac: 0.814,  nmi:0.840,  purity:0.841,  errors: 372/2000
+Elapsed time is 0.455176 seconds.
+Elapsed time is 7.701880 seconds.
+alpha: 0.1000 delta: 1.0000 beta: 0.1000
+running k-means... ac: 0.854,  nmi:0.779,  purity:0.854,  errors: 292/2000
+Elapsed time is 0.448202 seconds.
+Elapsed time is 8.297677 seconds.
+alpha: 0.1000 delta: 1.0000 beta: 1.0000
+running k-means... ac: 0.801,  nmi:0.833,  purity:0.823,  errors: 398/2000
+Elapsed time is 0.515783 seconds.
+Elapsed time is 7.308975 seconds.
+alpha: 0.1000 delta: 1.0000 beta: 10.0000
+running k-means... ac: 0.812,  nmi:0.842,  purity:0.832,  errors: 375/2000
+Elapsed time is 0.546047 seconds.
+Elapsed time is 7.682101 seconds.
+alpha: 0.1000 delta: 1.0000 beta: 100.0000
+running k-means... ac: 0.824,  nmi:0.843,  purity:0.849,  errors: 352/2000
+Elapsed time is 0.471496 seconds.
+Elapsed time is 7.505229 seconds.
+alpha: 0.1000 delta: 10.0000 beta: 0.1000
+running k-means... ac: 0.788,  nmi:0.799,  purity:0.816,  errors: 424/2000
+Elapsed time is 0.461368 seconds.
+Elapsed time is 7.186067 seconds.
+alpha: 0.1000 delta: 10.0000 beta: 1.0000
+running k-means... ac: 0.893,  nmi:0.834,  purity:0.893,  errors: 214/2000
+Elapsed time is 0.462393 seconds.
+Elapsed time is 8.022504 seconds.
+alpha: 0.1000 delta: 10.0000 beta: 10.0000
+running k-means... ac: 0.846,  nmi:0.840,  purity:0.846,  errors: 308/2000
+Elapsed time is 0.460905 seconds.
+Elapsed time is 7.029395 seconds.
+alpha: 0.1000 delta: 10.0000 beta: 100.0000
+running k-means... ac: 0.938,  nmi:0.897,  purity:0.938,  errors: 125/2000
+Elapsed time is 0.456488 seconds.
+Elapsed time is 8.236194 seconds.
+alpha: 1.0000 delta: 0.0100 beta: 0.1000
+running k-means... ac: 0.788,  nmi:0.780,  purity:0.788,  errors: 423/2000
+Elapsed time is 0.484906 seconds.
+Elapsed time is 7.462948 seconds.
+alpha: 1.0000 delta: 0.0100 beta: 1.0000
+running k-means... ac: 0.895,  nmi:0.852,  purity:0.895,  errors: 211/2000
+Elapsed time is 0.455284 seconds.
+Elapsed time is 7.300405 seconds.
+alpha: 1.0000 delta: 0.0100 beta: 10.0000
+running k-means... ac: 0.892,  nmi:0.858,  purity:0.892,  errors: 215/2000
+Elapsed time is 0.663298 seconds.
+Elapsed time is 7.905068 seconds.
+alpha: 1.0000 delta: 0.0100 beta: 100.0000
+running k-means... ac: 0.952,  nmi:0.903,  purity:0.952,  errors: 96/2000
+Elapsed time is 0.452472 seconds.
+Elapsed time is 7.881725 seconds.
+alpha: 1.0000 delta: 0.1000 beta: 0.1000
+running k-means... ac: 0.921,  nmi:0.871,  purity:0.921,  errors: 157/2000
+Elapsed time is 0.499378 seconds.
+Elapsed time is 7.825318 seconds.
+alpha: 1.0000 delta: 0.1000 beta: 1.0000
+running k-means... ac: 0.959,  nmi:0.918,  purity:0.959,  errors: 83/2000
+Elapsed time is 0.545984 seconds.
+Elapsed time is 7.533377 seconds.
+alpha: 1.0000 delta: 0.1000 beta: 10.0000
+running k-means... ac: 0.814,  nmi:0.840,  purity:0.841,  errors: 372/2000
+Elapsed time is 0.479767 seconds.
+Elapsed time is 7.030719 seconds.
+alpha: 1.0000 delta: 0.1000 beta: 100.0000
+running k-means... ac: 0.856,  nmi:0.870,  purity:0.871,  errors: 288/2000
+Elapsed time is 0.509542 seconds.
+Elapsed time is 7.380606 seconds.
+alpha: 1.0000 delta: 1.0000 beta: 0.1000
+running k-means... ac: 0.801,  nmi:0.833,  purity:0.823,  errors: 398/2000
+Elapsed time is 0.505476 seconds.
+Elapsed time is 7.719490 seconds.
+alpha: 1.0000 delta: 1.0000 beta: 1.0000
+running k-means... ac: 0.812,  nmi:0.842,  purity:0.832,  errors: 375/2000
+Elapsed time is 0.504487 seconds.
+Elapsed time is 7.709115 seconds.
+alpha: 1.0000 delta: 1.0000 beta: 10.0000
+running k-means... ac: 0.824,  nmi:0.843,  purity:0.849,  errors: 352/2000
+Elapsed time is 0.506675 seconds.
+Elapsed time is 7.759551 seconds.
+alpha: 1.0000 delta: 1.0000 beta: 100.0000
+running k-means... ac: 0.830,  nmi:0.861,  purity:0.857,  errors: 340/2000
+Elapsed time is 0.517839 seconds.
+Elapsed time is 8.446986 seconds.
+alpha: 1.0000 delta: 10.0000 beta: 0.1000
+running k-means... ac: 0.893,  nmi:0.834,  purity:0.893,  errors: 214/2000
+Elapsed time is 0.497408 seconds.
+Elapsed time is 7.739253 seconds.
+alpha: 1.0000 delta: 10.0000 beta: 1.0000
+running k-means... ac: 0.846,  nmi:0.840,  purity:0.846,  errors: 308/2000
+Elapsed time is 0.610271 seconds.
+Elapsed time is 7.748906 seconds.
+alpha: 1.0000 delta: 10.0000 beta: 10.0000
+running k-means... ac: 0.938,  nmi:0.897,  purity:0.938,  errors: 125/2000
+Elapsed time is 0.426529 seconds.
+Elapsed time is 7.330571 seconds.
+alpha: 1.0000 delta: 10.0000 beta: 100.0000
+running k-means... ac: 0.830,  nmi:0.861,  purity:0.857,  errors: 340/2000
+Elapsed time is 0.455434 seconds.
+Elapsed time is 7.792898 seconds.
+alpha: 10.0000 delta: 0.0100 beta: 0.1000
+running k-means... ac: 0.895,  nmi:0.852,  purity:0.895,  errors: 211/2000
+Elapsed time is 0.447010 seconds.
+Elapsed time is 6.878789 seconds.
+alpha: 10.0000 delta: 0.0100 beta: 1.0000
+running k-means... ac: 0.892,  nmi:0.858,  purity:0.892,  errors: 215/2000
+Elapsed time is 0.427446 seconds.
+Elapsed time is 6.702637 seconds.
+alpha: 10.0000 delta: 0.0100 beta: 10.0000
+running k-means... ac: 0.952,  nmi:0.903,  purity:0.952,  errors: 96/2000
+Elapsed time is 0.423408 seconds.
+Elapsed time is 6.656562 seconds.
+alpha: 10.0000 delta: 0.0100 beta: 100.0000
+running k-means... ac: 0.829,  nmi:0.859,  purity:0.855,  errors: 343/2000
+Elapsed time is 0.418577 seconds.
+Elapsed time is 6.774537 seconds.
+alpha: 10.0000 delta: 0.1000 beta: 0.1000
+running k-means... ac: 0.959,  nmi:0.918,  purity:0.959,  errors: 83/2000
+Elapsed time is 0.437303 seconds.
+Elapsed time is 6.839090 seconds.
+alpha: 10.0000 delta: 0.1000 beta: 1.0000
+running k-means... ac: 0.814,  nmi:0.840,  purity:0.841,  errors: 372/2000
+Elapsed time is 0.421817 seconds.
+Elapsed time is 6.802213 seconds.
+alpha: 10.0000 delta: 0.1000 beta: 10.0000
+running k-means... ac: 0.856,  nmi:0.870,  purity:0.871,  errors: 288/2000
+Elapsed time is 0.442173 seconds.
+Elapsed time is 6.805545 seconds.
+alpha: 10.0000 delta: 0.1000 beta: 100.0000
+running k-means... ac: 0.829,  nmi:0.859,  purity:0.855,  errors: 343/2000
+Elapsed time is 0.429161 seconds.
+Elapsed time is 6.771304 seconds.
+alpha: 10.0000 delta: 1.0000 beta: 0.1000
+running k-means... ac: 0.812,  nmi:0.842,  purity:0.832,  errors: 375/2000
+Elapsed time is 0.530965 seconds.
+Elapsed time is 7.010856 seconds.
+alpha: 10.0000 delta: 1.0000 beta: 1.0000
+running k-means... ac: 0.824,  nmi:0.843,  purity:0.849,  errors: 352/2000
+Elapsed time is 0.431512 seconds.
+Elapsed time is 6.799544 seconds.
+alpha: 10.0000 delta: 1.0000 beta: 10.0000
+running k-means... ac: 0.830,  nmi:0.861,  purity:0.857,  errors: 340/2000
+Elapsed time is 0.467752 seconds.
+Elapsed time is 6.779873 seconds.
+alpha: 10.0000 delta: 1.0000 beta: 100.0000
+running k-means... ac: 0.829,  nmi:0.859,  purity:0.855,  errors: 343/2000
+Elapsed time is 0.550835 seconds.
+Elapsed time is 6.901837 seconds.
+alpha: 10.0000 delta: 10.0000 beta: 0.1000
+running k-means... ac: 0.846,  nmi:0.840,  purity:0.846,  errors: 308/2000
+Elapsed time is 0.431932 seconds.
+Elapsed time is 6.710204 seconds.
+alpha: 10.0000 delta: 10.0000 beta: 1.0000
+running k-means... ac: 0.938,  nmi:0.897,  purity:0.938,  errors: 125/2000
+Elapsed time is 0.428234 seconds.
+Elapsed time is 7.114307 seconds.
+alpha: 10.0000 delta: 10.0000 beta: 10.0000
+running k-means... ac: 0.830,  nmi:0.861,  purity:0.857,  errors: 340/2000
+Elapsed time is 0.544070 seconds.
+Elapsed time is 6.921857 seconds.
+alpha: 10.0000 delta: 10.0000 beta: 100.0000
+running k-means... ac: 0.829,  nmi:0.859,  purity:0.855,  errors: 343/2000
+alpha: 0.010 delta: 0.010 beta: 0.100 | ac: 0.7850 nmi: 0.7004 pur: 0.7850
+alpha: 0.010 delta: 0.010 beta: 1.000 | ac: 0.8390 nmi: 0.7832 pur: 0.8390
+alpha: 0.010 delta: 0.010 beta: 10.000 | ac: 0.7885 nmi: 0.7803 pur: 0.7885
+alpha: 0.010 delta: 0.010 beta: 100.000 | ac: 0.8945 nmi: 0.8523 pur: 0.8945
+alpha: 0.010 delta: 0.100 beta: 0.100 | ac: 0.8700 nmi: 0.7837 pur: 0.8700
+alpha: 0.010 delta: 0.100 beta: 1.000 | ac: 0.8790 nmi: 0.8110 pur: 0.8790
+alpha: 0.010 delta: 0.100 beta: 10.000 | ac: 0.9215 nmi: 0.8715 pur: 0.9215
+alpha: 0.010 delta: 0.100 beta: 100.000 | ac: 0.9585 nmi: 0.9176 pur: 0.9585
+alpha: 0.010 delta: 1.000 beta: 0.100 | ac: 0.8050 nmi: 0.7431 pur: 0.8050
+alpha: 0.010 delta: 1.000 beta: 1.000 | ac: 0.8540 nmi: 0.7794 pur: 0.8540
+alpha: 0.010 delta: 1.000 beta: 10.000 | ac: 0.8010 nmi: 0.8333 pur: 0.8230
+alpha: 0.010 delta: 1.000 beta: 100.000 | ac: 0.8125 nmi: 0.8420 pur: 0.8320
+alpha: 0.010 delta: 10.000 beta: 0.100 | ac: 0.7330 nmi: 0.7028 pur: 0.7495
+alpha: 0.010 delta: 10.000 beta: 1.000 | ac: 0.7880 nmi: 0.7987 pur: 0.8160
+alpha: 0.010 delta: 10.000 beta: 10.000 | ac: 0.8930 nmi: 0.8336 pur: 0.8930
+alpha: 0.010 delta: 10.000 beta: 100.000 | ac: 0.8460 nmi: 0.8398 pur: 0.8460
+alpha: 0.100 delta: 0.010 beta: 0.100 | ac: 0.8390 nmi: 0.7832 pur: 0.8390
+alpha: 0.100 delta: 0.010 beta: 1.000 | ac: 0.7885 nmi: 0.7803 pur: 0.7885
+alpha: 0.100 delta: 0.010 beta: 10.000 | ac: 0.8945 nmi: 0.8523 pur: 0.8945
+alpha: 0.100 delta: 0.010 beta: 100.000 | ac: 0.8925 nmi: 0.8579 pur: 0.8925
+alpha: 0.100 delta: 0.100 beta: 0.100 | ac: 0.8790 nmi: 0.8110 pur: 0.8790
+alpha: 0.100 delta: 0.100 beta: 1.000 | ac: 0.9215 nmi: 0.8715 pur: 0.9215
+alpha: 0.100 delta: 0.100 beta: 10.000 | ac: 0.9585 nmi: 0.9176 pur: 0.9585
+alpha: 0.100 delta: 0.100 beta: 100.000 | ac: 0.8140 nmi: 0.8405 pur: 0.8410
+alpha: 0.100 delta: 1.000 beta: 0.100 | ac: 0.8540 nmi: 0.7794 pur: 0.8540
+alpha: 0.100 delta: 1.000 beta: 1.000 | ac: 0.8010 nmi: 0.8333 pur: 0.8230
+alpha: 0.100 delta: 1.000 beta: 10.000 | ac: 0.8125 nmi: 0.8420 pur: 0.8320
+alpha: 0.100 delta: 1.000 beta: 100.000 | ac: 0.8240 nmi: 0.8429 pur: 0.8490
+alpha: 0.100 delta: 10.000 beta: 0.100 | ac: 0.7880 nmi: 0.7987 pur: 0.8160
+alpha: 0.100 delta: 10.000 beta: 1.000 | ac: 0.8930 nmi: 0.8336 pur: 0.8930
+alpha: 0.100 delta: 10.000 beta: 10.000 | ac: 0.8460 nmi: 0.8398 pur: 0.8460
+alpha: 0.100 delta: 10.000 beta: 100.000 | ac: 0.9375 nmi: 0.8973 pur: 0.9375
+alpha: 1.000 delta: 0.010 beta: 0.100 | ac: 0.7885 nmi: 0.7803 pur: 0.7885
+alpha: 1.000 delta: 0.010 beta: 1.000 | ac: 0.8945 nmi: 0.8523 pur: 0.8945
+alpha: 1.000 delta: 0.010 beta: 10.000 | ac: 0.8925 nmi: 0.8579 pur: 0.8925
+alpha: 1.000 delta: 0.010 beta: 100.000 | ac: 0.9520 nmi: 0.9033 pur: 0.9520
+alpha: 1.000 delta: 0.100 beta: 0.100 | ac: 0.9215 nmi: 0.8715 pur: 0.9215
+alpha: 1.000 delta: 0.100 beta: 1.000 | ac: 0.9585 nmi: 0.9176 pur: 0.9585
+alpha: 1.000 delta: 0.100 beta: 10.000 | ac: 0.8140 nmi: 0.8405 pur: 0.8410
+alpha: 1.000 delta: 0.100 beta: 100.000 | ac: 0.8560 nmi: 0.8703 pur: 0.8715
+alpha: 1.000 delta: 1.000 beta: 0.100 | ac: 0.8010 nmi: 0.8333 pur: 0.8230
+alpha: 1.000 delta: 1.000 beta: 1.000 | ac: 0.8125 nmi: 0.8420 pur: 0.8320
+alpha: 1.000 delta: 1.000 beta: 10.000 | ac: 0.8240 nmi: 0.8429 pur: 0.8490
+alpha: 1.000 delta: 1.000 beta: 100.000 | ac: 0.8300 nmi: 0.8614 pur: 0.8570
+alpha: 1.000 delta: 10.000 beta: 0.100 | ac: 0.8930 nmi: 0.8336 pur: 0.8930
+alpha: 1.000 delta: 10.000 beta: 1.000 | ac: 0.8460 nmi: 0.8398 pur: 0.8460
+alpha: 1.000 delta: 10.000 beta: 10.000 | ac: 0.9375 nmi: 0.8973 pur: 0.9375
+alpha: 1.000 delta: 10.000 beta: 100.000 | ac: 0.8300 nmi: 0.8614 pur: 0.8570
+alpha: 10.000 delta: 0.010 beta: 0.100 | ac: 0.8945 nmi: 0.8523 pur: 0.8945
+alpha: 10.000 delta: 0.010 beta: 1.000 | ac: 0.8925 nmi: 0.8579 pur: 0.8925
+alpha: 10.000 delta: 0.010 beta: 10.000 | ac: 0.9520 nmi: 0.9033 pur: 0.9520
+alpha: 10.000 delta: 0.010 beta: 100.000 | ac: 0.8285 nmi: 0.8594 pur: 0.8555
+alpha: 10.000 delta: 0.100 beta: 0.100 | ac: 0.9585 nmi: 0.9176 pur: 0.9585
+alpha: 10.000 delta: 0.100 beta: 1.000 | ac: 0.8140 nmi: 0.8405 pur: 0.8410
+alpha: 10.000 delta: 0.100 beta: 10.000 | ac: 0.8560 nmi: 0.8703 pur: 0.8715
+alpha: 10.000 delta: 0.100 beta: 100.000 | ac: 0.8285 nmi: 0.8594 pur: 0.8555
+alpha: 10.000 delta: 1.000 beta: 0.100 | ac: 0.8125 nmi: 0.8420 pur: 0.8320
+alpha: 10.000 delta: 1.000 beta: 1.000 | ac: 0.8240 nmi: 0.8429 pur: 0.8490
+alpha: 10.000 delta: 1.000 beta: 10.000 | ac: 0.8300 nmi: 0.8614 pur: 0.8570
+alpha: 10.000 delta: 1.000 beta: 100.000 | ac: 0.8285 nmi: 0.8594 pur: 0.8555
+alpha: 10.000 delta: 10.000 beta: 0.100 | ac: 0.8460 nmi: 0.8398 pur: 0.8460
+alpha: 10.000 delta: 10.000 beta: 1.000 | ac: 0.9375 nmi: 0.8973 pur: 0.9375
+alpha: 10.000 delta: 10.000 beta: 10.000 | ac: 0.8300 nmi: 0.8614 pur: 0.8570
+alpha: 10.000 delta: 10.000 beta: 100.000 | ac: 0.8285 nmi: 0.8594 pur: 0.8555
+diary optimalParams
