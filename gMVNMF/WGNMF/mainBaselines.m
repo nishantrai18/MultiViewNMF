@@ -4,9 +4,26 @@ clear;                      %Remove all variables from the workspace
 addpath(genpath('../../partialMV/PVC/recreateResults/measure/'));
 addpath(genpath('../../partialMV/PVC/recreateResults/misc/'));
 addpath(genpath('../../partialMV/PVC/recreateResults/data/'));
-addpath(genpath('../exact_alm_rpca/inexact_alm_rpca/'));
-addpath(genpath('../exact_alm_rpca/inexact_alm_rpca/PROPACK/'));
-addpath(genpath('../../gMVNMF/print/'));
+addpath(genpath('../../sampleCodes/exact_alm_rpca/inexact_alm_rpca/'));
+addpath(genpath('../../sampleCodes/exact_alm_rpca/inexact_alm_rpca/PROPACK/'));
+addpath(genpath('../print/'));
+
+options = [];
+options.maxIter = 75;
+options.error = 1e-6;
+options.nRepeat = 30;
+options.minIter = 50;
+options.meanFitRatio = 0.1;
+options.rounds = 50;
+options.WeightMode='Binary';
+options.varWeight = 0;
+options.kmeans = 1;
+
+options.Gaplpha=0;                            %Graph regularisation parameter
+options.alpha=0;
+options.delta = 0.1;
+options.beta = 0;
+options.gamma = 2;
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';
@@ -14,7 +31,6 @@ dataname={'mfeatbig'};
 num_views = 5;
 numClust = 10;
 options.K = numClust;
-options.latentdim=numClust;
 
 ovMean = cell(1,length(dataname));
 ovAvgStd = cell(1,length(dataname));
@@ -34,18 +50,17 @@ for idata=1:length(dataname)
     %%
     %X should be row major i.e. rows are the data points
     
-   load(cell2mat(strcat(datasetdir,dataname(idata),'Folds.mat'))); %Loading the variable folds
+    load(cell2mat(strcat(datasetdir,dataname(idata),'Folds.mat'))); %Loading the variable folds
    
-   [numFold,numInst]=size(folds);                                   %numInst : numInstances
-   dir=strcat(resdir,cell2mat(dataname(idata)),'/'); %    train_target(idnon)=-1;   ranksvm treat weak label {-1: -1; 1:+1; 0:-1}
-   %mkdir(dir);                              %Creates new folder for storing the workspace variables 
+    [numFold,numInst]=size(folds);                                   %numInst : numInstances
+    dir=strcat(resdir,cell2mat(dataname(idata)),'/'); %    train_target(idnon)=-1;   ranksvm treat weak label {-1: -1; 1:+1; 0:-1}
+    
+    multiMean = cell(1,length(pairPortion));
+    multiStd = cell(1,length(pairPortion));
    
-   multiMean = cell(1,length(pairPortion));
-   multiStd = cell(1,length(pairPortion));
-   
-   views = cell(1,num_views);
-   truths = cell(1,10);
-   for f=1:10%numFold
+    views = cell(1,num_views);
+    truths = cell(1,10);
+    for f=1:1
            instanceIdx=folds(f,:);
            truthF=truth(instanceIdx);                                  %Contains the true clusters of the instances                
            truths{f} = truthF;
@@ -79,7 +94,6 @@ for idata=1:length(dataname)
                if (~isempty(Xfilled{pairedIdx}))
                    Xfilled{pairedIdx} = inexact_alm_rpca(Xfilled{pairedIdx}')';
                end
-               sum(sum(Xfilled{pairedIdx}))
                rear = 0;
                sigma = [];
                lambda = [];
@@ -92,14 +106,22 @@ for idata=1:length(dataname)
                     lambda(end+1) = 0.01;
                end
                
-               %[~,~,~,~,~,~,~,~,~,P,nmi,pur] = spectral_pairwise(views{1},views{2},numClust,optSigma(views{1}),optSigma(views{2}),lambda1,lambda2,truthF,20);
-               %[~,~,~,~,~,~,~,~,P,nmi,pur] = spectral_pairwise(views{1},views{2},numClust,optSigma(views{1}),optSigma(views{2}),lambda1,truthF,20);
-               %[~,P,~,nmi,pur] = spectral_mindis(views{1},views{2},numClust,optSigma(views{1}),optSigma(views{2}),truthF);
-               %[~,P,~,nmi,pur] = trivialBaselines(views{1},views{2},numClust,truthF);
-               [~,~,~,~,~,~,~,P,nmi,pur] = spectral_centroid_multiview(views,num_views,numClust,sigma,lambda,truthF,20);
-               
-               meanStats = [P nmi pur];
+			for i = 1:length(X)
+            		data{i} = (views{i}(instanceIdx,:))';              %Column major
+            		options.WeightMode='Binary';
+            		W{i} = constructW_cai(data{i}',options);           %Need row major
+        		end
+        		
+        		[U, V, centroidV, weights, log] = GMultiNMF(views, options.K, W, truthF, options);
+ 
+               [~,stats] = ComputeStats(centroidV, truthF, numClust);
+               stats = mean(stats,2);
+               for s=1:size(stats,1)
+                   meanStats(s) = mean(stats(s,:));
+                   stdStats(s) = std(stats(s,:));
+               end
                multiMean{pairedIdx} = [multiMean{pairedIdx};meanStats];
+               multiStd{pairedIdx} = [multiStd{pairedIdx};stdStats];
            end
    end
    
