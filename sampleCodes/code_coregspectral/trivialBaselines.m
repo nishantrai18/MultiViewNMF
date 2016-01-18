@@ -1,78 +1,78 @@
-function [F P R nmi pur avgent AR] = trivialBaselines(X1, X2, numClust, truth)
+function [P nmi pur] = trivialBaselines(X, num_views, numClust, truth)
 
     if (min(truth)==0)
         truth = truth + 1;
     end
-    [N M1] = size(X1);
-    [N M2] = size(X2);
     
-    [W1,H1] = nnmf(X1,numClust);
-    [W2,H2] = nnmf(X2,numClust);
-    [W3,H3] = nnmf([X1 X2],numClust);
-    W1 = Normalize(W1);
-    W2 = Normalize(W2); 
-    W3 = Normalize(W3);
+    Xbig = [];
+    for i=1:num_views
+        if (size(X{i},2) >= numClust)
+            [W{i},H{i}] = nnmf(X{i},numClust);
+        else
+            W{i} = X{i};
+        end
+        Xbig = [Xbig X{i}];
+        W{i} = Normalize(W{i});
+    end
+    [Wc,Hc] = nnmf(Xbig,numClust);
+    Wc = Normalize(Wc);
+    Pi = cell(1,num_views);
+    nmii = cell(1,num_views);
+    pure = cell(1,num_views);
+    C = cell(1,num_views);
     
     for i=1:20
         %view1
-        C1 = kmeans(W1,numClust,'EmptyAction','drop');
-        [F1i(i),P1i(i),R1i(i)] = compute_f(truth+1,C1);
-        [A1 nmi1i(i) avgent1i(i)] = compute_nmi(truth,C1);
-        [AR1i(i),RI1i(i),MI1i(i),HI1i(i)]=RandIndex(truth,C1);  
-        pure1(i)=purity(truth,C1);     
-        %view2
-        C2 = kmeans(W2,numClust,'EmptyAction','drop');
-        [F2i(i),P2i(i),R2i(i)] = compute_f(truth+1,C2);
-        [A2 nmi2i(i) avgent2i(i)] = compute_nmi(truth,C2);
-        [AR2i(i),RI2i(i),MI2i(i),HI2i(i)]=RandIndex(truth,C2);        
-        pure2(i)=purity(truth,C2);     
+        for j=1:num_views
+            C = kmeans(W{j},numClust,'EmptyAction','drop');
+            [~,Pi{j}(i)] = compute_f(truth+1,C);
+            [~, nmii{j}(i)] = compute_nmi(truth,C);
+            pure{j}(i)=purity(truth,C);     
+        end
         %joint
-        C = kmeans(W3, numClust, 'EmptyAction','drop');
-        [Fi(i),Pi(i),Ri(i)] = compute_f(truth+1,C);
-        [A nmii(i) avgenti(i)] = compute_nmi(truth,C);
-        [ARi(i),RIi(i),MIi(i),HIi(i)]=RandIndex(truth,C);
-    	pure3(i)=purity(truth,C);     
+        C = kmeans(Wc, numClust, 'EmptyAction','drop');
+        [~,Pic(i)] = compute_f(truth+1,C);
+        [~, nmiic(i)] = compute_nmi(truth,C);
+        purec(i)=purity(truth,C);     
     end
-    F(1) = mean(F1i);
-    P(1) = mean(P1i);
-    R(1) = mean(R1i);
-    nmi(1) = mean(nmi1i);
-    pur(1) = mean(pure1);
-    avgent(1) = mean(avgent1i);
-    AR(1) = mean(AR1i);
-    F(2) = mean(F2i);
-    P(2) = mean(P2i);
-    R(2) = mean(R2i);
-    nmi(2) = mean(nmi2i);
-    pur(2) = mean(pure2);
-    avgent(2) = mean(avgent2i);
-    AR(2) = mean(AR2i);
-    F(3) = mean(Fi);
-    P(3) = mean(Pi);
-    R(3) = mean(Ri);
-    nmi(3) = mean(nmii);
-    pur(3) = mean(pure3);
-    avgent(3) = mean(avgenti);
-    AR(3) = mean(ARi);    
-    
+    for i=1:num_views
+        P(i) = mean(Pi{i});
+        nmi(i) = mean(nmii{i});
+        pur(i) = mean(pure{i});
+    end
+    pc = mean(Pic);
+    nmic = mean(nmiic);
+    purc = mean(purec);
+    maxp = 0;
+    maxnmi = 0;
+    maxpur = 0;
+    minp = 100;
+    minnmi = 100;
+    minpur = 100;
     %1: Best View
     %2: Worst View
-    if (P(2) > P(1))
-        tmp = P(1);
-        P(1) = P(2);
-        P(2) = tmp;
-        tmp = nmi(1);
-        nmi(1) = nmi(2);
-        nmi(2) = tmp;
-        tmp = pur(1);
-        pur(1) = pur(2);
-        pur(2) = tmp;
+    for i=1:num_views
+        if (P(i) > maxp)
+            maxp = P(i);
+            maxnmi = nmi(i);
+            maxpur = pur(i);
+        end
+        if (P(i) < minp)
+            minp = P(i);
+            minnmi = nmi(i);
+            minpur = pur(i);
+        end
     end
-    
-    fprintf('nmi_1 = %f(%f), nmi_2 = %f(%f), nmi = %f(%f)\n', nmi(1), std(nmi1i),nmi(2), std(nmi2i),nmi(3), std(nmii));
-    fprintf('Pur_1 = %f(%f), Pur_2 = %f(%f), Pur = %f(%f)\n', pur(1), std(pure1),pur(2), std(pure2),pur(3), std(pure3));
+    P = [];
+    nmi = [];
+    pur = [];
+    P(1) = maxp; nmi(1) = maxnmi; pur(1) = maxpur;
+    P(2) = minp; nmi(2) = minnmi; pur(2) = minpur;
+    P(3) = pc; nmi(3) = nmic; pur(3) = purc;
+    fprintf('nmi_1 = %f, nmi_2 = %f, nmi = %f\n', nmi(1), nmi(2), nmi(3));
+    fprintf('Pur_1 = %f, Pur_2 = %f, Pur = %f\n', pur(1), pur(2), pur(3));
     %fprintf('F_1 = %f(%f), F_2 = %f(%f), F = %f(%f)\n', F(1), std(F1i),F(2), std(F2i),F(3), std(Fi));
-    fprintf('P_1 = %f(%f), P_2 = %f(%f), P = %f(%f)\n', P(1), std(P1i),P(2), std(P2i),P(3), std(Pi));
+    fprintf('P_1 = %f, P_2 = %f, P = %f\n', P(1), P(2), P(3));
     %fprintf('R_1 = %f(%f), R_2 = %f(%f), R = %f(%f)\n', R(1), std(R1i),R(2), std(R2i),R(3), std(Ri));
     %fprintf('Entropy_1 = %f(%f), Entropy_2 = %f(%f), Entropy = %f(%f)\n', avgent(1), std(avgent1i),avgent(2), std(avgent2i),avgent(3), std(avgenti));
     %fprintf('AR_1 = %f(%f), AR_2 = %f(%f), AR = %f(%f)\n', AR(1), std(AR1i),AR(2), std(AR2i),AR(3), std(ARi));

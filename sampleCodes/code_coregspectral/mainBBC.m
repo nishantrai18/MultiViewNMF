@@ -10,9 +10,9 @@ addpath(genpath('../../gMVNMF/print/'));
 
 resdir='data/result/';
 datasetdir='../../partialMV/PVC/recreateResults/data/';
-dataname={'mfeat'};
-num_views = 2;
-numClust = 10;
+dataname={'3sources3vbig'};
+num_views = 3;
+numClust = 6;
 options.K = numClust;
 options.latentdim=numClust;
 
@@ -28,14 +28,10 @@ for idata=1:length(dataname)
     %X1=readsparse(X1);                                         %Loading a sparse matrix i.e. on the basis of edges                  
     %X2=readsparse(X2);
     %% normalize data matrix
-        X1 = X1 / sum(sum(X1));
-        X2 = X2 / sum(sum(X2));
+    for i=1:num_views
+        X{i} = X{i}'/sum(sum(X{i}));
+    end
     %%
-    
-    Xf1 = X1;                                                     %Directly loading the matrices
-    Xf2 = X2;
-    X{1} =Xf1;                                                  %View 1
-    X{2} =Xf2;                                                  %View 2    
     %X should be row major i.e. rows are the data points
     
    load(cell2mat(strcat(datasetdir,dataname(idata),'Folds.mat'))); %Loading the variable folds
@@ -81,23 +77,28 @@ for idata=1:length(dataname)
                     Xfilled{pairedIdx} = [Xfilled{pairedIdx} Xfill{i}];
                end
                if (~isempty(Xfilled{pairedIdx}))
-                   Xfilled{pairedIdx} = inexact_alm_rpca(Xfilled{pairedIdx});
+                   Xfilled{pairedIdx} = inexact_alm_rpca(Xfilled{pairedIdx}')';
                end
                sum(sum(Xfilled{pairedIdx}))
                rear = 0;
+               sigma = [];
+               lambda = [];
                for i=1:num_views
                     tmpMat = Xfilled{pairedIdx}(:,rear+1:rear+size(Xt{i},2));
                     %views{i,f,pairedIdx} = tmpMat;
                     views{i} = [Xt{i}(1:numpairedInst,:); tmpMat];
                     rear = rear+size(Xt{i},2);
+                    sigma(end+1) = optSigma(views{i});
+                    %sigma(end+1) = 100;
+                    lambda(end+1) = 0.01;
                end
                
-               lambda1 = 0.01;
-               lambda2 = 0.01;
                %[~,~,~,~,~,~,~,~,~,P,nmi,pur] = spectral_pairwise(views{1},views{2},numClust,optSigma(views{1}),optSigma(views{2}),lambda1,lambda2,truthF,20);
                %[~,~,~,~,~,~,~,~,P,nmi,pur] = spectral_pairwise(views{1},views{2},numClust,optSigma(views{1}),optSigma(views{2}),lambda1,truthF,20);
                %[~,P,~,nmi,pur] = spectral_mindis(views{1},views{2},numClust,optSigma(views{1}),optSigma(views{2}),truthF);
-               [~,P,~,nmi,pur] = trivialBaselines(views{1},views{2},numClust,truthF);
+               [P,nmi,pur] = trivialBaselines(views,num_views,numClust,truthF);
+               %[~,~,~,~,~,~,~,P,nmi,pur] = spectral_pairwise_multview(views,num_views,numClust,sigma,lambda(1),truthF,20);
+               %[~,~,~,~,~,~,~,P,nmi,pur] = spectral_centroid_multiview(views,num_views,numClust,sigma,lambda,truthF,20);
                
                meanStats = [P nmi pur];
                multiMean{pairedIdx} = [multiMean{pairedIdx};meanStats];

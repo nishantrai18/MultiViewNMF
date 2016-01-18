@@ -1,4 +1,4 @@
-function [F P R nmi avgent AR] = spectral_pairwise_multview(X,num_views,numClust,sigma,lambda,truth,numiter)
+function [F P R nmi pur avgent AR Pavg nmiavg puravg] = spectral_pairwise_multview(X,num_views,numClust,sigma,lambda,truth,numiter)
 % INPUT:
 % OUTPUT:
     
@@ -44,11 +44,13 @@ function [F P R nmi avgent AR] = spectral_pairwise_multview(X,num_views,numClust
         [Fj(j),Pj(j),Rj(j)] = compute_f(truth,C); 
         [Aj nmi_j(j) avgent_j(j)] = compute_nmi(truth,C);
         [ARj(j),RIj(j),MIj(j),HIj(j)]=RandIndex(truth,C);
+        pure(j)=purity(truth,C);
     end
     F(1) = mean(Fj); std_F(1) = std(Fj);
     P(1) = mean(Pj); std_P(1) = std(Pj);
     R(1) = mean(Rj); std_R(1) = std(Rj);
     nmi(1) = mean(nmi_j); std_nmi(1) = std(nmi_j);
+    pur(1) = mean(pure); std_pur(1) = std(pure);
     avgent(1) = mean(avgent_j); std_avgent(1) = std(avgent_j);
     AR(1) = mean(ARj); std_AR(1) = std(ARj);
     
@@ -93,11 +95,13 @@ function [F P R nmi avgent AR] = spectral_pairwise_multview(X,num_views,numClust
                 [Fj(j),Pj(j),Rj(j)] = compute_f(truth,C); 
                 [Aj nmi_j(j) avgent_j(j)] = compute_nmi(truth,C);
                 [ARj(j),RIj(j),MIj(j),HIj(j)]=RandIndex(truth,C);
+                pure(j)=purity(truth,C);
             end
             F(i) = mean(Fj); std_F(i) = std(Fj);
             P(i) = mean(Pj); std_P(i) = std(Pj);
             R(i) = mean(Rj); std_R(i) = std(Rj); 
             nmi(i) = mean(nmi_j); std_nmi(i) = std(nmi_j);
+            pur(i) = mean(pure); std_pur(i) = std(pure);
             avgent(i) = mean(avgent_j); std_avgent(i) = std(avgent_j);
             AR(i) = mean(ARj); std_AR(i) = std(ARj);
         end
@@ -124,11 +128,13 @@ function [F P R nmi avgent AR] = spectral_pairwise_multview(X,num_views,numClust
         [Fj(j),Pj(j),Rj(j)] = compute_f(truth,C); 
         [Aj nmi_j(j) avgent_j(j)] = compute_nmi(truth,C);
         [ARj(j),RIj(j),MIj(j),HIj(j)]=RandIndex(truth,C);
+        pure(j)=purity(truth,C);
     end
             F(i) = mean(Fj); std_F(i) = std(Fj);
             P(i) = mean(Pj); std_P(i) = std(Pj);
             R(i) = mean(Rj); std_R(i) = std(Rj); 
             nmi(i) = mean(nmi_j); std_nmi(i) = std(nmi_j);
+            pur(i) = mean(pure); std_pur(i) = std(pure);
             avgent(i) = mean(avgent_j); std_avgent(i) = std(avgent_j);
             AR(i) = mean(ARj); std_AR(i) = std(ARj);
     
@@ -136,25 +142,38 @@ function [F P R nmi avgent AR] = spectral_pairwise_multview(X,num_views,numClust
     %i = i+1;
     %[feats1 feats2 F_c P_c R_c nmi_c avgent_c] = multiviewccacluster(U1_norm, U2_norm, numClust, sigma1, sigma2, truth);
     
+    %{
     fprintf('F:   ');
     for i=1:numiter+2
         fprintf('%f(%f)  ', F(i), std_F(i));
     end
     fprintf('\n\n');
-    fprintf('P:   ');    
-    for i=1:numiter+2      
-        fprintf('%f(%f)  ', P(i), std_P(i));
-    end
     fprintf('\n\n');
     fprintf('R:   ');    
     for i=1:numiter+2      
         fprintf('%f(%f)  ', R(i), std_R(i));
     end
     fprintf('\n\n');
+    %}
+    fprintf('P:   ');    
+    for i=1:numiter+2      
+        fprintf('%f(%f)  ', P(i), std_P(i));
+    end
+    fprintf('\n\n');
     fprintf('nmi:   ');    
     for i=1:numiter+2      
         fprintf('%f(%f)  ', nmi(i), std_nmi(i));
     end
+    fprintf('\n\n');
+    fprintf('Purity:   ');    
+    for i=1:numiter+1     
+        fprintf('%f(%f)  ', pur(i), std_pur(i));
+    end
+    fprintf('\n\n');
+    Pavg = P(numiter+2);
+    nmiavg = nmi(numiter+2); 
+    puravg = pur(numiter+2);
+    %{
     fprintf('\n\n');
     fprintf('avgent:   ');    
     for i=1:numiter+2      
@@ -173,7 +192,7 @@ function [F P R nmi avgent AR] = spectral_pairwise_multview(X,num_views,numClust
         end
         fprintf('\n');
     end
-        
+    %}    
     if (0)
     %%%%averaging of U1 and U2
     V = (U1_norm+U2_norm)/2;
