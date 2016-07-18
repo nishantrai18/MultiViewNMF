@@ -1,5 +1,5 @@
-Temporary Title:
---------------------------------------------------------------
+Partial Multi View Clustering using Non Negative Matrix Factorization:
+----------------------------------------------------------------------
 
 The project deals with the problem of clustering data using information present in Multiple Views. Further details will be available at a later time.
 
