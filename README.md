@@ -1,6 +1,13 @@
 Partial Multi View Clustering using Non Negative Matrix Factorization:
 ======================================================================
 
+**Authors:**
+
+- Nishant Rai, Indian Institute of Technology Kanpur
+- Sumit Negi, Amazon Development Center
+- Santanu Chaudhury, Indian Institute of Technology Delhi 
+- Om Deshmukh, Xerox Research Centre India
+
 **Accepted in ICPR '16 (International Conference on Pattern Recognition)**
 
 The project deals with the problem of clustering data using information present in Multiple Views. The repository contains the relevant code to recreate the results in the paper. The abstract is provided below,
