@@ -10,6 +10,18 @@ Partial Multi View Clustering using Non Negative Matrix Factorization:
 
 **Accepted in ICPR '16 (International Conference on Pattern Recognition)**
 
+In case the repository or the publication was helpful in your work, please use the following to cite the original paper,
+
+```
+@article{Rai2016PartialMC,
+  title={Partial Multi-View Clustering using Graph Regularized NMF},
+  author={Nishant Rai and Sumit Negi and Santanu Chaudhury and Om Deshmukh},
+  journal={2016 23rd International Conference on Pattern Recognition (ICPR)},
+  year={2016},
+  pages={2192-2197}
+}
+```
+
 Manuscript at: http://nishantrai18.github.io/resources/gpmvcICPR16.pdf
 
 The project deals with the problem of clustering data using information present in Multiple Views. The repository contains the relevant code to recreate the results in the paper. The abstract is provided below,
